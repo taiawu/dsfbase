@@ -1,0 +1,105 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Tidying the dye screening dataset
+
+Final output: 
+Assign unique indices for each curve
+Format:
+
+DSF01_S01_ID00001
+- start with the DSFbase version
+- then have a source identifier
+- then have an individual curve identifier
+- give each # a leading character so it does not reduce down to fewer leading zeroes when split
+- add enough leading zeroes to accomodate 10 - 99,000 curves 
+
+```{r}
+library(tidyverse)
+```
+Automated test for database files
+```{r}
+
+```
+
+
+Function to generate curve IDs
+```{r}
+make_IDS <- 
+  function(input_vars, 
+           dsfbase_version = 1,
+           source_id = 1,
+           ID_start = 1){
+
+    
+  out <- tibble(orig = input_vars,
+      header = glue::glue("DSF00{dsfbase_version}_S0{source_id}")) |>
+      mutate(
+             id = paste0(header, "_", "ID",
+                                         stringr::str_pad(row_number() + ID_start - 1, # the curve number
+                                                          6, # to six places
+                                                          pad = "0")) # left-pad zeroes
+      )
+
+    
+  out$id
+  }
+
+make_IDS(c("two", "zed"))
+
+```
+
+Read in raw data
+```{r}
+# from dye screens
+dye <- vroom::vroom("../00_raw_inputs/data_S3_dye_screen_results_raw.txt")
+
+# from SYPRO
+sypro <- read
+```
+
+```{r}
+trim <-
+  raw |> 
+  select(variable, Temperature, value) |> 
+  pivot_wider(id_cols = Temperature, 
+              names_from = variable, 
+              values_from = value)
+```
+
+Generate the ID map
+This will almost certainly get re-generated in the end, 
+oncewe decide how we want to order the data to make it more user-friendly
+e.g. the first 500 are all SYPRO, the next 5,000 are with-protein hits, sensitives, the last bunch are EBPs...
+```{r}
+ID_map <- 
+  tibble(original = names(trim)) |> 
+  filter(original != "Temperature") |> 
+  mutate(ID = make_IDS(original, source_id = 2)) |> 
+  relocate(ID)
+
+ID_map
+```
+
+Add IDs as names for each tibble
+```{r}
+final <- trim |> 
+  set_names(c("Temperature", ID_map$ID))
+```
+
+Save the output file
+```{r}
+# 175 MB
+final |> vroom::vroom_write("../01_intermediate_outputs/dye_screens_indexed.txt")
+ID_map |> write_rds("../01_intermediate_outputs/dye_screens_index_map.rds")
+```
+
+
+
+
+
+
+
+

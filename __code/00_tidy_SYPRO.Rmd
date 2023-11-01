@@ -1,0 +1,85 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Tidying the SYPRO dataset from Exp0794
+
+Final output: 
+Assign unique indices for each curve
+Format:
+
+DSF001__ID00001
+- start with the DSFbase version
+- then have an individual curve identifier
+- give each # a leading character so it does not reduce down to fewer leading zeroes when split
+- add enough leading zeroes to accomodate 10 - 99,000 curves 
+
+```{r}
+library(tidyverse)
+```
+
+Function to generate curve IDs
+```{r}
+make_IDS <- 
+  function(input_vars, 
+           dsfbase_version = 1,
+           source_id = 1,
+           ID_start = 1){
+
+    
+  out <- tibble(orig = input_vars,
+      header = glue::glue("DSF00{dsfbase_version}_S0{source_id}")) |>
+      mutate(
+             id = paste0(header, "_", "ID",
+                                         stringr::str_pad(row_number() + ID_start - 1, # the curve number
+                                                          6, # to six places
+                                                          pad = "0")) # left-pad zeroes
+      )
+
+    
+  out$id
+  }
+```
+
+Read in the original data
+```{r}
+SYPRO_raw <- read_rds("../00_raw_inputs/Exp0794--20200201_aggregated_SYPRO_DSF_data.rds")
+
+## needs to have unique identifiers added 
+# gross. do this better when you get the chance.
+
+SYPRO_raw <-
+  SYPRO_raw |>  
+    unite("variable", -c(Temperature, value)) 
+
+SYPRO_trim <- 
+  SYPRO_raw |> 
+  select(variable, Temperature, value) |> 
+  pivot_wider(id_cols = Temperature, names_from = variable, values_from = value)
+
+```
+
+```{r}
+SYPRO_IDs <- 
+  tibble(original = names(SYPRO_trim)) |> 
+  filter(original != "Temperature") |> 
+  mutate(ID = make_IDS(original, source_id = 1)) |> 
+  relocate(ID)
+
+SYPRO_IDs
+```
+
+Add IDs as names for each tibble
+```{r}
+SYPRO_final <- SYPRO_trim |> 
+  set_names(c("Temperature", SYPRO_IDs$ID))
+```
+
+Save the output file
+```{r}
+# 175 MB
+SYPRO_final |> vroom::vroom_write("../01_intermediate_outputs/SYPRO_indexed.txt")
+SYPRO_IDs |> write_rds("../01_intermediate_outputs/SYPRO_index_map.rds")
+```
+

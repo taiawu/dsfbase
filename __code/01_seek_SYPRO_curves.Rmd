@@ -1,0 +1,299 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Assemble standard SYPRO curves
+Issue with previous Exp0794 was that I didn't save the expeirmental conditions, and I want to have them. 
+```{r}
+library(tidyverse)
+library(fs)
+library(testthat)
+
+# styler::style_file(path = "01_seek_SYPRO_curves.Rmd")
+```
+Best option: look at the plots for the original data, filter out what you want, and then just use / plot that
+
+In the end, I think it makes sense to load, clean, and label as I go
+That way, I'll understand how much work each directory will be to include 
+in the database
+And I can stop at a reasonable time, instead of trying to get through an
+unreasonable number of directories at the end. 
+
+Automated test for DSF data
+```{r}
+test_dataset <- function(dsf) {
+  # expectation function doc
+  # https://testthat.r-lib.org/reference/expect_setequal.html
+
+  test_that("data is a tibble", {
+    expect_s3_class(dsf, "tbl_df")
+  })
+
+  # dataset value contains one of the accepted names
+  test_that("dataset contains one of the accepted values", {
+    subset_names <- c(
+      "SYPRO_canon",
+      "SYPRO_noncanon",
+      "canon",
+      "noncanon",
+      "gotcha",
+      "buffer"
+    )
+    expect_in(dsf$subset, subset_names)
+  })
+
+  # dataset value contains one of the accepted names
+  test_that("data includes reqiured columns", {
+    correct_names <- c("id", "subset", "well", "variable", "Temperature", "value")
+    expect_in(correct_names, names(dsf))
+  })
+
+  test_that("required columns have correct types", {
+    dsf_order <- dsf |>
+      select(all_of(c("id", "subset", "well", "variable", "Temperature", "value")))
+
+    expect_equal(
+      unname(unlist(lapply(dsf_order, class))),
+      c(
+        "character", # "id",
+        "character", # ""subset"
+        "character", # "well",
+        "character", # "variable"
+        "numeric", # "Temperature",
+        "numeric" # "value"
+      )
+    )
+  })
+
+  test_that("data has 'variable' column which is genuinely unique to a single trace", {
+    temp_dup <- dsf %>%
+      dplyr::group_by(variable) %>%
+      dplyr::mutate(unique_temps = !duplicated(Temperature))
+
+    expect_true(all(temp_dup$unique_temps))
+  })
+
+
+  test_that("all datasets contains 69 temperature measurements", {
+    temp_dup <- dsf %>%
+      dplyr::group_by(variable) %>%
+      dplyr::mutate(n_unique_temps = n_distinct(Temperature)) |> 
+      pull(n_unique_temps)
+
+    expect_equal(unique(temp_dup), 70)
+  })
+}
+```
+
+print summary
+```{r}
+print_tallies <- function(dsf) {
+  dataset_name <- deparse(substitute(dsf))
+  proteins <- unique(dsf$protein)
+  n_protein <- n_distinct(dsf$protein)
+  n_var <- n_distinct(dsf$variable)
+
+  header <- glue::glue("`{dataset_name}` contains")
+  msg1 <- glue::glue("Number of unique proteins: {n_protein} ({glue::glue_collapse(proteins, sep = ', ')})")
+  msg2 <- glue::glue("Number of unique datasets: {n_var}")
+
+  print(header, msg1, msg2, "\n")
+  out <- c(header, msg1, msg2, "\n")
+}
+```
+
+plot function
+```{r}
+save_plot_by_var <- function(dsf,
+                        save_path = "../02_aggregated_data/",
+                        use_external_name = FALSE,
+                        external_name = "",
+                        ...){
+  
+  # for plot annotations
+  # so it can be used inside other functions as well
+  if(use_external_name) {
+    dataset_name <- external_name
+  } else {
+    dataset_name <- deparse(substitute(dsf))
+  }
+  
+  tallies <- print_tallies(dsf)
+  subset <- unique(dsf$subset)
+  subset_mg <- glue::glue("Subset: {subset}")
+  
+  # make plot
+  p <- 
+  dsf |> 
+  ggplot(aes(x = Temperature, y = value, group = variable)) +
+  geom_line(linewidth = 0.5) +
+  facet_wrap(~variable, scales = "free", ncol = 5) +
+   hrbrthemes::theme_ipsum(base_family = "Helvetica",
+                         base_size = 5,
+                         strip_text_size = 8) +
+  theme(aspect.ratio = 1,
+         axis.text.y=element_blank(),
+        axis.text.x=element_blank())
+  
+  p <- p +
+    patchwork::plot_annotation(
+   title = dataset_name,
+  subtitle = glue::glue("{subset_mg} \n{glue::glue_collapse(tallies[c(2,3)], sep = '\n')}")
+)
+  
+  ## get save name
+  save_dir <- glue::glue("{save_path}/{subset}/")
+  fs::dir_create(save_dir)
+  save_name <- glue::glue("{save_dir}{dataset_name}.pdf")
+  save_height <- n_distinct(dsf$variable)/5 + 3
+
+ggsave(save_name,
+  p,
+  width = 7,
+  height = save_height
+)
+}
+```
+
+test, plot, and save in a single function
+```{r}
+test_plot_save <- function(dsf, 
+               save_path = "../02_aggregated_data/", 
+               ...) {
+  
+  dataset_name <- deparse(substitute(dsf))
+  subset <- unique(dsf$subset)
+  
+  test_dataset(dsf)
+  print_tallies(dsf)
+  save_plot_by_var(dsf,
+                   use_external_name = TRUE,
+                   external_name = dataset_name)
+  
+  # rds path
+  file_name <- glue::glue("{dataset_name}")
+  save_rds_to <- glue::glue("{save_path}/{subset}/{file_name}.rds")
+  
+  write_rds(dsf,save_rds_to)
+}
+```
+
+Exp0653 - SYPROlog testing. 
+```{r}
+### Read in initial file
+Exp0653 <- read_rds("/Users/taiaseanwu/Box Sync/data/Exp0653--21090719_AW_DSF_test_with_13_proteins/Exp0653--20190719_AW_13_proteins_DSF_test_protein_and_buffer_df_all_m.rds") |>
+  unite(variable, c(well, channel_f), remove = FALSE) |>
+  as_tibble() |>
+  mutate(
+    protein = replace_na(protein, "buffer"),
+    id = "placeholder"
+  ) |>
+  select(
+    id,
+    well,
+    Temperature,
+    variable,
+    value,
+    channel_f,
+    dye,
+    conc,
+    protein,
+    type
+  ) |>
+  rename(dye_conc_uM = conc)
+
+# separate the buffer values
+
+# separate the SYPRO canon
+Exp0653_SYPRO_canon <-
+  Exp0653 |>
+  filter(
+    channel_f %in% c("JOE", "TAMRA", "ROX"),
+    dye == "SYPRO",
+    protein %in% c("PPIE")
+  ) |>
+  mutate(subset = "SYPRO_canon")
+
+test_plot_save(Exp0653_SYPRO_canon)
+
+# separate the SYPRO non-canon
+Exp0653_SYPRO_noncanon <-
+  Exp0653 |>
+  filter(
+    channel_f %in% c("JOE", "TAMRA", "ROX"),
+    dye == "SYPRO",
+    protein %in% c("BSA", "CLOCK_PASB", "NPAS2_AB")
+  ) |>
+  mutate(subset = "SYPRO_noncanon") |> 
+  
+  # manual removal
+  filter(variable != "A9_ROX")
+
+test_plot_save(Exp0653_SYPRO_noncanon)
+
+############### SYPROLOG DATA #############
+Exp0653_nonSYPRO_noncanon <-
+  Exp0653 |>
+  unite(protein_dye_channel,
+    c(protein, dye, channel_f),
+    sep = "-", remove = FALSE
+  ) |>
+  filter(protein_dye_channel %in% c(
+    "BMAL1_PASB-AW-132-TAMRA",
+    "BMAL1_PASB-AW-132-JOE",
+    "BMAL1_PASB-AW-134-TAMRA",
+    "BMAL1_PASB-AW-134-ROX",
+    "BSA-AW-131-TAMRA",
+    "BSA-AW-131-ROX",
+    "BSA-AW-132-FAM",
+    "BSA-AW-132-JOE",
+    "BSA-AW-132-TAMRA",
+    "BSA-AW-134-TAMRA",
+    "CLOCK_PASB-AW-131-JOE",
+    "CLOCK_PASB-AW-131-TAMRA",
+    "CLOCK_PASB-AW-131-ROX",
+    "CLOCK_PASB-AW-132-JOE",
+    "CLOCK_PASB-AW-132-TAMRA",
+    "CLOCK_PASB-AW-132-ROX",
+    "FKBP12-AW-132-JOE",
+    "FKBP12-AW-132-TAMRA",
+    "FKBP12-AW-134-JOE",
+    "FKBP12-AW-134-TAMRA",
+    "HisPer2_I324N-AW-132-JOE",
+    "HisPer2_I324N-AW-132-TAMRA",
+    "HisPer2_I324N-AW-134-JOE",
+    "HisPer2_I324N-AW-134-TAMRA",
+    "HisPer2_I324N-AW-134-ROX",
+    "PER2_PASAB-AW-132-TAMRA",
+    "PER2_PASAB-AW-134-JOE",
+    "PER2_PASAB-AW-134-TAMRA",
+    "PER2_PASAB-AW-134-ROX"
+  )) |>
+  mutate(subset = "noncanon")
+
+test_plot_save(Exp0653_nonSYPRO_noncanon)
+
+# CANNON
+Exp0653_nonSYPRO_canon <-
+  Exp0653 |>
+  unite(protein_dye_channel,
+    c(protein, dye, channel_f),
+    sep = "-", remove = FALSE
+  ) |>
+  filter(protein_dye_channel %in% c(
+    "CLOCK_PASB-AW-134-JOE",
+    "CLOCK_PASB-AW-134-TAMRA",
+    "CLOCK_PASB-AW-134-ROX"
+  )) |>
+  mutate(subset = "canon")
+test_plot_save(Exp0653_nonSYPRO_noncanon)
+
+
+```
+
+
+
+
+
+
