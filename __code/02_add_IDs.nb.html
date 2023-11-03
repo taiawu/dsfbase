@@ -1752,23 +1752,28 @@ display: none;
 
 
 <!-- rnb-text-begin -->
-<p>Tidying the SYPRO dataset from Exp0794</p>
-<p>Final output: Assign unique indices for each curve Format:</p>
-<p>DSF001__ID00001 - start with the DSFbase version - then have an
-individual curve identifier - give each # a leading character so it does
-not reduce down to fewer leading zeroes when split - add enough leading
-zeroes to accomodate 10 - 99,000 curves</p>
+<p>Adding IDs to the DSFbase curves</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGZzKVxubGlicmFyeSh0ZXN0dGhhdClcbnNvdXJjZShcIlIvY29sbGVjdF9kc2ZfZGF0YS5SXCIpXG5gYGAifQ== -->
+<pre class="r"><code>library(tidyverse)
+library(fs)
+library(testthat)
+source(&quot;R/collect_dsf_data.R&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXCIvVXNlcnMvdGFpYXNlYW53dS9Cb3ggU3luYy9kYXRhL0V4cDEyMTYtLTIwMjEwOTAyX2FnZ3JlZ2F0aW5nX3Bvc3RfODEwX2R5ZV9zY3JlZW5zL2hpdHNfYnlfY2hhbm5lbFwiXG5gYGAifQ== -->
+<pre class="r"><code>&quot;/Users/taiaseanwu/Box Sync/data/Exp1216--20210902_aggregating_post_810_dye_screens/hits_by_channel&quot;</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Function to generate curve IDs</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFrZV9JRFMgPC0gXG4gIGZ1bmN0aW9uKGlucHV0X3ZhcnMsIFxuICAgICAgICAgICBkc2ZiYXNlX3ZlcnNpb24gPSAxLFxuICAgICAgICAgICBzb3VyY2VfaWQgPSAxLFxuICAgICAgICAgICBJRF9zdGFydCA9IDEpe1xuXG4gICAgXG4gIG91dCA8LSB0aWJibGUob3JpZyA9IGlucHV0X3ZhcnMsXG4gICAgICBoZWFkZXIgPSBnbHVlOjpnbHVlKFwiRFNGMDB7ZHNmYmFzZV92ZXJzaW9ufV9TMHtzb3VyY2VfaWR9XCIpKSB8PlxuICAgICAgbXV0YXRlKFxuICAgICAgICAgICAgIGlkID0gcGFzdGUwKGhlYWRlciwgXCJfXCIsIFwiSURcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RyaW5ncjo6c3RyX3BhZChyb3dfbnVtYmVyKCkgKyBJRF9zdGFydCAtIDEsICMgdGhlIGN1cnZlIG51bWJlclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDYsICMgdG8gc2l4IHBsYWNlc1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhZCA9IFwiMFwiKSkgIyBsZWZ0LXBhZCB6ZXJvZXNcbiAgICAgIClcblxuICAgIFxuICBvdXQkaWRcbiAgfVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFrZV9JRFMgPC0gXG4gIGZ1bmN0aW9uKGlucHV0X3ZhcnMsIFxuICAgICAgICAgICBkc2ZiYXNlX3ZlcnNpb24gPSAxLFxuICAgICAgICAgICBzb3VyY2VfaWQgPSAxLFxuICAgICAgICAgICBJRF9zdGFydCA9IDEpe1xuXG4gICAgXG4gIG91dCA8LSB0aWJibGUob3JpZyA9IGlucHV0X3ZhcnMsXG4gICAgICBoZWFkZXIgPSBnbHVlOjpnbHVlKFwiRFNGMDB7ZHNmYmFzZV92ZXJzaW9ufV9TMHtzb3VyY2VfaWR9XCIpKSB8PlxuICAgICAgbXV0YXRlKFxuICAgICAgICAgICAgIGlkID0gcGFzdGUwKGhlYWRlciwgXCJfXCIsIFwiSURcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RyaW5ncjo6c3RyX3BhZChyb3dfbnVtYmVyKCkgKyBJRF9zdGFydCAtIDEsICMgdGhlIGN1cnZlIG51bWJlclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDYsICMgdG8gc2l4IHBsYWNlc1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhZCA9IFwiMFwiKSkgIyBsZWZ0LXBhZCB6ZXJvZXNcbiAgICAgIClcblxuICAgIFxuICBvdXQkaWRcbiAgfVxuXG5tYWtlX0lEUyhjKFwidHdvXCIsIFwiemVkXCIpKVxuYGBgIn0= -->
 <pre class="r"><code>make_IDS &lt;- 
   function(input_vars, 
            dsfbase_version = 1,
@@ -1787,70 +1792,167 @@ zeroes to accomodate 10 - 99,000 curves</p>
 
     
   out$id
-  }</code></pre>
+  }
+
+make_IDS(c(&quot;two&quot;, &quot;zed&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Read in the original data</p>
+<p>Read in raw data</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU1lQUk9fcmF3IDwtXG4gIFNZUFJPX3JhdyB8PiAgXG4gICAgdW5pdGUoXCJvbmVfdHJhY2VcIiwgLWMoVGVtcGVyYXR1cmUsIHZhbHVlKSkgJT4lXG4gICAgICAgICAgICBncm91cF9ieShvbmVfdHJhY2UpICU+JVxuICAgICAgICAgICAgbXV0YXRlKFRlbXBlcmF0dXJlX25vcm0gPSBCQm1pc2M6Om5vcm1hbGl6ZShUZW1wZXJhdHVyZSwgbWV0aG9kID0gXCJyYW5nZVwiLCByYW5nZSA9IGMoMCwxKSksXG4gICAgICAgICAgICAgICAgICAgdmFsdWVfbm9ybSA9IEJCbWlzYzo6bm9ybWFsaXplKHZhbHVlLCBtZXRob2QgPSBcInJhbmdlXCIsIHJhbmdlID0gYygwLDEpKSkgJT4lXG4gICAgICAgICAgICBuZXN0KCkgJT4lXG4gICAgICAgICAgICB1bmdyb3VwKCkgJT4lXG4gICAgICAgICAgICBtdXRhdGUoaW5kZXggPSBzZXEoZnJvbSA9IDEsIHRvID0gbnJvdyguKSkpICU+JVxuICAgICAgICAgICAgZ3JvdXBfYnkoaW5kZXgpXG5cbmBgYCJ9 -->
-<pre class="r"><code>SYPRO_raw &lt;-
-  SYPRO_raw |&gt;  
-    unite(&quot;one_trace&quot;, -c(Temperature, value)) %&gt;%
-            group_by(one_trace) %&gt;%
-            mutate(Temperature_norm = BBmisc::normalize(Temperature, method = &quot;range&quot;, range = c(0,1)),
-                   value_norm = BBmisc::normalize(value, method = &quot;range&quot;, range = c(0,1))) %&gt;%
-            nest() %&gt;%
-            ungroup() %&gt;%
-            mutate(index = seq(from = 1, to = nrow(.))) %&gt;%
-            group_by(index)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmcm9tIGR5ZSBzY3JlZW5zXG5keWUgPC0gdnJvb206OnZyb29tKFwiLi4vMDBfcmF3X2lucHV0cy9kYXRhX1MzX2R5ZV9zY3JlZW5fcmVzdWx0c19yYXcudHh0XCIpXG5cbiMgZnJvbSBTWVBST1xuc3lwcm8gPC0gcmVhZFxuYGBgIn0= -->
+<pre class="r"><code># from dye screens
+dye &lt;- vroom::vroom(&quot;../00_raw_inputs/data_S3_dye_screen_results_raw.txt&quot;)
+
+# from SYPRO
+sypro &lt;- read</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gYG11dGF0ZSgpYDpcbuKEuSBJbiBhcmd1bWVudDogYFRlbXBlcmF0dXJlX25vcm0gPSBCQm1pc2M6Om5vcm1hbGl6ZSguLi4pYC5cbuKEuSBJbiBncm91cCAxOiBgb25lX3RyYWNlID0gXCJBMTBfTkFfTkFfTkFfTkFfTkFfTkFfTkFfTkFfTkFfTkFfTkFfREhfTkFfTkFfTkFfTkFfTkFfTkFfTkFfTkFfTkFcImAuXG5DYXVzZWQgYnkgZXJyb3IgaW4gYGxvYWROYW1lc3BhY2UoKWA6XG4hIHRoZXJlIGlzIG5vIHBhY2thZ2UgY2FsbGVkIOKAmEJCbWlzY+KAmVxuQmFja3RyYWNlOlxuICAxLiAuLi4gJT4lIGdyb3VwX2J5KGluZGV4KVxuIDEzLiBiYXNlOjpsb2FkTmFtZXNwYWNlKHgpXG4gMTcuIGJhc2U6OnN0b3AoY29uZClcbiJ9 -->
-<pre><code>Error in `mutate()`:
-ℹ In argument: `Temperature_norm = BBmisc::normalize(...)`.
-ℹ In group 1: `one_trace = &quot;A10_NA_NA_NA_NA_NA_NA_NA_NA_NA_NA_NA_DH_NA_NA_NA_NA_NA_NA_NA_NA_NA&quot;`.
-Caused by error in `loadNamespace()`:
-! there is no package called ‘BBmisc’
-Backtrace:
-  1. ... %&gt;% group_by(index)
- 13. base::loadNamespace(x)
- 17. base::stop(cond)</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU1lQUk9fSURzIDwtIFxuICB0aWJibGUob3JpZ2luYWwgPSBuYW1lcyhTWVBST190cmltKSkgfD4gXG4gIGZpbHRlcihvcmlnaW5hbCAhPSBcIlRlbXBlcmF0dXJlXCIpIHw+IFxuICBtdXRhdGUoSUQgPSBtYWtlX0lEUyhvcmlnaW5hbCwgc291cmNlX2lkID0gMSkpIHw+IFxuICByZWxvY2F0ZShJRClcblxuU1lQUk9fSURzXG5gYGAifQ== -->
-<pre class="r"><code>SYPRO_IDs &lt;- 
-  tibble(original = names(SYPRO_trim)) |&gt; 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHJpbSA8LVxuICByYXcgfD4gXG4gIHNlbGVjdCh2YXJpYWJsZSwgVGVtcGVyYXR1cmUsIHZhbHVlKSB8PiBcbiAgcGl2b3Rfd2lkZXIoaWRfY29scyA9IFRlbXBlcmF0dXJlLCBcbiAgICAgICAgICAgICAgbmFtZXNfZnJvbSA9IHZhcmlhYmxlLCBcbiAgICAgICAgICAgICAgdmFsdWVzX2Zyb20gPSB2YWx1ZSlcbmBgYCJ9 -->
+<pre class="r"><code>trim &lt;-
+  raw |&gt; 
+  select(variable, Temperature, value) |&gt; 
+  pivot_wider(id_cols = Temperature, 
+              names_from = variable, 
+              values_from = value)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Generate the ID map This will almost certainly get re-generated in
+the end, oncewe decide how we want to order the data to make it more
+user-friendly e.g. the first 500 are all SYPRO, the next 5,000 are
+with-protein hits, sensitives, the last bunch are EBPs…</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuSURfbWFwIDwtIFxuICB0aWJibGUob3JpZ2luYWwgPSBuYW1lcyh0cmltKSkgfD4gXG4gIGZpbHRlcihvcmlnaW5hbCAhPSBcIlRlbXBlcmF0dXJlXCIpIHw+IFxuICBtdXRhdGUoSUQgPSBtYWtlX0lEUyhvcmlnaW5hbCwgc291cmNlX2lkID0gMikpIHw+IFxuICByZWxvY2F0ZShJRClcblxuSURfbWFwXG5gYGAifQ== -->
+<pre class="r"><code>ID_map &lt;- 
+  tibble(original = names(trim)) |&gt; 
   filter(original != &quot;Temperature&quot;) |&gt; 
-  mutate(ID = make_IDS(original, source_id = 1)) |&gt; 
+  mutate(ID = make_IDS(original, source_id = 2)) |&gt; 
   relocate(ID)
 
-SYPRO_IDs</code></pre>
+ID_map</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add IDs as names for each tibble</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmluYWwgPC0gdHJpbSB8PiBcbiAgc2V0X25hbWVzKGMoXCJUZW1wZXJhdHVyZVwiLCBJRF9tYXAkSUQpKVxuYGBgIn0= -->
+<pre class="r"><code>final &lt;- trim |&gt; 
+  set_names(c(&quot;Temperature&quot;, ID_map$ID))</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Save the output file</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyAxNzUgTUJcblNZUFJPX2ZpbmFsIHw+IHZyb29tOjp2cm9vbV93cml0ZShcIi4uLzAxX2ludGVybWVkaWF0ZV9vdXRwdXRzL1NZUFJPX2luZGV4ZWQudHh0XCIpXG5TWVBST19JRHMgfD4gd3JpdGVfcmRzKFwiLi4vMDFfaW50ZXJtZWRpYXRlX291dHB1dHMvU1lQUk9faW5kZXhfbWFwLnJkc1wiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyAxNzUgTUJcbmZpbmFsIHw+IHZyb29tOjp2cm9vbV93cml0ZShcIi4uLzAxX2ludGVybWVkaWF0ZV9vdXRwdXRzL2R5ZV9zY3JlZW5zX2luZGV4ZWQudHh0XCIpXG5JRF9tYXAgfD4gd3JpdGVfcmRzKFwiLi4vMDFfaW50ZXJtZWRpYXRlX291dHB1dHMvZHllX3NjcmVlbnNfaW5kZXhfbWFwLnJkc1wiKVxuYGBgIn0= -->
 <pre class="r"><code># 175 MB
-SYPRO_final |&gt; vroom::vroom_write(&quot;../01_intermediate_outputs/SYPRO_indexed.txt&quot;)
-SYPRO_IDs |&gt; write_rds(&quot;../01_intermediate_outputs/SYPRO_index_map.rds&quot;)</code></pre>
+final |&gt; vroom::vroom_write(&quot;../01_intermediate_outputs/dye_screens_indexed.txt&quot;)
+ID_map |&gt; write_rds(&quot;../01_intermediate_outputs/dye_screens_index_map.rds&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Possibly or likely duplicated code – fold in above in you want to</p>
+<div id="section" class="section level2">
+<h2></h2>
+<p>Function to generate curve IDs</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFrZV9JRFMgPC0gXG4gIGZ1bmN0aW9uKGlucHV0X3ZhcnMsIFxuICAgICAgICAgICBkc2ZiYXNlX3ZlcnNpb24gPSAxLFxuICAgICAgICAgICBzb3VyY2VfaWQgPSAxLFxuICAgICAgICAgICBJRF9zdGFydCA9IDEpe1xuXG4gICAgXG4gIG91dCA8LSB0aWJibGUob3JpZyA9IGlucHV0X3ZhcnMsXG4gICAgICBoZWFkZXIgPSBnbHVlOjpnbHVlKFwiRFNGMDB7ZHNmYmFzZV92ZXJzaW9ufV9TMHtzb3VyY2VfaWR9XCIpKSB8PlxuICAgICAgbXV0YXRlKFxuICAgICAgICAgICAgIGlkID0gcGFzdGUwKGhlYWRlciwgXCJfXCIsIFwiSURcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RyaW5ncjo6c3RyX3BhZChyb3dfbnVtYmVyKCkgKyBJRF9zdGFydCAtIDEsICMgdGhlIGN1cnZlIG51bWJlclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDYsICMgdG8gc2l4IHBsYWNlc1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhZCA9IFwiMFwiKSkgIyBsZWZ0LXBhZCB6ZXJvZXNcbiAgICAgIClcblxuICAgIFxuICBvdXQkaWRcbiAgfVxuXG5tYWtlX0lEUyhjKFwidHdvXCIsIFwiemVkXCIpKVxuYGBgIn0= -->
+<pre class="r"><code>make_IDS &lt;- 
+  function(input_vars, 
+           dsfbase_version = 1,
+           source_id = 1,
+           ID_start = 1){
+
+    
+  out &lt;- tibble(orig = input_vars,
+      header = glue::glue(&quot;DSF00{dsfbase_version}_S0{source_id}&quot;)) |&gt;
+      mutate(
+             id = paste0(header, &quot;_&quot;, &quot;ID&quot;,
+                                         stringr::str_pad(row_number() + ID_start - 1, # the curve number
+                                                          6, # to six places
+                                                          pad = &quot;0&quot;)) # left-pad zeroes
+      )
+
+    
+  out$id
+  }
+
+make_IDS(c(&quot;two&quot;, &quot;zed&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Read in raw data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmcm9tIGR5ZSBzY3JlZW5zXG5keWUgPC0gdnJvb206OnZyb29tKFwiLi4vMDBfcmF3X2lucHV0cy9kYXRhX1MzX2R5ZV9zY3JlZW5fcmVzdWx0c19yYXcudHh0XCIpXG5cbiMgZnJvbSBTWVBST1xuc3lwcm8gPC0gcmVhZFxuYGBgIn0= -->
+<pre class="r"><code># from dye screens
+dye &lt;- vroom::vroom(&quot;../00_raw_inputs/data_S3_dye_screen_results_raw.txt&quot;)
+
+# from SYPRO
+sypro &lt;- read</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHJpbSA8LVxuICByYXcgfD4gXG4gIHNlbGVjdCh2YXJpYWJsZSwgVGVtcGVyYXR1cmUsIHZhbHVlKSB8PiBcbiAgcGl2b3Rfd2lkZXIoaWRfY29scyA9IFRlbXBlcmF0dXJlLCBcbiAgICAgICAgICAgICAgbmFtZXNfZnJvbSA9IHZhcmlhYmxlLCBcbiAgICAgICAgICAgICAgdmFsdWVzX2Zyb20gPSB2YWx1ZSlcbmBgYCJ9 -->
+<pre class="r"><code>trim &lt;-
+  raw |&gt; 
+  select(variable, Temperature, value) |&gt; 
+  pivot_wider(id_cols = Temperature, 
+              names_from = variable, 
+              values_from = value)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Generate the ID map This will almost certainly get re-generated in
+the end, oncewe decide how we want to order the data to make it more
+user-friendly e.g. the first 500 are all SYPRO, the next 5,000 are
+with-protein hits, sensitives, the last bunch are EBPs…</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuSURfbWFwIDwtIFxuICB0aWJibGUob3JpZ2luYWwgPSBuYW1lcyh0cmltKSkgfD4gXG4gIGZpbHRlcihvcmlnaW5hbCAhPSBcIlRlbXBlcmF0dXJlXCIpIHw+IFxuICBtdXRhdGUoSUQgPSBtYWtlX0lEUyhvcmlnaW5hbCwgc291cmNlX2lkID0gMikpIHw+IFxuICByZWxvY2F0ZShJRClcblxuSURfbWFwXG5gYGAifQ== -->
+<pre class="r"><code>ID_map &lt;- 
+  tibble(original = names(trim)) |&gt; 
+  filter(original != &quot;Temperature&quot;) |&gt; 
+  mutate(ID = make_IDS(original, source_id = 2)) |&gt; 
+  relocate(ID)
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKVGlkeWluZyB0aGUgU1lQUk8gZGF0YXNldCBmcm9tIEV4cDA3OTQKCkZpbmFsIG91dHB1dDogCkFzc2lnbiB1bmlxdWUgaW5kaWNlcyBmb3IgZWFjaCBjdXJ2ZQpGb3JtYXQ6CgpEU0YwMDFfX0lEMDAwMDEKLSBzdGFydCB3aXRoIHRoZSBEU0ZiYXNlIHZlcnNpb24KLSB0aGVuIGhhdmUgYW4gaW5kaXZpZHVhbCBjdXJ2ZSBpZGVudGlmaWVyCi0gZ2l2ZSBlYWNoICMgYSBsZWFkaW5nIGNoYXJhY3RlciBzbyBpdCBkb2VzIG5vdCByZWR1Y2UgZG93biB0byBmZXdlciBsZWFkaW5nIHplcm9lcyB3aGVuIHNwbGl0Ci0gYWRkIGVub3VnaCBsZWFkaW5nIHplcm9lcyB0byBhY2NvbW9kYXRlIDEwIC0gOTksMDAwIGN1cnZlcyAKCmBgYHtyfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgpGdW5jdGlvbiB0byBnZW5lcmF0ZSBjdXJ2ZSBJRHMKYGBge3J9Cm1ha2VfSURTIDwtIAogIGZ1bmN0aW9uKGlucHV0X3ZhcnMsIAogICAgICAgICAgIGRzZmJhc2VfdmVyc2lvbiA9IDEsCiAgICAgICAgICAgc291cmNlX2lkID0gMSwKICAgICAgICAgICBJRF9zdGFydCA9IDEpewoKICAgIAogIG91dCA8LSB0aWJibGUob3JpZyA9IGlucHV0X3ZhcnMsCiAgICAgIGhlYWRlciA9IGdsdWU6OmdsdWUoIkRTRjAwe2RzZmJhc2VfdmVyc2lvbn1fUzB7c291cmNlX2lkfSIpKSB8PgogICAgICBtdXRhdGUoCiAgICAgICAgICAgICBpZCA9IHBhc3RlMChoZWFkZXIsICJfIiwgIklEIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJpbmdyOjpzdHJfcGFkKHJvd19udW1iZXIoKSArIElEX3N0YXJ0IC0gMSwgIyB0aGUgY3VydmUgbnVtYmVyCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA2LCAjIHRvIHNpeCBwbGFjZXMKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhZCA9ICIwIikpICMgbGVmdC1wYWQgemVyb2VzCiAgICAgICkKCiAgICAKICBvdXQkaWQKICB9CmBgYAoKUmVhZCBpbiB0aGUgb3JpZ2luYWwgZGF0YQpgYGB7cn0KU1lQUk9fcmF3IDwtIHJlYWRfcmRzKCIuLi8wMF9yYXdfaW5wdXRzL0V4cDA3OTQtLTIwMjAwMjAxX2FnZ3JlZ2F0ZWRfU1lQUk9fRFNGX2RhdGEucmRzIikKCiMjIG5lZWRzIHRvIGhhdmUgdW5pcXVlIGlkZW50aWZpZXJzIGFkZGVkIAojIGdyb3NzLiBkbyB0aGlzIGJldHRlciB3aGVuIHlvdSBnZXQgdGhlIGNoYW5jZS4KClNZUFJPX3JhdyA8LQogIFNZUFJPX3JhdyB8PiAgCiAgICB1bml0ZSgidmFyaWFibGUiLCAtYyhUZW1wZXJhdHVyZSwgdmFsdWUpKSAKClNZUFJPX3RyaW0gPC0gCiAgU1lQUk9fcmF3IHw+IAogIHNlbGVjdCh2YXJpYWJsZSwgVGVtcGVyYXR1cmUsIHZhbHVlKSB8PiAKICBwaXZvdF93aWRlcihpZF9jb2xzID0gVGVtcGVyYXR1cmUsIG5hbWVzX2Zyb20gPSB2YXJpYWJsZSwgdmFsdWVzX2Zyb20gPSB2YWx1ZSkKCmBgYAoKYGBge3J9ClNZUFJPX0lEcyA8LSAKICB0aWJibGUob3JpZ2luYWwgPSBuYW1lcyhTWVBST190cmltKSkgfD4gCiAgZmlsdGVyKG9yaWdpbmFsICE9ICJUZW1wZXJhdHVyZSIpIHw+IAogIG11dGF0ZShJRCA9IG1ha2VfSURTKG9yaWdpbmFsLCBzb3VyY2VfaWQgPSAxKSkgfD4gCiAgcmVsb2NhdGUoSUQpCgpTWVBST19JRHMKYGBgCgpBZGQgSURzIGFzIG5hbWVzIGZvciBlYWNoIHRpYmJsZQpgYGB7cn0KU1lQUk9fZmluYWwgPC0gU1lQUk9fdHJpbSB8PiAKICBzZXRfbmFtZXMoYygiVGVtcGVyYXR1cmUiLCBTWVBST19JRHMkSUQpKQpgYGAKClNhdmUgdGhlIG91dHB1dCBmaWxlCmBgYHtyfQojIDE3NSBNQgpTWVBST19maW5hbCB8PiB2cm9vbTo6dnJvb21fd3JpdGUoIi4uLzAxX2ludGVybWVkaWF0ZV9vdXRwdXRzL1NZUFJPX2luZGV4ZWQudHh0IikKU1lQUk9fSURzIHw+IHdyaXRlX3JkcygiLi4vMDFfaW50ZXJtZWRpYXRlX291dHB1dHMvU1lQUk9faW5kZXhfbWFwLnJkcyIpCmBgYAoK</div>
+ID_map</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Add IDs as names for each tibble</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmluYWwgPC0gdHJpbSB8PiBcbiAgc2V0X25hbWVzKGMoXCJUZW1wZXJhdHVyZVwiLCBJRF9tYXAkSUQpKVxuYGBgIn0= -->
+<pre class="r"><code>final &lt;- trim |&gt; 
+  set_names(c(&quot;Temperature&quot;, ID_map$ID))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Save the output file</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyAxNzUgTUJcbmZpbmFsIHw+IHZyb29tOjp2cm9vbV93cml0ZShcIi4uLzAxX2ludGVybWVkaWF0ZV9vdXRwdXRzL2R5ZV9zY3JlZW5zX2luZGV4ZWQudHh0XCIpXG5JRF9tYXAgfD4gd3JpdGVfcmRzKFwiLi4vMDFfaW50ZXJtZWRpYXRlX291dHB1dHMvZHllX3NjcmVlbnNfaW5kZXhfbWFwLnJkc1wiKVxuYGBgIn0= -->
+<pre class="r"><code># 175 MB
+final |&gt; vroom::vroom_write(&quot;../01_intermediate_outputs/dye_screens_indexed.txt&quot;)
+ID_map |&gt; write_rds(&quot;../01_intermediate_outputs/dye_screens_index_map.rds&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKQWRkaW5nIElEcyB0byB0aGUgRFNGYmFzZSBjdXJ2ZXMKCmBgYHtyfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShmcykKbGlicmFyeSh0ZXN0dGhhdCkKc291cmNlKCJSL2NvbGxlY3RfZHNmX2RhdGEuUiIpCmBgYAoKYGBge3J9CiIvVXNlcnMvdGFpYXNlYW53dS9Cb3ggU3luYy9kYXRhL0V4cDEyMTYtLTIwMjEwOTAyX2FnZ3JlZ2F0aW5nX3Bvc3RfODEwX2R5ZV9zY3JlZW5zL2hpdHNfYnlfY2hhbm5lbCIKYGBgCgpGdW5jdGlvbiB0byBnZW5lcmF0ZSBjdXJ2ZSBJRHMKYGBge3J9Cm1ha2VfSURTIDwtIAogIGZ1bmN0aW9uKGlucHV0X3ZhcnMsIAogICAgICAgICAgIGRzZmJhc2VfdmVyc2lvbiA9IDEsCiAgICAgICAgICAgc291cmNlX2lkID0gMSwKICAgICAgICAgICBJRF9zdGFydCA9IDEpewoKICAgIAogIG91dCA8LSB0aWJibGUob3JpZyA9IGlucHV0X3ZhcnMsCiAgICAgIGhlYWRlciA9IGdsdWU6OmdsdWUoIkRTRjAwe2RzZmJhc2VfdmVyc2lvbn1fUzB7c291cmNlX2lkfSIpKSB8PgogICAgICBtdXRhdGUoCiAgICAgICAgICAgICBpZCA9IHBhc3RlMChoZWFkZXIsICJfIiwgIklEIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJpbmdyOjpzdHJfcGFkKHJvd19udW1iZXIoKSArIElEX3N0YXJ0IC0gMSwgIyB0aGUgY3VydmUgbnVtYmVyCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA2LCAjIHRvIHNpeCBwbGFjZXMKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhZCA9ICIwIikpICMgbGVmdC1wYWQgemVyb2VzCiAgICAgICkKCiAgICAKICBvdXQkaWQKICB9CgptYWtlX0lEUyhjKCJ0d28iLCAiemVkIikpCmBgYAoKUmVhZCBpbiByYXcgZGF0YQpgYGB7cn0KIyBmcm9tIGR5ZSBzY3JlZW5zCmR5ZSA8LSB2cm9vbTo6dnJvb20oIi4uLzAwX3Jhd19pbnB1dHMvZGF0YV9TM19keWVfc2NyZWVuX3Jlc3VsdHNfcmF3LnR4dCIpCgojIGZyb20gU1lQUk8Kc3lwcm8gPC0gcmVhZApgYGAKCmBgYHtyfQp0cmltIDwtCiAgcmF3IHw+IAogIHNlbGVjdCh2YXJpYWJsZSwgVGVtcGVyYXR1cmUsIHZhbHVlKSB8PiAKICBwaXZvdF93aWRlcihpZF9jb2xzID0gVGVtcGVyYXR1cmUsIAogICAgICAgICAgICAgIG5hbWVzX2Zyb20gPSB2YXJpYWJsZSwgCiAgICAgICAgICAgICAgdmFsdWVzX2Zyb20gPSB2YWx1ZSkKYGBgCgpHZW5lcmF0ZSB0aGUgSUQgbWFwClRoaXMgd2lsbCBhbG1vc3QgY2VydGFpbmx5IGdldCByZS1nZW5lcmF0ZWQgaW4gdGhlIGVuZCwgCm9uY2V3ZSBkZWNpZGUgaG93IHdlIHdhbnQgdG8gb3JkZXIgdGhlIGRhdGEgdG8gbWFrZSBpdCBtb3JlIHVzZXItZnJpZW5kbHkKZS5nLiB0aGUgZmlyc3QgNTAwIGFyZSBhbGwgU1lQUk8sIHRoZSBuZXh0IDUsMDAwIGFyZSB3aXRoLXByb3RlaW4gaGl0cywgc2Vuc2l0aXZlcywgdGhlIGxhc3QgYnVuY2ggYXJlIEVCUHMuLi4KYGBge3J9CklEX21hcCA8LSAKICB0aWJibGUob3JpZ2luYWwgPSBuYW1lcyh0cmltKSkgfD4gCiAgZmlsdGVyKG9yaWdpbmFsICE9ICJUZW1wZXJhdHVyZSIpIHw+IAogIG11dGF0ZShJRCA9IG1ha2VfSURTKG9yaWdpbmFsLCBzb3VyY2VfaWQgPSAyKSkgfD4gCiAgcmVsb2NhdGUoSUQpCgpJRF9tYXAKYGBgCgpBZGQgSURzIGFzIG5hbWVzIGZvciBlYWNoIHRpYmJsZQpgYGB7cn0KZmluYWwgPC0gdHJpbSB8PiAKICBzZXRfbmFtZXMoYygiVGVtcGVyYXR1cmUiLCBJRF9tYXAkSUQpKQpgYGAKClNhdmUgdGhlIG91dHB1dCBmaWxlCmBgYHtyfQojIDE3NSBNQgpmaW5hbCB8PiB2cm9vbTo6dnJvb21fd3JpdGUoIi4uLzAxX2ludGVybWVkaWF0ZV9vdXRwdXRzL2R5ZV9zY3JlZW5zX2luZGV4ZWQudHh0IikKSURfbWFwIHw+IHdyaXRlX3JkcygiLi4vMDFfaW50ZXJtZWRpYXRlX291dHB1dHMvZHllX3NjcmVlbnNfaW5kZXhfbWFwLnJkcyIpCmBgYAoKCgoKCgoKUG9zc2libHkgb3IgbGlrZWx5IGR1cGxpY2F0ZWQgY29kZSAtLSBmb2xkIGluIGFib3ZlIGluIHlvdSB3YW50IHRvCgojIwpGdW5jdGlvbiB0byBnZW5lcmF0ZSBjdXJ2ZSBJRHMKYGBge3J9Cm1ha2VfSURTIDwtIAogIGZ1bmN0aW9uKGlucHV0X3ZhcnMsIAogICAgICAgICAgIGRzZmJhc2VfdmVyc2lvbiA9IDEsCiAgICAgICAgICAgc291cmNlX2lkID0gMSwKICAgICAgICAgICBJRF9zdGFydCA9IDEpewoKICAgIAogIG91dCA8LSB0aWJibGUob3JpZyA9IGlucHV0X3ZhcnMsCiAgICAgIGhlYWRlciA9IGdsdWU6OmdsdWUoIkRTRjAwe2RzZmJhc2VfdmVyc2lvbn1fUzB7c291cmNlX2lkfSIpKSB8PgogICAgICBtdXRhdGUoCiAgICAgICAgICAgICBpZCA9IHBhc3RlMChoZWFkZXIsICJfIiwgIklEIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJpbmdyOjpzdHJfcGFkKHJvd19udW1iZXIoKSArIElEX3N0YXJ0IC0gMSwgIyB0aGUgY3VydmUgbnVtYmVyCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA2LCAjIHRvIHNpeCBwbGFjZXMKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhZCA9ICIwIikpICMgbGVmdC1wYWQgemVyb2VzCiAgICAgICkKCiAgICAKICBvdXQkaWQKICB9CgptYWtlX0lEUyhjKCJ0d28iLCAiemVkIikpCmBgYAoKUmVhZCBpbiByYXcgZGF0YQpgYGB7cn0KIyBmcm9tIGR5ZSBzY3JlZW5zCmR5ZSA8LSB2cm9vbTo6dnJvb20oIi4uLzAwX3Jhd19pbnB1dHMvZGF0YV9TM19keWVfc2NyZWVuX3Jlc3VsdHNfcmF3LnR4dCIpCgojIGZyb20gU1lQUk8Kc3lwcm8gPC0gcmVhZApgYGAKCmBgYHtyfQp0cmltIDwtCiAgcmF3IHw+IAogIHNlbGVjdCh2YXJpYWJsZSwgVGVtcGVyYXR1cmUsIHZhbHVlKSB8PiAKICBwaXZvdF93aWRlcihpZF9jb2xzID0gVGVtcGVyYXR1cmUsIAogICAgICAgICAgICAgIG5hbWVzX2Zyb20gPSB2YXJpYWJsZSwgCiAgICAgICAgICAgICAgdmFsdWVzX2Zyb20gPSB2YWx1ZSkKYGBgCgpHZW5lcmF0ZSB0aGUgSUQgbWFwClRoaXMgd2lsbCBhbG1vc3QgY2VydGFpbmx5IGdldCByZS1nZW5lcmF0ZWQgaW4gdGhlIGVuZCwgCm9uY2V3ZSBkZWNpZGUgaG93IHdlIHdhbnQgdG8gb3JkZXIgdGhlIGRhdGEgdG8gbWFrZSBpdCBtb3JlIHVzZXItZnJpZW5kbHkKZS5nLiB0aGUgZmlyc3QgNTAwIGFyZSBhbGwgU1lQUk8sIHRoZSBuZXh0IDUsMDAwIGFyZSB3aXRoLXByb3RlaW4gaGl0cywgc2Vuc2l0aXZlcywgdGhlIGxhc3QgYnVuY2ggYXJlIEVCUHMuLi4KYGBge3J9CklEX21hcCA8LSAKICB0aWJibGUob3JpZ2luYWwgPSBuYW1lcyh0cmltKSkgfD4gCiAgZmlsdGVyKG9yaWdpbmFsICE9ICJUZW1wZXJhdHVyZSIpIHw+IAogIG11dGF0ZShJRCA9IG1ha2VfSURTKG9yaWdpbmFsLCBzb3VyY2VfaWQgPSAyKSkgfD4gCiAgcmVsb2NhdGUoSUQpCgpJRF9tYXAKYGBgCgpBZGQgSURzIGFzIG5hbWVzIGZvciBlYWNoIHRpYmJsZQpgYGB7cn0KZmluYWwgPC0gdHJpbSB8PiAKICBzZXRfbmFtZXMoYygiVGVtcGVyYXR1cmUiLCBJRF9tYXAkSUQpKQpgYGAKClNhdmUgdGhlIG91dHB1dCBmaWxlCmBgYHtyfQojIDE3NSBNQgpmaW5hbCB8PiB2cm9vbTo6dnJvb21fd3JpdGUoIi4uLzAxX2ludGVybWVkaWF0ZV9vdXRwdXRzL2R5ZV9zY3JlZW5zX2luZGV4ZWQudHh0IikKSURfbWFwIHw+IHdyaXRlX3JkcygiLi4vMDFfaW50ZXJtZWRpYXRlX291dHB1dHMvZHllX3NjcmVlbnNfaW5kZXhfbWFwLnJkcyIpCmBgYAoKCgoK</div>
 
 
 
@@ -1897,7 +1999,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("00_tidy_SYPRO.Rmd");
+  window.initializeSourceEmbed("02_add_IDs.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

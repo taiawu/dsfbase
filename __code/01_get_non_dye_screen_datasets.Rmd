@@ -606,17 +606,77 @@ noncanon <- c("A003_FAM", "A007_JOE", "A007_TAMRA", "A007_ROX",
 drop <- c("A11_FAM", "B11_FAM", "C7_ROX", "C19_JOE", "C19_ROX", "C19_TAMRA", "C2_JOE", "C7_ROX", "D19_JOE", "E11_FAM", "F11_FAM", "I11_FAM", "J11_FAM", "K2_JOE", "M11_FAM", "N11_FAM", "N16_JOE", "N3_JOE")
 canon <- c()
 
-gotcha <- c("L093_FAM", "L093_TAMRA", "L093_JOE", "MWD16_TAMRA")
+gotcha <- c("L093_FAM", "L093_TAMRA", "L093_JOE", "MWD16_TAMRA", "E11_TAMRA")
 
 Exp0968_OGT_noncanon <-
   Exp0968 |> 
-  filter(!well %in% drop,
+  filter(!variable %in% drop,
          dye_channel %in% noncanon) |> 
   mutate(subset = "noncanon")
 
-Exp0968
-Exp0968_OGT_noncanon$dye_channel %>% n_distinct()
-test_plot_save(Exp0968_OGT_noncanon)
+Exp0968_OGT_gotcha <-
+  Exp0968 |> 
+  filter(!variable %in% drop,
+         dye_channel %in% gotcha) |> 
+  mutate(subset = "gotcha")
+
+test_plot_save(Exp0968_OGT_gotcha)
+
+tally_dsfbase()
 ```
+
+Exp0938 PLPro
+```{r}
+Exp0938 <- read_rds("/Users/taiaseanwu/Box Sync/data/Exp0983--20201202_PLPro_GRL0617_with_dyes/analyzed/SP198_PLPro_2020-12-03_df_all.rds") |> 
+   mutate(id = "placeholder",
+         subset = "canon") |> 
+  mutate(type = if_else(protein == "PLPro",
+                         true = "protein",
+                         false = "buffer")) |> 
+  filter(type == "protein") |> 
+  unite(variable, c(well, channel_f), remove = FALSE)
+
+SYPRO_canon <- c("SYPRO_JOE", "SYPRO_TAMRA")
+
+canon <- c("L063_ROX", "L063_Cy5", "L063_Cy5.5", 
+           "L093_JOE", "L093_TAMRA", "L093_ROX",
+           "L095_Cy5", "L095_Cy5.5",
+           "T004_FAM")
+canon_variable <- c("A2_ROX","B2_ROX","C2_ROX")
+
+noncanon <- c("A2_JOE", "A2_TAMRA", 
+              "B2_JOE", "B2_TAMRA",
+              "C2_JOE", "C2_TAMRA")
+
+drop <- c("C5_FAM", "B1_ROX")
+drop_well <- c("A2", "B2", "C2")
+
+Exp0938_PLPro_canon <-
+  Exp0938 |> 
+  filter(!well %in% drop_well,
+         !variable %in% drop, 
+         dye_channel %in% canon) |> 
+  mutate(subset = "canon")
+
+test_plot_save(Exp0938_PLPro_canon)
+
+Exp0938_PLPro_noncanon <-
+  Exp0938 |> 
+  filter(variable %in% noncanon) |> 
+  mutate(subset = "noncanon")
+
+test_plot_save(Exp0938_PLPro_noncanon)
+
+Exp0938_PLPro_SYPRO_canon <-
+  Exp0938 |> 
+  filter(dye_channel %in% SYPRO_canon,
+         !variable %in% c("C4_JOE", "C4_TAMRA")) |> 
+  mutate(subset = "SYPRO_canon")
+
+test_plot_save(Exp0938_PLPro_SYPRO_canon)
+  
+tally_dsfbase()
+```
+
 
 

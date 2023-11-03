@@ -108,19 +108,20 @@ test_dataset <- function(dsf) {
   
   # dataset value contains one of the accepted names
   test_that("data includes reqiured columns", {
-    correct_names <- c("id", "subset", "well", "variable", "Temperature", "value")
+    correct_names <- c("id", "subset", "protein", "well", "variable", "Temperature", "value")
     expect_in(correct_names, names(dsf))
   })
   
   test_that("required columns have correct types", {
     dsf_order <- dsf |>
-      select(all_of(c("id", "subset", "well", "variable", "Temperature", "value")))
+      select(all_of(c("id", "subset", "protein", "well", "variable", "Temperature", "value")))
     
     expect_equal(
       unname(unlist(lapply(dsf_order, class))),
       c(
         "character", # "id",
         "character", # ""subset"
+        "character", # protein
         "character", # "well",
         "character", # "variable"
         "numeric", # "Temperature",
@@ -207,22 +208,34 @@ save_plot_by_var <- function(dsf,
 
 test_plot_save <- function(dsf, 
                            save_path = "../02_aggregated_data/", 
+                           use_external_name = FALSE,
+                           external_name = "",
+                           save_data = TRUE,
                            ...) {
+  if(use_external_name) {
+    dataset_name <- external_name
+  } else {
+    dataset_name <- deparse(substitute(dsf))
+  }
   
-  dataset_name <- deparse(substitute(dsf))
   subset <- unique(dsf$subset)
   
   test_dataset(dsf)
   print_tallies(dsf)
+  
   save_plot_by_var(dsf,
                    use_external_name = TRUE,
-                   external_name = dataset_name)
+                   external_name = dataset_name,
+                   save_path = save_path)
   
-  # rds path
-  file_name <- glue::glue("{dataset_name}")
-  save_rds_to <- glue::glue("{save_path}/{subset}/{file_name}.rds")
+  if(save_data) {
+    # rds path
+    file_name <- glue::glue("{dataset_name}")
+    save_rds_to <- glue::glue("{save_path}/{subset}/{file_name}.rds")
+    
+    write_rds(dsf, save_rds_to)
+  }
   
-  write_rds(dsf, save_rds_to)
 }
 
 print_tallies <- function(dsf) {
@@ -239,3 +252,5 @@ print_tallies <- function(dsf) {
   out <- c(header, msg1, msg2, "\n")
   #c(header, msg1, msg2, "\n")
 }
+
+
