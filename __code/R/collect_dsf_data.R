@@ -149,7 +149,12 @@ test_dataset <- function(dsf) {
   })
   
   test_that("dataset contains no NAs", {
-    expect_false(any(is.na(dsf)))
+    required_cols <- c("id", "subset", "protein", "well", "variable", "Temperature", "value")
+    req <- dsf |> select(all_of(required_cols))
+    
+    # no NAs in the required columns. 
+    # permit NA in other random experimental condition columns 
+    expect_false(any(is.na(req)))
   })
   
 }

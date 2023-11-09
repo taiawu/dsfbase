@@ -1,8 +1,15 @@
 
 ## read and tidy a directory from Exp1252 containing the dye screen for one protein
-tidy_1252 <- function(PATH, subset = "canon", ...){
+tidy_1252 <- function(PATH, is_caspase = FALSE, subset = "canon", ...){
+  
+  if(is_caspase) { # caspase directories are only the tidied tibble
+    screen <- read_rds(PATH)
+  } else { # Exp1252 directories have a list, with tidied tibble as first element
+    screen <- read_rds(PATH)[[1]] 
+  }
+  
   screen <- 
-    read_rds(PATH)[[1]] |> 
+    screen |> 
     
     # add well
     separate(variable, into = c("well", "channel_drop", "type_drop"), 
@@ -48,10 +55,12 @@ test_plot_save_1252 <- function(PATH,
                                 drop_from_SYPRO_noncanon = c(),
                                 
                                 add_to_gotcha = c(),
+                                is_caspase = FALSE,
                                 ...) {
   
   # read in and tidy the Exp1252 dataset
-  dsf <- tidy_1252(PATH, subset = "placeholder", ...) |> 
+
+  dsf <- tidy_1252(PATH, is_caspase = is_caspase, subset = "placeholder", ...) |> 
     group_by(dye) |> 
     
     # drop low-signal curves, for simplicity
@@ -171,11 +180,12 @@ move_and_tally <- function(canon_from = "/Users/taiaseanwu/Desktop/programming/d
                            SYPRO_canon_from = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/dye_screen_tests/SYPRO_canon",
                            SYPRO_noncanon_from =  "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/dye_screen_tests/SYPRO_noncanon",
                            gotcha_from = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/dye_screen_tests/gotcha",
+                           
                            canon_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/canon",
                            noncanon_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/noncanon",
-                           SYPRO_canon_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/dye_screen_tests/SYPRO_canon",
-                           SYPRO_noncanon_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/dye_screen_tests/SYPRO_noncanon",
-                           gotcha_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/dye_screen_tests/gotcha",
+                           SYPRO_canon_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/SYPRO_canon",
+                           SYPRO_noncanon_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/SYPRO_noncanon",
+                           gotcha_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/02_aggregated_data/gotcha",
                            tally_new = TRUE) {
   # move canon
   fs::file_move(path = fs::dir_ls(canon_from),
@@ -201,4 +211,5 @@ move_and_tally <- function(canon_from = "/Users/taiaseanwu/Desktop/programming/d
     tally_dsfbase()
   }
 }
+
 
