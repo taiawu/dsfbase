@@ -1,0 +1,158 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(umap)
+```
+
+UMAP package in R (not using tidymodels)
+```{r}
+dsfbase <- read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/03_combined_data/dsfbase.rds")
+
+# transpose 
+dsfbase_wide <- dsfbase |> 
+  select(Temperature, value_norm, id) |> 
+  pivot_wider(names_from = Temperature, values_from = value_norm)
+
+# separate labels and data
+dsfbase_data <- dsfbase_wide |>  select(-id)
+dsfbase_label <- dsfbase_wide |> select(id)
+
+
+# apply umap to data
+dsfbase_umap <- umap(dsfbase_data)
+
+
+dsfbase_layout <- dsfbase_umap[["layout"]] |> 
+  as_tibble() |> 
+  set_names("umap_x", "umap_y") |> 
+  mutate(id = dsfbase_label$id) |> 
+  left_join( dsfbase |> select(id, subset), by = join_by(id))
+```
+
+
+```{r}
+# plot umap results
+p_umap <- dsfbase_layout  |> 
+  ggplot(aes(x = umap_x, y = umap_y,
+             color = subset)) +
+  # scale_color_manual(values = c("SYPRO_canon" = "",
+  #                               "canon" = "",
+  #                               "SYPRO_noncanon" = "",
+  #                               "noncanon" = "",
+  #                               "gotcha" = "")) +
+  scale_color_viridis_d(begin = 0, end = 0.9, option = "turbo") +
+  geom_point(alpha = 0.5, size = 0.05) +
+  hrbrthemes::theme_ipsum() +
+  theme(aspect.ratio = 1) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  labs(title = "UMAP with default parameters, normalized RFUs", 
+       x = "X", y = "Y", color = "Subset")
+
+ggsave("/Users/taiaseanwu/Desktop/programming/dsfbase/04_plots/draft_plots/draft_umap.pdf",
+       device = cairo_pdf)
+```
+
+Try using tidymodels
+```{r}
+library(tidymodels)
+
+# transpose dsfbase data while retaining labeling columns
+dsfbase_labeled <- 
+  dsfbase |> 
+  select(all_of(c("id", "protein", "subset", "Temperature", "value_norm"))) |> 
+  pivot_wider(id_cols = c("id", "protein", "subset"),
+              names_from = "Temperature",
+              values_from = "value_norm")
+```
+
+PCA with tidymodels.
+Thought: looks potentially too heavily driven by Tma?
+```{r}
+# following along with https://juliasilge.com/blog/cocktail-recipes-umap/#umap
+pca_rec <- recipe(~., data = dsfbase_labeled)  |> 
+  update_role(id, protein, subset, new_role = "id") |> # set these cols as identifiers
+  step_normalize(all_predictors()) |> 
+  step_pca(all_predictors())
+
+pca_prep <- prep(pca_rec)
+
+# tidy and visualize the pca results
+tidied_pca <- tidy(pca_prep, 2)
+
+p_pca <- tidied_pca %>%
+  filter(component %in% paste0("PC", 1:5)) %>%
+  mutate(component = fct_inorder(component)) %>%
+  ggplot(aes(value, terms, fill = terms)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~component, nrow = 1) +
+  labs(y = NULL,
+       title = "DSFbase -- PCA of value_norm with tidymodels.",
+       subtitle = str_wrap("Looks like Tma is driving the differences here, which is not what we want. Is that accurate?", 50)) +
+  hrbrthemes::theme_ipsum()
+  
+
+ggsave("/Users/taiaseanwu/Desktop/programming/dsfbase/04_plots/draft_plots/draft_pca.pdf",
+       width = 10,
+       height = 15,
+       device = cairo_pdf)
+
+## this result looks so sensitive to Tma, which is not what we want
+```
+
+UMAP with tidymodels
+Because PCA looked really heavily driven by Tma,
+is UMAP less sensitive / more sensitive to curve shapes?
+```{r}
+library(embed) # requird installation of python package "tensorflow"
+
+umap_rec <- recipe(~., data = dsfbase_labeled) %>%
+  update_role(id, protein, subset, new_role = "id") %>%
+  step_normalize(all_predictors()) %>%
+  step_umap(all_predictors())
+
+umap_prep <- prep(umap_rec) # ~10 secs
+
+umap_prep
+
+```
+
+Load reticulate
+Install python packages using `py_install()`
+```{r}
+library(reticulate)
+# install.packages("umap")
+# py_install("pandas")
+# py_install("scikit-learn")
+# py_install("umap-learn")
+# py_install("tensorflow") # needed for R library embed
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+import sklearn
+import umap
+```
+
+```{r}
+# following advice from stack overflow on a similar issue...
+# https://stackoverflow.com/questions/76926118/setup-reticulate-virtual-environment-with-python-3-11-4
+# reticulate::install_python("3.11:latest") # 
+```
+
+Read in the full, normalized dsfbase file
+```{python}
+dsfbase = pd.read_csv("/Users/taiaseanwu/Desktop/programming/dsfbase/03_combined_data/by_subset/dsfbase_all_6722_curves.csv")
+```
+
+Transpose and apply tsne
+```{r}
+
+```
+
+
+

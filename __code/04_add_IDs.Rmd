@@ -200,22 +200,7 @@ dsfbase_wide |> write_csv(x = _, file = "../03_combined_data/dsfbase.csv")
 dsfbase_wide |>  str()
 ```
 
-Plot all traces
-```{r}
-p_basic <- 
-  dsfbase |> 
-  group_by(id) |> 
-  mutate(value_norm = rescale(value, c(0,1))) |> 
-  ungroup() |> 
-  ggplot(aes(x = Temperature, y = value_norm, group = id)) +
-  geom_line(alpha = 0.1, size = 0.1) +
-  facet_wrap(~subset) +
-  hrbrthemes::theme_ipsum(base_family = "Helvetica") +
-  theme(aspect.ratio = 1)
 
-
-ggsave("../03_combined_data/dsfbase_glance.pdf", p_basic)
-```
 
 Want to combine the ID map with more useful info about the datasets
 ```{r}
