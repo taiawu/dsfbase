@@ -1,0 +1,356 @@
+---
+title: "Read, tidy, and add dye screen data to DSFbase"
+output: html_notebook
+---
+
+In this notebook:
+I. read in all dye screens, and assign curves to subsets in two steps
+      - step 1: "hit"s in the best channel get "canon" (or "SYPROcanon", if the dye is SYPRO); 
+                "sensitive" in the best channel get "noncanon" or "SYPROnoncanon"
+      - step 2: manually update these subset assignments based on visual inspection of the plot
+                - these manaul edits are captured in the add_all_dye_screens.R script
+
+These subset assignments will likely be updated again after this. 
+
+II. combine all dye screens into a single, tidy tibble,
+      - each entry still has a unique variable, now containins experiment number, previous variable,  
+  
+III. add experimental annotations and save 
+
+Next step: combine with non dye screen data and add IDs
+
+```{r}
+library(tidyverse)
+library(fs)
+library(testthat)
+library(glue) # for print messages
+source("R/functions/tests.R") # automated test for dsfbase experiments
+source("R/functions/utils.R") 
+source("R/functions/dye_screen_to_dsfbase.R") # functions to read and tidy dye screens for dsfbase
+```
+
+
+delete momentarily
+```{r}
+test_dye_screen <- tidy_1252("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/00_inputs/dye_screens/raw_dye_screens/Exp1252--20211206_all_dye_screens_collected/Exp1194_CHIP-full_screen_results.rds")
+
+test_dye_screen$assignment |>  table()
+
+ #Exp1194_CHIP
+  dye_screen_to_dsfbase(dye_screen_dirs["Exp1194_CHIP"],
+  save_path = .save_path, # min_range = .min_range,
+   # save_data = .save_data,
+   drop_from_canon = c("A18_Cy5_protein", "A23_TAMRA_protein"),
+   add_to_noncanon = c("A18_Cy5_protein", "A23_TAMRA_protein"),
+   drop_from_noncanon = c("A17_FAM_protein","A24_TAMRA_protein","C14_TAMRA_protein", "E11_Cy5_protein", "E17_Cy5_protein", "E20_Cy5_protein", "E8_FAM_protein", "G15_JOE_protein"), 
+   ...)
+```
+
+
+----------  Run once: prepare files for reading and annotating
+(i) Read in and tidy the conditions already created for all of the dye screens
+```{r}
+### Run once
+# dye_screen_conditions <- read_rds("/Users/taiaseanwu/Box Sync/data/Exp1351--20220725_dye_screen_explorer_functions/3_read_by_app/conditions.rds")
+# 
+# # from Exp1352: Exp1351--20220725_dye_screen_explorer_functions/3_read_by_app/conditions.rds
+# # write_rds(dye_screen_conditions, "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/00_inputs/dye_screens/dye_screen_annotations/dye_screen_experiment_summaries.rds")
+# screen_summaries <- dye_screen_conditions |> 
+#   mutate(exp_summary = glue("paDSF primary dye screen of {.data$total_dyes} Aurora library dyes with protein: '{.data$full_protein_name}'.")) |> 
+#   relocate(exp_summary) |> 
+#   replace_na(list(Notes = "none",
+#                   protein_source = "unspecified",
+#                   pdb_code = "none",
+#                   uniprot_id = "none"
+#                   ))  |> 
+#   
+#   # use this to join with the dye screens
+#   unite(exp_protein, c(exp_num, protein_name), remove = FALSE) |> 
+#   rename(buffer = screening_buffer,
+#          protein_readable = full_protein_name,
+#          protein_concentration_uM = screening_conc,
+#          ) |>
+#   mutate(additional_notes = paste0("Construct notes: ", Notes,
+#                                "; Protein source: ", protein_source,
+#                                "; PDB code: ", pdb_code,
+#                                "; UNIPROT ID: ", uniprot_id
+#                                )) |>
+#   select(exp_protein, exp_num, exp_summary, protein_readable, protein_concentration_uM, buffer, additional_notes) |>
+#   mutate(buffer = if_else(buffer == "WHAT IS NURRR1 BUFFER",
+#                           true = "unspecified buffer",
+#                           false = buffer))
+# 
+# write_rds(screen_summaries, "../00_inputs/dye_screens/dye_screen_annotations/dye_screen_experiment_summaries.rds")
+```
+
+(ii) Make directories to read in  data from Exp1252.
+- The most complete and tidiest version of this data. 
+- Includes automated channel selections for both hits and sensitive.
+```{r}
+### name the directories by protein name so they can be called in a human-readable way
+non_caspase_screen_dir <- "../00_inputs/dye_screens/raw_dye_screens/Exp1252--20211206_all_dye_screens_collected/"
+caspase_screen_dir <- "../00_inputs/dye_screens/raw_dye_screens/Exp1444--20230725_process_Tmas_for_caspase_screens_tidied_with_selections/"
+
+dye_screens_no_caspases <- sort(fs::dir_ls(non_caspase_screen_dir))
+
+screen_names <- dye_screens_no_caspases |> 
+  gsub(non_caspase_screen_dir, "", x = _) |>  # drop the directory
+  gsub("-full_screen_results.rds", "", x = _) # and the file extension
+
+names(dye_screens_no_caspases) <- screen_names
+  
+## caspase screens (output file formatted slightly differently)
+caspase_dye_screens <- fs::dir_ls(caspase_screen_dir)
+
+caspase_screen_names <- caspase_dye_screens |> 
+  gsub(caspase_screen_dir, "", x = _) |>  # drop the directory
+  gsub("_df_alltidied_with_fit_selections.rds", "", x = _) # and the file extension
+
+names(caspase_dye_screens) <- caspase_screen_names
+
+#### combine and save
+all_dye_screen_dirs <- c(dye_screens_no_caspases, caspase_dye_screens)
+
+write_rds(all_dye_screen_dirs, "../00_inputs/dye_screens/raw_dye_screens/dye_screen_directories.rds")
+```
+
+---------- Read in all of the dye screens, implement manual subset assignment updates
+```{r}
+# contains a function which reads and adds all dye screens to dsfbase
+source("R/scripts/add_all_dye_screens.R")
+
+.save_individual_screens <- "../01_annotated_entries/dye_screens/individual_dye_screens/"
+
+add_all_dye_screens(dye_screen_dirs = all_dye_screen_dirs,
+                       .save_path = .save_individual_screens)
+```
+
+---------- Tidy and annotate dye screens
+(i) Combine all dye screens into a single tibble
+```{r}
+ALL_DYE_SCREENS <- fs::dir_ls(.save_individual_screens, regexp = ".rds")
+
+all_dye_screens_raw <- 
+  lapply(ALL_DYE_SCREENS, read_rds) |> 
+  bind_rows() |> 
+  unite(variable, c(exp_num, variable, protein), sep = "__", remove = FALSE) |> 
+  unite(exp_protein, c(exp_num, protein), remove = FALSE) # to join with sceen summary
+```
+
+
+(ii) Add entries from the original version of DSFbase which got missed by the new code
+```{r}
+##### ---- read in an tidy original dsfbase
+dsfbase <- read_rds( "/Users/taiaseanwu/Desktop/programming/dsfbase/03_combined_data/dsfbase.rds") |>
+
+  # add an exp_num column, to join with the annotations
+  mutate(exp_num = gsub(pattern = "../02_aggregated_data/SYPRO_canon/|../02_aggregated_data/SYPRO_noncanon/|../02_aggregated_data/canon/|../02_aggregated_data/noncanon/|../02_aggregated_data/errata/|../02_aggregated_data/gotcha/|.rds",
+                        replacement = "",
+                        directory)) |>
+  separate(exp_num, into = c("exp_num", "exp_name"), sep = "_", extra = "merge") |>
+  select(-exp_name) |>
+
+  # keep only the  dye screens
+  filter(exp_num %in% all_dye_screens_raw$exp_num) |> 
+  unite(variable, c(exp_num, variable, protein_original), sep = "__", remove = FALSE)
+
+## compare to the new dsfbase dye screens
+# same number of screens
+dsfbase$exp_num |> n_distinct() # [1] 58
+all_dye_screens_raw$exp_num |> n_distinct() # [1] 58
+
+# different number of entries
+dsfbase$variable |> n_distinct() # [1] [1] 893
+all_dye_screens_raw$variable |>  n_distinct() # [1] 683
+
+# dsfbase has five entries with duplicate variable names
+# likely resulting from double-assignment -- not worth
+# chasing down for five entries, so just drop these ones
+dsfbase$id |> n_distinct() # [1] 898
+double_assigned <- dsfbase |> select(variable, id) |> distinct() |> group_by(variable) |> tally() |> filter(n>1) |> pull(variable)
+
+# take from original
+vars_in_dsfbase <- unique(dsfbase$variable[!dsfbase$variable %in% annotated_dye_screen$variable])
+
+### ---- check out just the dsfbase entries which are missing from the new dataset
+dsfbase_missing <- dsfbase |> 
+  filter(variable %in% vars_in_dsfbase)
+
+# plot the missing entries and determine which are worth adding
+plot_by_subset(dsfbase_missing, save_path = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/00_inputs/dye_screens/",
+               dataset_name = "dsfbase_missing_from_new_version")
+
+
+## having examined the plot, all but a couple of p300 entries are worth adding
+drop_from_missing <-  c("Ds0007__H15_FAM_protein__p300_KIX", "Ds0007__H3_JOE_protein__p300_KIX", "Ds0007__I3_JOE_protein__p300_KIX")
+
+
+## ----- isolate just the entries to add
+add_from_previous <- dsfbase |> 
+   filter(variable %in% vars_in_dsfbase) |> 
+   filter(!variable %in% drop_from_missing,
+          !variable %in% double_assigned) |> 
+  
+  # change types to pass dataset test
+  mutate(id = as.character(id),
+         subset = as.character(subset)) |> 
+  
+  mutate(protein = protein_original) |> 
+  select(-protein_original) |> 
+  
+  unite(exp_protein, c(exp_num, protein), remove = FALSE) 
+# |> 
+#   
+#   left_join(screen_summaries, by = join_by(exp_num)) #, join = join_by(exp_num))
+
+add_from_previous
+```
+
+
+```{r}
+fix_protein_names
+
+### filter the missing exp_proteins by exp_num ,and figure out what the protein name mismatches are
+# write a case_when() to fix them
+
+test_dataset(add_from_previous)
+add_from_previous
+
+annotated_dye_screen_raw
+
+annotated_dye_screen_raw
+all_dye_screens_raw
+
+previous_exp_prot <- unique(add_from_previous$exp_protein))
+sort(unique(add_from_previous$exp_protein))[!sort(unique(add_from_previous$exp_protein)) %in% sort(unique(screen_summaries$exp_protein))]
+
+sort(unique(screen_summaries$exp_protein))
+
+sort(unique(add_from_previous$exp_protein))
+
+
+
+
+
+protein_rename
+
+# [1] "Exp0620_NPAS2_PAS-A"            "Exp0621_PER2_PAS-AB_wt"         "Exp0673_GS_324S"                "Exp0674_GS_324C"                "Exp0732_Widom_601_DNA"         
+#  [6] "Exp1246_SP214_caspase7_active"  "Exp1256_SP215_caspase1_zymogen" "Exp1257_SP216_caspase3_active"  "Exp1258_SP217_caspase6_active"  "Exp1259_SP218_caspase9_active" 
+# [11] "Ds0031_GB1"
+```
+
+
+(iii) Join with experimental condition summaries 
+```{r}
+screen_summaries <- read_rds("../00_inputs/dye_screens/dye_screen_annotations/dye_screen_experiment_summaries.rds") |> 
+  add_row("exp_protein" = "Exp0732_Widom_601_DNA", 
+          "exp_num" = "Exp0732", 
+          "exp_summary" = "paDSF primary dye screen of Aurora library dyes with protein: 'Widom 601 (DNA)'.", 
+          "protein_readable" = "Widom 601 (DNA)", 
+          "protein_concentration_uM" = 1, 
+          "buffer" = "TAE", 
+          "additional_notes" = "Construct notes: The Widom 601 DNA sequence, used to assemble nucleosomes in vitro; Protein source: Hayden Saunders, Narlikar Lab, UCSF",
+          )
+screen_summaries
+```
+
+
+```{r}
+all_dye_screens_raw
+ 
+annotated_dye_screen_raw <- 
+  all_dye_screens_raw |> 
+  mutate(protein = case_when(protein == "Widom_601_DNA" ~ "Widom 601 DNA")) |> 
+  bind_rows(add_from_previous) |> 
+  # fix the protein names which differ between raw data and annotations
+  left_join(fix_protein_names, by = join_by(exp_num, exp_protein)) |> 
+  mutate(exp_protein = case_when(exp_protein == matched_name ~ exp_protein,
+                                 exp_protein != matched_name ~ matched_name,
+                                 .default = exp_protein)) |> 
+  
+
+  left_join(screen_summaries, 
+            by = join_by("exp_num","exp_protein")) |> 
+
+  rename(dye_concentration_uM = dye_conc_uM,
+         fluorescent_channel = channel_f,
+         protein = protein_readable, 
+         protein_original = protein) |> 
+  
+  # add the columns which all dye screens share
+  mutate(additive = NA,
+         additive_description = NA,
+         additive_concentration_uM = NA,
+         thermocycling_protocol = "continuous_1C_per_min_25_to_94",
+          instrument = "qTower384G",
+          directory = NA,
+         id = "placeholder")
+  
+### ----  keep only the columns used in dsfbase
+keep_cols <- c("id", "protein", "variable", "protein_original", "subset", "Temperature", "value", "well", "directory", "value_norm", "exp_num", "exp_summary", "protein_concentration_uM", "dye", "dye_concentration_uM", "buffer", "additive", "additive_description", "additive_concentration_uM", "thermocycling_protocol", "fluorescent_channel", "instrument", "additional_notes")
+
+annotated_dye_screen <- 
+  annotated_dye_screen_raw |> 
+  select(all_of(keep_cols))
+
+test_annotated_dataset(annotated_dye_screen)
+
+annotated_dye_screen$variable |> n_distinct() # [1] 898
+annotated_dye_screen$exp_num |> n_distinct() # [1] 58
+```
+
+```{r}
+summarise_conditions <- function(annotated){
+  n_experiments <- n_distinct(annotated$exp_num)
+  
+  missing_summary <- annotated |> 
+    filter(is.na(exp_summary)) |> 
+    distinct() |> 
+    select(exp_num, exp_summary) |> 
+    distinct() |> 
+    group_by(exp_num) |> 
+    tally()
+}
+
+  missing_summary <- annotated_dye_screen |> 
+    filter(is.na(exp_summary)) |> 
+    select(exp_num, exp_summary) |> 
+    distinct() |> 
+    group_by(exp_num) |> 
+    tally()
+  
+  missing_summary
+  
+  annotated_dye_screen |> filter(is.na(exp_summary))
+
+function (layout, plate_notes = "none", ...) 
+{
+    n_wells <- n_distinct(layout$well)
+    n_variables <- length(names(layout)[!names(layout) %in% c("well", 
+        "row", "column", "condition")])
+    variables <- names(layout)[!names(layout) %in% c("well", 
+        "row", "column", "condition")]
+    plate_heading <- glue_col(.literal = TRUE, "Experiment containing {green {n_wells} wells}, with {green {n_variables}} {yellow experimental variables}")
+    plate_msgs <- lapply(variables, summarise_variable, layout = layout)
+    all_notes <- tryCatch(glue_col(.literal = TRUE, "{glue_collapse(plate_notes, sep = '\n ')}"), 
+        error = function(e) {
+            "Notes could not be printed."
+        })
+    var_summary <- glue_col(.literal = TRUE, "{plate_heading} \n \n{magenta {bold Notes:}} \n{plate_notes} \n{glue_collapse(plate_msgs, sep = '\n \n')}")
+    print(var_summary)
+}
+```
+
+Plot all subsets and save the final tibble
+```{r}
+plot_by_subset(annotated_dye_screen, "../01_annotated_entries/dye_screens/", "all_dye_screens")
+```
+
+(iii) Save the final single tibble
+```{r}
+# 683 entries (is that actually enough? I feel like that's not all of them .... )
+write_rds(annotated_dye_screen, "../01_annotated_entries/dye_screens/all_dye_screens_annotated.rds")
+```
+
+
+

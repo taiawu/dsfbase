@@ -1,0 +1,268 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+!Note! to reproduce all reassignments, use the final reassignments log, written in the final chunk of this notebook
+"/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/03_final_reassignments_log/all_assignment_updates.rds"
+
+
+Interactively amend assignments using the Shiny App
+(See "20231205_version/__code/__shinyapp_labeler", and the associated Rmd in that directory)
+```{r}
+# run the shiny app
+shiny::runApp(appDir = "__shinyapp_labeler/dsfbase_label_updater/app.R")
+
+### this app keeps track of entries already reviewed.
+# to re-review entries, refresh the to-review tibble -- see below.
+
+# directories for input data set in app.R; directories for saving set in app_functions.R
+# the first time you do reassignments for a tibble, use directory: 
+# "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/02_subset_amendments/to_reassign/dsfbase_to_update.rds"
+
+# every other time, use directory:
+# "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/02_subset_amendments/reassigned_data/reassigned_data/dsfbase_updated_subset_labels.rds
+```
+
+Iterate in the app-- repeat assignment amendment in the Shiny App
+```{r}
+### to reset the input and iterate
+updated_to_assign <- read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/02_subset_amendments/reassigned_data/reassigned_data/dsfbase_updated_subset_labels.rds")  |> 
+ 
+  mutate(subset_f = factor(subset, levels = c("SYPROcanon", "canon", "SYPROmidcanon" ,"midcanon", "SYPROnoncanon", "SYPROlatenoncanon","noncanon", "latenoncanon","errata")),
+          reviewed = FALSE) # reset the "reviewed" counter
+
+  updated_to_assign <- read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/dsfbase_annotated.rds") |> 
+   # add subset_f
+  mutate(subset_f = factor(subsubset, levels = c("SYPROcanon", "canon", "SYPROmidcanon" ,"midcanon", "SYPROnoncanon", "SYPROlatenoncanon","noncanon", "latenoncanon","errata")),
+          reviewed = FALSE) # reset the "reviewed" counter
+
+# write this "for re-review" data to its own directory         
+reassigned_to_save |> write_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/02_subset_amendments/to_reassign/dsfbase_to_update.rds")
+```
+
+Save the final subset assignments
+```{r}
+library(glue)
+library(tidyverse)
+library(testthat)
+source("R/functions/tests.R") # function to add new IDs
+source("R/functions/add_IDs.R") # function to add new IDs
+source("R/functions/facet_plot_entries.R") # function to add new IDs
+source("R/functions/save_dsfbase.R") # function to save standard dsfbase output files
+```
+
+Read in the re-assigned database, which is written by the Shiny App
+```{r}
+reassigned <- 
+  read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/02_subset_amendments/reassigned_data/reassigned_data/dsfbase_updated_subset_labels.rds") |> 
+  select(-subset_f) |> 
+  filter(subset != "drop") # remove any entries which were meant to be dropped
+```
+
+In the actual workflow, this step was repeated 3 times, and by inspecting the final full-subset DSFbase plots,
+I decided whether or not to go through and amend assignments using the app again. I did this three times. 
+ - See the notebook in the Shiny App for the small amount of non-Shiny App coding done to repeat re-assignments. 
+ 
+After the third reassessment, there were so few amendments to make that I just noted them manually here
+After the final re-assignment using the app,
+looked through the plots and made the following final reassignments
+```{r}
+to_canon <- c("ID004930", "ID004998", "ID005139", "ID005227", "ID005228", "ID005244", "ID005245", "ID005965")
+to_midcanon <- c("ID004999", "ID005690", "ID006048")
+to_noncanon <- c("ID005987")
+to_latenoncanon <- c("ID005007", "ID005745", "ID005744", "ID005746", "ID005747", "ID005737")
+```
+
+Make the final subset reassignments
+```{r}
+reassigned_update <- reassigned |>
+
+  # pull the short ID from the full ID
+  separate(id, into = c("DSFbase_version", "subset_from_id", "short_ID"), sep = "_", remove = FALSE) |>
+
+  # make the manual changes vai short ID
+  mutate(subset = case_when(short_ID %in% to_canon ~ "canon",
+                            short_ID %in% to_midcanon ~ "midcanon",
+                            short_ID %in% to_noncanon ~ "noncanon",
+                            short_ID %in% to_latenoncanon ~ "latenoncanon",
+                            #short_ID %in% to_SYPROnoncanon ~ "SYPROnoncanon",
+                            #short_ID %in% to_drop ~ "drop",
+                            .default = subset)) |>
+    filter(subset != "drop")  |>
+
+  # remove the additional columns created to make the short_ID
+   select(-c("DSFbase_version", "subset_from_id", "short_ID"))
+
+# check -- should be FALSE
+all(reassigned$subset == reassigned_update$subset) # false
+```
+
+Before creating the final version of DSFbase, made the subsets simpler. We can allow sub-subsets (come up with a better name for this)
+But it doesn't matter enough to separate SYPRO and non SYPRO data to justify the added complexity
+```{r}
+reassigned_final <- reassigned |>  #reassigned_update |> 
+  
+  # write current subsets to subsubset
+  mutate(subsubset = subset) |> 
+  mutate(subsubset_f = factor(subsubset, levels = c("SYPROcanon", "canon", "SYPROmidcanon", "midcanon", "SYPROnoncanon", "noncanon", "SYPROlatenoncanon", "latenoncanon", "errata")))  |> 
+
+  mutate(subset = case_when(subset %in% c("SYPROcanon", "canon") ~ "canon", # combine all canon
+                            subset %in% c("SYPROmidcanon", "SYPROnoncanon", "midcanon","noncanon") ~ "noncanon", # combine all noncanon, which includes midcanon
+                            subset %in% c("SYPROlatenoncanon", "latenoncanon") ~ "speculative", # latenoncanon gets "speculative"
+                            .default = subset))  # errata doesn't change
+```
+
+Write the final version of DSFbase
+```{r}
+fs::dir_copy(path = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/", 
+            new_path = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/previous_version_backup/",
+            overwrite = TRUE)
+  
+
+update_dsfbase(reassigned_final,
+               subset_order = c("canon", "noncanon", "speculative","errata"),
+               save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/")
+```
+
+Create a final summary of subset re-assignments, from the input data to the final data
+```{r}
+PRELIMINARY <- "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/01_preliminary_subsets/data/dsfbase_annotated.rds"
+FINAL <- "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/dsfbase_annotated.rds"
+
+# read in the preliminary 
+dsfbase_preliminary <- read_rds(PRELIMINARY) |> 
+  rename("preliminary_id" = id,
+         "preliminary_subset" = subset,
+         "preliminary_subset_f" = subset_f,
+         "preliminary_subsubset" = subsubset,
+         "perliminary_subsubset_f" = subsubset_f) |> 
+  select(-all_of(c("Temperature", "value", "value_norm"))) |> 
+  distinct()
+
+dsfbase_final <- read_rds(FINAL) |> 
+  select(-all_of(c("Temperature", "value", "value_norm"))) |> 
+  distinct()
+
+reassignments <- left_join(dsfbase_preliminary, dsfbase_final) |> 
+  mutate(reassigned = case_when(preliminary_subset == subsubset ~ FALSE,
+                                .default = TRUE)) |> 
+  relocate(preliminary_subset, subsubset,subset,  reassigned, preliminary_id, id) 
+
+write_rds(reassignments, "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/03_final_reassignments_log/all_assignment_updates.rds")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### scratch work -- delete 
+
+```{r}
+reassigned_final <- reassigned |> 
+  separate(id, into = c("DSFbase_version", "subset_from_id", "IDnum"), sep = "_", remove = FALSE) |> 
+  mutate(subset = case_when(IDnum %in% c(midcanon_to_canon, noncanon_to_canon) ~ "canon",
+                            IDnum %in% c(canon_to_midcanon, latenoncanon_to_midcanon, noncanon_to_midcanon) ~ "midcanon",
+                            IDnum %in% c(canon_to_noncanon, latenoncanon_to_noncanon) ~ "noncanon",
+                            IDnum %in% c(midcanon_to_latenoncanon) ~ "latenoncanon",
+                            IDnum %in% c(SYPROcanon_to_SYPROnoncanon) ~ "SYPROnoncanon",
+                            IDnum %in% c(SYPROmidcanon_to_drop) ~ "drop",
+                            .default = subset)) |> 
+    filter(subset != "drop") |> 
+   select(-c("DSFbase_version", "subset_from_id", "IDnum"))
+```
+
+```{r}
+# short IDs for entries to re-assign
+## to canon
+midcanon_to_canon <- c("ID004892", "ID004932", "ID005299")
+noncanon_to_canon <- c("ID005357")
+
+## to midcanon
+canon_to_midcanon <- c("ID003852")
+latenoncanon_to_midcanon <- c("ID004668", "ID004673", "ID004812")
+noncanon_to_midcanon <- c("ID005360")
+
+## to noncanon
+canon_to_noncanon <- c("ID004393")
+latenoncanon_to_noncanon <- c("ID004815")
+
+## to latenoncanon
+midcanon_to_latenoncanon <- c("ID005162")
+
+## to SYPROnoncanon
+SYPROcanon_to_SYPROnoncanon <- c("ID000810")
+
+## to drop
+SYPROmidcanon_to_drop <- c("ID000970")
+```
+
+
+### do the final reassignments
+```{r}
+reassigned <- 
+  read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/previous_reassignment_backup/reassigned_data/dsfbase_updated_subset_labels.rds") |> 
+  select(-subset_f) |> 
+  mutate(subset = case_when(subset == "latecanon" ~ "latenoncanon",
+                            .default = subset)) |> 
+  filter(subset != "drop") # remove any entries which were meant to be dropped
+
+# conditions <- write_experimental_conditions(reassigned_id, save_to = conditions_dir, ...)
+
+update_dsfbase(reassigned_final,
+               subset_order = c("SYPROcanon", "canon", "SYPROmidcanon" ,"midcanon", "SYPROnoncanon", "SYPROlatenoncanon","noncanon", "latenoncanon","errata"),
+               save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/updated_dsfbase_with_reassignments/")
+```
+####### 
+
+
+#------ Code used to repeat re-assignment (did this three times)
+```{r}
+reassigned <- 
+  read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/previous_reassignment_backup/reassigned_data/dsfbase_updated_subset_labels.rds") |> 
+  select(-subset_f) |> 
+  mutate(subset = case_when(subset == "latecanon" ~ "latenoncanon",
+                            .default = subset)) |> 
+  filter(subset != "drop") # remove any entries which were meant to be dropped
+
+# conditions <- write_experimental_conditions(reassigned_id, save_to = conditions_dir, ...)
+
+update_dsfbase(reassigned_final,
+               subset_order = c("SYPROcanon", "canon", "SYPROmidcanon" ,"midcanon", "SYPROnoncanon", "SYPROlatenoncanon","noncanon", "latenoncanon","errata"),
+               save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/updated_dsfbase_with_reassignments/")
+```
+
+Reset assignments to go through once more
+```{r}
+reassigned_to_save <-  reassigned |> 
+  mutate(subset_f = factor(subset, levels = c("SYPROcanon", "canon", "SYPROmidcanon" ,"midcanon", "SYPROnoncanon", "SYPROlatenoncanon","noncanon", "latenoncanon","errata")),
+          reviewed = FALSE) # reset the "reviewed" counter
+         
+reassigned_to_save |> write_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/previous_reassignment_backup/reassigned_data/dsfbase_updated_subset_labels_repeat_relabel.rds")
+
+### in the app, load the data in using this "...repeat_relabel.rds" directory first. Then change the directory to the "dsfbase_updated_subset_labels.rds" directory to complete.
+```
+
+

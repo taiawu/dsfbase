@@ -1,0 +1,68 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Combine the entries from the dye screens and non-dye screen experiments. 
+
+These entries all have preliminary assignments, which will be revised in the next notebook.
+The IDs added here are to support the revision of assignments, and are not the final IDs
+
+```{r}
+library(testthat)
+library(glue)
+library(tidyverse)
+source("R/functions/utils.R")
+source("R/functions/add_IDs.R") # function to add new IDs
+source("R/functions/facet_plot_entries.R") # function to add new IDs
+source("R/functions/save_dsfbase.R") # function to save standard dsfbase output files
+```
+
+Read in the annotated experiments
+```{r}
+annotated <- bind_rows(read_rds("../01_annotated_entries/dye_screens/all_dye_screens_annotated.rds"), # dye screens
+                        read_rds("../01_annotated_entries/non_dye_screens/all_non_dye_screens_annotated.rds")) |>  # non dye screens
+  
+  # add the subsubsets, which will be amended in the next notebook
+  mutate(subsubset = subset,
+         subsubset_f = factor(subsubset, levels = c("SYPROcanon", "canon", "SYPROmidcanon", "midcanon", "SYPROnoncanon", "noncanon", "SYPROlatenoncanon", "latenoncanon", "errata")))
+
+annotated$variable |> n_distinct() # [1] 6239
+
+test_annotated_dataset(annotated)
+```
+
+Directories to save the outputs
+```{r}
+save_preliminary_to <- "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/01_preliminary_subsets/data/"
+save_preliminary_plots_to <- "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/01_preliminary_subsets/plots/"
+
+# create directories if they do not already exist
+fs::dir_create(save_preliminary_to)
+fs::dir_create(save_preliminary_plots_to)
+```
+
+Add IDs
+```{r}
+dsfbase_preliminary <- add_IDs(annotated)
+```
+
+Save the preliminary version of DSFbase, for record keeping
+```{r}
+# data
+write_rds(dsfbase_preliminary, glue::glue("{save_preliminary_to}dsfbase_annotated.rds"))
+
+# plots
+all_subsets <- c("errata", "SYPROcanon", "canon", "SYPROnoncanon", "noncanon")
+lapply(all_subsets, plot_subset, dsfbase = dsfbase_preliminary, save_path = save_preliminary_plots_to, .test_subset = FALSE)
+```
+
+Save this tibble also into the assignment amendment folder to be read and used in the next notebook
+```{r}
+write_rds(dsfbase_preliminary, "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/02_subset_amendments/to_reassign/dsfbase_to_update.rds")
+```
+
+
+
+
+

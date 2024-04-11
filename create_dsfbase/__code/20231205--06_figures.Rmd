@@ -1,0 +1,127 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+dsfbase <- read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/dsfbase_annotated.rds") |> 
+  separate(id, into = c("dsfbase_version", "subset", "short_id"), sep = "_", remove = FALSE)
+```
+
+=========== Figure 1 - examples of the contents of DSFbase ==============
+Plot all traces together
+```{r}
+plot_all_curves <- function(dsfbase, .subset, .alpha = 0.1){
+  p_basic <- 
+  dsfbase |> 
+    filter(subset == .subset) |> 
+  ggplot(aes(x = Temperature, 
+             y = value_norm, 
+             group = id,
+             alpha = subset_f)) +
+  geom_line(linewidth = 0.05) +
+  scale_alpha_manual(values = c("canon" = .alpha,
+                                "noncanon" = .alpha,
+                                "speculative" = .alpha,
+                                "errata" = .alpha)) +
+  facet_wrap(~subset_f,
+             ncol = 1,
+             scales = "free",
+             labeller = labeller(subset = str_to_title)) +
+  scale_x_continuous(breaks = seq(25, 95, by = 10)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.2)) +
+   hrbrthemes::theme_ipsum(base_size = 11,
+                          strip_text_size = 11,
+                          strip_text_face = "italic") +
+  theme(aspect.ratio = 1,
+        legend.position = "none",
+        plot.background = element_rect(fill = "transparent", color = "transparent")) +
+  labs(x = "Temperature (ºC)",
+       y = "Normalized RFU")
+
+ggsave(glue::glue("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/05_figures/figure_1/dsfbase_all_curves_{.subset}.pdf"), 
+       p_basic, 
+       width = 3,
+       height = 3,
+       device = cairo_pdf,
+       bg = "transparent")
+
+}
+
+plot_all_curves(dsfbase, "canon", 0.05)
+plot_all_curves(dsfbase, "noncanon", 0.08)
+plot_all_curves(dsfbase, "speculative", 0.2)
+plot_all_curves(dsfbase, "errata", 0.3)
+```
+
+Function to plot individual example curves
+```{r}
+plot_subset_examples <- function(dsfbase, ids, 
+                     subset,
+                     complete_ids = TRUE,
+                     complete_ids_with = "DSFbase001",
+                     .drop_pattern = "DSFbase001_canon_",
+                     .save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/05_figures/figure_1/",
+                     .save_width = 7,
+                     .save_height = 3){
+
+   
+  p_subset <- 
+  dsfbase |> 
+  filter(short_id %in% ids) |> 
+  ggplot(aes(x = Temperature, 
+             y = value_norm, 
+             group = id)) +
+  geom_line(linewidth = 0.4) +
+  facet_wrap(~short_id,
+             ncol = 5,
+             scales = "fixed") +
+  scale_x_continuous(breaks = seq(25, 95, by = 20)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.2)) +
+  hrbrthemes::theme_ipsum(base_size = 9,
+                          strip_text_size = 9,
+                          strip_text_face = "italic") +
+  theme(aspect.ratio = 1,
+        legend.position = "none",
+        plot.background = element_rect(fill = "transparent", color = "transparent")) +
+  labs(title = glue("2023-12-13 DSFbase, examples of {subset} datasets"),
+       x = "Temperature (ºC)",
+       y = "Normalized RFU")
+
+  ## save plot
+.save_name <- glue("{.save_to}dsfbase_{subset}_examples.pdf")
+ggsave(.save_name, 
+       p_subset, 
+       width = .save_width,
+       height = .save_height,
+       device = cairo_pdf,
+       bg = "transparent")
+}
+```
+
+Individual example curves
+```{r}
+
+canon_examples <- c("ID000122", "ID001579", "ID004138", "ID003610", "ID003587" )
+#canon_examples <- c("ID000012",  "ID000591", "ID004123", "ID001261", "ID000410") 
+plot_subset_examples(dsfbase, canon_examples, "canon")
+
+noncanon_examples <- c("ID004160", "ID004668", "ID004709",  "ID005004", "ID005590" )
+#noncanon_examples <- c("ID004230",  "ID005281", "ID005573", "ID005683", "ID004671") 
+plot_subset_examples(dsfbase, noncanon_examples, "noncanon")
+
+#speculative_examples <- c("ID005812", "ID005909", "ID005953", "ID006036", "ID006065")
+specultive_examples <- c("ID005912",  "ID005930", "ID005815", "ID006067", "ID006094") 
+plot_subset_examples(dsfbase, specultive_examples, "speculative")
+
+errata_examples <- c("ID006013", "ID006021", "ID006064", "ID005815", "ID005961" )
+#errata_examples <- c("ID006137",  "ID006109", "ID006185", "ID006216", "ID006121") 
+plot_subset_examples(dsfbase, errata_examples, "errata")
+```
+
+=========== Figure 2 - UMAP ==============

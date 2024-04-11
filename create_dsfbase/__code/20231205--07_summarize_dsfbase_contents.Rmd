@@ -1,0 +1,118 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+For summary values to print in the paper. Want to be able to (re)generate these values quickly and easily after DSFbase updates. 
+
+```{r}
+library(tidyverse)
+library(glue)
+```
+
+Read in the most recent version of DSFbase
+```{r}
+dsfbase <- read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/dsfbase_annotated.rds")
+conditions <- read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds")
+```
+
+```{r}
+dsfbase |> filter(protein_original == "SP150_Nsp3") |> 
+  select(id, exp_num, additive, additive_concentration_uM) |> 
+  distinct()
+
+dsfbase |> pull(protein) |> unique()
+dsfbase |> filter(protein == "Nsp3 macrodomain 1" ) |> filter(!is.na(additive)) |> pull(exp_summary) |> unique()
+```
+
+
+print nice summary of n_distinct() for a given column
+```{r}
+print_distinct <- function(dsfbase, col, print_name){
+  distinct <- n_distinct(dsfbase[[col]])
+  print(glue::glue("DSFbase contains {distinct} unique {print_name}(s)"))
+}
+```
+
+tally subsets
+```{r}
+tally_subset <- function(dsf, .subset) {
+  dsf <- dsf |> filter(subset %in% .subset)
+  
+  ids <- n_distinct(dsf$id)
+  prots <- n_distinct(dsf$protein)
+  
+  print(glue("Subset(s) `{glue_collapse(.subset, sep =' + ')}` contains {ids} unique entries for {prots} different proteins"))
+} 
+
+tally_overlap <- function(dsf, .subsets) {
+  n_overlaps <- dsf |> 
+    filter(subset %in% .subsets) |> 
+    select(protein, subset) |> 
+    distinct() |> 
+    group_by(protein) |> 
+    tally() |> 
+    filter(n>1) |> 
+    nrow()
+  
+    print(glue("Subsets `{glue_collapse(.subsets, sep =' and ')}` have {n_overlaps} proteins in common."))
+}
+```
+
+Summary values
+```{r}
+# tallies
+print_distinct(dsfbase, "id", "entries")
+print_distinct(dsfbase, "protein", "protein")
+print_distinct(dsfbase, "exp_num", "experiments")
+
+# subset tallies
+#tally_subset(dsfbase, c("SYPROcanon", "canon"))
+#tally_subset(dsfbase, "SYPROcanon")
+tally_subset(dsfbase, c("canon"))
+
+#tally_subset(dsfbase, c("SYPROnoncanon", "noncanon"))
+#tally_subset(dsfbase, "SYPROnoncanon")
+tally_subset(dsfbase, c("noncanon"))
+tally_subset(dsfbase, c("speculative"))
+tally_subset(dsfbase, c("errata"))
+
+# tally overlaps -- fragile function, probaly needs to be re-written, or isn't worth writing
+#tally_overlap(dsfbase, c("SYPROcanon", "canon"))
+```
+
+Print file sizes
+```{r}
+fs::dir_ls("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/csvs") |> 
+  lapply(fs::file_size)
+
+# $`/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/csvs/dsfbase_v001_normalized_6235_entries.csv`
+# 8.07M
+```
+
+Values for Table 1
+```{r}
+print_distinct(conditions, "thermocycling_protocol", "thermocycling protocol")
+
+conditions
+
+```
+
+ID ranges for each subset
+```{r}
+id_range <- function(dsf, .subset) {
+print(.subset)
+print(dsf |>  filter(subset == .subset)  |> head(1) |> pull(id))
+print(dsf |>  filter(subset == .subset)  |> tail(1)|> pull(id))
+}
+
+
+id_range(dsfbase, "SYPRO_canon") 
+id_range(dsfbase, "canon") 
+id_range(dsfbase, "SYPRO_noncanon") 
+id_range(dsfbase, "noncanon") 
+id_range(dsfbase, "errata") 
+```
+
+
+

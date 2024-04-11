@@ -1,0 +1,304 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Draft work for the app to amend assignmentss
+```{r}
+library(tidyverse)
+library(patchwork)
+source("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/__code/__shinyapp_labeler/dsfbase_label_updater/R/app_functions.R")
+```
+
+GUI inputs
+```{r}
+# user inputs, which will be updated, but initialize to NULL
+single_click_meaning <- "canon"
+double_click_meaning <- "noncanon"
+brush_meaning <- "drop"
+
+.use_subset <- "all"
+.start_entry <- 0
+.n_entries <- 100
+
+# user inputs, with defaults
+DSFBASE_DIR <- "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/dsfbase_annotated.rds"
+.save_outputs_to <- "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/"
+.final_plot_subfolder <- "reassigned_plots/"
+.final_data_subfolder <- "reassigned_data/"
+.save_full_database_plots_to <- glue::glue("{.save_outputs_to}reassigned_plots/")
+.save_in_progress_data_to <- glue::glue("{.save_outputs_to}reassigned_data/")
+.BACKUP_save_full_database_plots_to <- glue::glue("{.save_outputs_to}previous_reassignment_backup/reassigned_plots/")
+.BACKUP_save_in_progress_data_to <- glue::glue("{.save_outputs_to}previous_reassignment_backup/reassigned_data/")
+
+### ALSO HAS BUTTONS
+# (re)load data
+# plot
+# save
+```
+
+Initialize ... do this upon click of "(re)load data"
+```{r}
+# initialize this as the same
+dsfbase_raw <- read_dsfbase(DSFBASE_DIR) # reactive
+unreviewed <- dsfbase_raw |> filter(reviewed == FALSE) # reactive
+
+# generated lists, which begin as empty lists
+single_click <- c() #unique(dsfbase_sub$id)[1:10]
+double_click <- c() #unique(dsfbase_sub$id)[11:20]
+brush_click <- c() #unique(dsfbase_sub$id)[21:30]
+```
+
+Every time "plot (updated) entries" is clicked
+```{r}
+# the first subset
+unreviewed <-  unreviewed |> filter(reviewed == FALSE) # reactive
+
+# reactive
+to_review <- take_entries(unreviewed, 
+                          .start_entry, 
+                          .n_entries, 
+                          .subset = .use_subset)
+
+# pre-reassignments
+reassigned <- to_review # reactive
+
+# make the subset table
+# reactive
+subset_table <- get_subset_table(reassigned)
+
+# mock reassignments
+single_click <- unique(to_review$id)[1:10]
+double_click <- unique(to_review$id)[11:20]
+brush_click <- unique(to_review$id)[21:30]
+
+# update the assignments
+# reactive
+reassigned <- reassign_ids(dsfbase = reassigned, 
+                           
+                           # reactive lists of ids from plot clicks
+                           single_click = single_click, 
+                           double_click = double_click, 
+                           brush_click = brush_click,
+                           
+                           # inputs from the GUI
+                           single_click_meaning = single_click_meaning,
+                           double_click_meaning = double_click_meaning, 
+                           brush_meaning = brush_meaning)
+
+# show the assignment table
+subset_table <- get_subset_table(reassigned)
+
+# show the plot
+by_color_p <- plot_subsets_by_color(reassigned)
+
+# # show the plot
+# plot_all_subsets(reassigned, ncol = 10, 
+#                  .save = FALSE)
+
+```
+
+When "save results" is clicked
+```{r}
+# update what has been reviewed
+unreviewed <-  unreviewed |> 
+  mutate(reviewed = case_when(id %in% reassigned ~ TRUE, 
+  .default = reviewed))
+
+# and save the results
+save_reassignments(reassigned, dsfbase_raw)
+```
+
+
+######### -------- Check that the updated assignments are working / easily usable
+```{r}
+library(glue)
+library(tidyverse)
+library(testthat)
+source("R/functions/tests.R") # function to add new IDs
+source("R/functions/add_IDs.R") # function to add new IDs
+source("R/functions/facet_plot_entries.R") # function to add new IDs
+source("R/functions/save_dsfbase.R") # function to save standard dsfbase output files
+```
+
+After the final re-assignment using the app,
+looked through the plots and made the following final reassignments
+```{r}
+midcanon_to_canon <- c("ID004892", "ID004932", "ID005299")
+noncanon_to_canon <- c("ID005357")
+
+canon_to_midcanon <- c("ID003852")
+latenoncanon_to_midcanon <- c("ID004668", "ID004673", "ID004812")
+noncanon_to_midcanon <- c("ID005360")
+
+canon_to_noncanon <- c("ID004393")
+latenoncanon_to_noncanon <- c("ID004815")
+
+
+midcanon_to_latenoncanon <- c("ID005162")
+
+
+SYPROcanon_to_SYPROnoncanon <- c("ID000810")
+SYPROmidcanon_to_drop <- c("ID000970")
+
+reassigned_final <- reassigned |> 
+  separate(id, into = c("DSFbase_version", "subset_from_id", "IDnum"), sep = "_", remove = FALSE) |> 
+  mutate(subset = case_when(IDnum %in% c(midcanon_to_canon, noncanon_to_canon) ~ "canon",
+                            IDnum %in% c(canon_to_midcanon, latenoncanon_to_midcanon, noncanon_to_midcanon) ~ "midcanon",
+                            IDnum %in% c(canon_to_noncanon, latenoncanon_to_noncanon) ~ "noncanon",
+                            IDnum %in% c(midcanon_to_latenoncanon) ~ "latenoncanon",
+                            IDnum %in% c(SYPROcanon_to_SYPROnoncanon) ~ "SYPROnoncanon",
+                            IDnum %in% c(SYPROmidcanon_to_drop) ~ "drop",
+                            .default = subset)) |> 
+    filter(subset != "drop") |> 
+   select(-c("DSFbase_version", "subset_from_id", "IDnum"))
+```
+
+Before creating the final version of DSFbase, made the subsets simpler. We can allow sub-subsets (come up with a better name for this)
+But it doesn't matter enough to separate SYPRO and non SYPRO data to justify the added complexity
+```{r}
+reassigned_final <- reassigned_final |> 
+  select(-subset_f) |> 
+  mutate(subsubset = subset) |> 
+  mutate(subsubset_f = factor(subsubset, levels = c("SYPROcanon", "canon", "SYPROmidcanon", "midcanon", "SYPROnoncanon", "noncanon", "SYPROlatenoncanon", "latenoncanon", "errata"))) |> 
+  mutate(subset = case_when(subset %in% c("SYPROcanon", "canon") ~ "canon",
+                            subset %in% c("SYPROmidcanon", "SYPROnoncanon", "midcanon","noncanon") ~ "noncanon",
+                            subset %in% c("SYPROlatenoncanon", "latenoncanon") ~ "speculative",
+                            .default = subset)) 
+
+
+dsfbase_ids <- add_IDs(reassigned_final,
+                       subset_order = c("canon", "noncanon", "speculative","errata"))
+
+###### this is where the final DSFbase is currently created!
+update_dsfbase(reassigned_final,
+               subset_order = c("canon", "noncanon", "speculative","errata"),
+               save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/final_dsfbase/")
+```
+
+
+#------ Code used to repeat re-assignment (did this three times)
+```{r}
+reassigned <- 
+  read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/previous_reassignment_backup/reassigned_data/dsfbase_updated_subset_labels.rds") |> 
+  select(-subset_f) |> 
+  mutate(subset = case_when(subset == "latecanon" ~ "latenoncanon",
+                            .default = subset)) |> 
+  filter(subset != "drop") # remove any entries which were meant to be dropped
+
+# conditions <- write_experimental_conditions(reassigned_id, save_to = conditions_dir, ...)
+
+update_dsfbase(reassigned_final,
+               subset_order = c("SYPROcanon", "canon", "SYPROmidcanon" ,"midcanon", "SYPROnoncanon", "SYPROlatenoncanon","noncanon", "latenoncanon","errata"),
+               save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/updated_dsfbase_with_reassignments/")
+```
+
+Reset assignments to go through once more
+```{r}
+reassigned_to_save <-  reassigned |> 
+  mutate(subset_f = factor(subset, levels = c("SYPROcanon", "canon", "SYPROmidcanon" ,"midcanon", "SYPROnoncanon", "SYPROlatenoncanon","noncanon", "latenoncanon","errata")),
+          reviewed = FALSE) # reset the "reviewed" counter
+         
+reassigned_to_save |> write_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/previous_reassignment_backup/reassigned_data/dsfbase_updated_subset_labels_repeat_relabel.rds")
+
+### in the app, load the data in using this "...repeat_relabel.rds" directory first. Then change the directory to the "dsfbase_updated_subset_labels.rds" directory to complete.
+```
+
+
+
+
+
+### scratch work below this line
+```{r}
+
+```
+
+
+```{r}
+# is done in the server
+dsfbase_sub <- take_entries(dsfbase, .start_entry, .n_entries, .subset = .use_subset)
+
+# are inputs
+single_click <- unique(dsfbase_sub$id)[1:10]
+double_click <- unique(dsfbase_sub$id)[11:20]
+brush_click <- unique(dsfbase_sub$id)[21:30]
+
+# 
+reassigned <- reassign_ids(dsfbase = reassigned, 
+                         single_click = single_click, 
+                         double_click = double_click, 
+                         brush_click = brush_click,
+                         single_click_meaning = single_click_meaning,
+                         double_click_meaning = double_click_meaning, 
+                         brush_meaning = brush_meaning)
+
+# is now part of a function
+# all_subsets <-  c("SYPROcanon", "canon", "SYPROnoncanon", "noncanon", "errata", "drop")
+# use_subsets <- all_subsets[all_subsets %in% reassigned$subset]
+# 
+# # subsets_present <- as.character(sort(unique(dsfbase_sub$subset_f)))
+# plotlist <- lapply(use_subsets, plot_by_subset, dsfbase = reassigned)
+# 
+# patch <- wrap_plots(plotlist, ncol = 1)
+
+subset_table <- subset_table(reassigned)
+```
+
+
+```{r}
+## create the directories to save results
+.save_outputs_to <- "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/updatd_subset_assignments/"
+.save_full_database_plots_to <- glue::glue("{.save_outputs_to}reassigned_plots/")
+.save_in_progress_data_to <- glue::glue("{.save_outputs_to}reassigned_data/")
+fs::dir_create(.save_full_database_plots_to)
+fs::dir_create(.save_in_progress_data_to)
+```
+
+Save current state:
+```{r}
+plot_all_subsets(reassigned, ncol = 10, .save = TRUE)
+
+# initialize this as the same
+dsfbase_updated <- dsfbase |> 
+  mutate(reviewed = FALSE)
+
+## iterate each time
+reassigned <- reassigned |>  
+  mutate(reviewed = TRUE)
+
+dsfbase_updated <- dsfbase_updated |> 
+  filter(!id %in% reassigned$id) |> 
+  bind_rows(reassigned)
+
+```
+
+
+
+
+
+
+
+Filter based on input parameters -- number 
+```{r}
+.input_subset <- "canon"
+dsfbase_sub <- 
+  dsfbase |> 
+  filter(subset %in% .input_subset) 
+```
+
+
+
+
+Plot based on the original subset, and the number of curves to show
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+

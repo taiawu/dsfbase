@@ -1,0 +1,402 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(testthat)
+library(tidyverse)
+source("R/functions/tests.R")
+```
+
+Read in the annotated non dye screen experiments
+```{r}
+### `annotated_non_dye_screen.rds`created in notebook: YY_annotate_entries.Rmd
+# that notebook is messy and needs cleaning, but right now, just use the final object. 
+
+ANNOTATION_DIR <- "../00_inputs/additional_experiments/annotated_additional_experiments/annotated_non_dye_screen.rds"
+
+annotated_experiments <- read_rds(ANNOTATION_DIR) |> 
+
+  # column unfilled in this tibble -- is NA for all  
+  select(-directory) |> 
+  
+  # these are pre human-readable protein names
+  # which matches contents of column 'protein_original' in the raw data
+  rename(protein_original = protein) |> 
+  
+  # this is more completely contained in the raw data
+  select(-subset)
+```
+
+Read in the raw data, aggregated for all experiments (including dye screens).
+```{r}
+RAW_DIR <- "/Users/taiaseanwu/Desktop/programming/dsfbase/03_combined_data/dsfbase.rds"
+
+dsfbase_raw_experiments <- read_rds(RAW_DIR) |> 
+  
+  # add an exp_num column, to join with the annotations
+  mutate(exp_num = gsub(pattern = "../02_aggregated_data/SYPRO_canon/|../02_aggregated_data/SYPRO_noncanon/|../02_aggregated_data/canon/|../02_aggregated_data/noncanon/|../02_aggregated_data/errata/|../02_aggregated_data/gotcha/|.rds",
+                        replacement = "",
+                        directory)) |> 
+  separate(exp_num, into = c("exp_num", "exp_name"), sep = "_", extra = "merge") |> 
+  select(-exp_name) |> 
+  
+  # add a variable column (but this needs annotations still to be completely unique)
+  # because we need the thermocycling conditions
+  #unite(variable, c(exp_num, variable, protein_original), sep = "__", remove = FALSE) |> 
+  
+  # keep only the non dye screens
+  filter(exp_num %in% annotated_experiments$exp_num)
+
+## test_dataset(dsfbase_raw)
+# doesn't yet pass -- variable is not unique
+# adding thermocycling protocol in the next step will likely resolve this
+```
+
+```{r}
+exp1120_only <- read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/00_inputs/additional_experiments/annotated_additional_experiments/Exp1120_annotated.rds")
+                         
+                         dsfbase_raw_experiments |> filter(exp_num == "Exp1120",
+                                                           is.na(Temperature)) 
+```
+
+
+Check that the experiments are the same in all
+```{r}
+# ensure we have all expected experiments in both 
+all(dsfbase_raw_experiments$exp_num %in% annotated_experiments$exp_num) # [1] TRUE
+all(annotated_experiments$exp_num %in% dsfbase_raw_experiments$exp_num) # [1] TRUE
+
+# the protein column in the annotated experiments is the same as the protein_original column
+all(annotated_experiments$protein_original %in% dsfbase_raw_experiments$protein_original) # [1] TRUE
+all(dsfbase_raw_experiments$protein_original %in% annotated_experiments$protein_original) # [1] TRUE
+```
+
+Combine annotations and raw data
+```{r}
+annotated_dsfbase_experiments <- 
+  dsfbase_raw_experiments |> 
+  left_join(annotated_experiments, by = join_by(id, protein_original, well, variable, exp_num)) |> #, protein, subset, well, variable, directory))
+  unite(variable, c(exp_num, variable, protein_original, thermocycling_protocol), sep = "__", remove = FALSE) |> 
+  
+  # these two experimenbts have issues with annotation, and it's not worth the hours it's taking to figure that out
+  filter(!is.na(thermocycling_protocol) & !exp_num %in% c("Exp1033")) #, "Exp1120"))
+
+test_annotated_dataset(annotated_dsfbase_experiments, .id_col = "id") # all pass
+test_annotated_dataset(annotated_dsfbase_experiments, .id_col = "variable") # all pass, after `filter(!is.na(thermocycling_protocol) & exp_num %in% c("Exp1033"))
+
+ n_distinct(annotated_dsfbase_experiments$variable) # [1] 5341 (seems about right)
+```
+
+Save annotated experiments
+```{r}
+write_rds(annotated_dsfbase_experiments, "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/01_annotated_entries/non_dye_screens/all_non_dye_screens_annotated.rds")
+```
+
+
+
+
+
+
+
+
+
+
+
+#### scratch work, to try to hunt down which entries aren't uniquely identified by variables and ids
+## in the end, decided to get rid of the problematic entries for Exp1033 and Exp1120, because it was too annoying and slow to figuero ut
+##  and these entires were not particularly important anyway. 
+There are about 200 IDs in raw DSFbase that are not in the annotated entries. 
+Are these the duplicate assignments? If so, we can just drop them... 
+```{r}
+missing_ids <- unique(dsfbase_raw_experiments$id[!dsfbase_raw_experiments$id %in% annotated_experiments$id])
+missing_ids
+
+dsfbase_missing_id_vars <- 
+  dsfbase_raw_experiments |> 
+  filter(id %in% missing_ids) |> 
+  select(id, variable) |> 
+  distinct() |> 
+  arrange(variable) |> 
+  pull(variable)
+
+dsfbase_raw_experiments |> 
+  filter(variable %in% dsfbase_missing_id_vars) |> 
+  select(id, variable, exp_num) |> distinct() |> group_by(variable) |> tally() |> arrange(desc(n))
+
+#### test the raw data going in
+test_experiment <- function(dsf, .exp_num){
+  print(.exp_num)
+  
+  test_exp <- dsf |> 
+  filter(exp_num == .exp_num) |> 
+  select(all_of(c("id", "subset", "protein", "well", "variable", "Temperature", "value"))) |> 
+    mutate(subset = as.character(subset),
+           id = as.character(id))
+
+try(test_dataset(test_exp))
+}
+
+missing_id_exps <- dsfbase_raw_experiments |> 
+  filter(variable %in% dsfbase_missing_id_vars) |> 
+  pull(exp_num) |> 
+  unique()
+
+lapply(missing_id_exps, test_experiment, dsf = dsfbase_raw_experiments)
+
+
+###### test the annotated
+test_annotated_dataset_filter <- function(dsf, .exp_num){
+  print(.exp_num)
+  
+  test_exp <- dsf |> 
+  filter(exp_num == .exp_num)
+
+try(test_annotated_dataset(test_exp))
+  
+}
+
+lapply(unique(annotated_dsfbase$exp_num), test_annotated_dataset_filter, dsf = annotated_dsfbase)
+
+### 
+
+annotated_dsfbase |> filter(exp_num == "Exp1033") 
+  group_by(variable) 
+
+# ids are unique, but variables are not 
+test_annotated_dataset(annotated_dsfbase |> filter(exp_num == "Exp1033"), .id_col = "id")
+
+
+dup_var_1033 <- annotated_dsfbase |> filter(exp_num == "Exp1033") |> select(id, variable) |> group_by(variable) |> tally() |> filter(n>1) |> pull(variable)
+
+annotated_dsfbase  |> 
+  filter(exp_num == "Exp1033",
+         variable %in% dup_var_1033) |> 
+  ggplot(aes(x = Temperature, y = value, group = variable)) +
+  geom_line() +
+  facet_wrap(~thermocycling_protocol)
+
+
+annotated_dsfbase |> filter(is.na(thermocycling_protocol))  |> pull(exp_num) |> table()
+```
+
+
+```{r}
+test_experiment(dsfbase_raw_experiments, "Exp0849")
+
+# these ones don't pass dataset tests
+# [1] "Exp1120" <- has duplicated assignments
+# [1] "Exp1033" <- actually has an issue with the variable column
+
+dup_var_1033 <- dsfbase_raw_experiments |> 
+  filter(exp_num == "Exp1033") |> 
+  group_by(variable) |> 
+  tally() |> 
+  arrange(desc(n)) |> 
+  filter(n != 70) |> 
+  pull(variable)
+
+dsfbase_raw_experiments |> 
+  filter(exp_num == "Exp1033") |> 
+  filter(variable %in% dup_var_1033) |> 
+  ggplot(aes(x = Temperature, y = value, group = variable)) +
+  geom_line()
+
+dup_var_1120 <- dsfbase_raw_experiments |> 
+ 
+  filter(exp_num == "Exp1120") |> 
+  select(-c(id, subset, directory)) |>  
+  distinct() |> 
+  group_by(variable) |> 
+  tally() |> 
+  arrange(desc(n)) |> 
+  filter(n != 70) |> 
+  pull(variable)
+
+
+# this one is actual duplicated datasets assignments
+dsfbase_raw_experiments |> 
+  filter(exp_num == "Exp1120") |> 
+  
+  filter(variable %in% dup_var_1120) #|> 
+  ggplot(aes(x = Temperature, y = value, group = variable)) +
+  geom_line()
+```
+
+
+
+```{r}
+## check -- some curves have two IDs, because I accidentally assigned them to two different subset
+# (note that in the updated dye screen processing, this isn't possible, but for these screens,
+# which i made with the earlier, worse functions, it is)
+
+dup_vars <- annotated_dsfbase |> 
+  select(id:subset, well, directory, exp_num:additional_notes) |> 
+  distinct() |> 
+  group_by(variable) |> 
+  tally() |> 
+  filter(n!=1) |> 
+  pull(variable)
+
+dup_vars
+
+annotated_dsfbase |> 
+  filter(variable %in% dup_vars) |> 
+  ggplot(aes(x = Temperature, y = value_norm, group = variable)) +
+  geom_line() +
+  facet_wrap(~variable)
+
+
+annotated_dsfbase |> 
+  select(-c(id, subset, directory)) |> 
+  distinct() |> 
+  nrow() # [1] 391790
+
+annotated_dsfbase
+
+annotated_dsfbase |> 
+  distinct() |> 
+  nrow() # [1] 392140
+
+
+annotated_dsfbase |>  
+  group_by(id, subset, directory) |> 
+  tally() |> 
+  filter(n != 70)
+
+annotated_dsfbase |> 
+  filter(variable %in% dup_vars)
+```
+
+
+```{r}
+test_annotated_dataset(annotated_dsfbase, .id_col = "id")
+
+annotated_dsfbase |> group_by(variable) |> select(variable, id) |> tally() |> arrange(n)
+
+
+
+dsfbase_raw
+annotated_experiments
+
+annotated_dsfbase$exp_num |> table()
+
+experimental_conditions <- annotated_dsfbase |> select(-c(Temperature, value, value_norm)) |> distinct()
+
+test_experimental_conditions(experimental_conditions, .id_col = "id")
+experimental_conditions
+```
+
+```{r}
+test_experimental_conditions <- function(annotated, 
+                            .use_template = FALSE, 
+                            .external_template = NULL,
+                            .id_col = "variable") {
+  
+  if(.use_template) {
+    template <- .external_template
+  } else {
+    template <- tibble("id" = character(),
+                       "well" = character(),
+                       "exp_num" = character(),
+                       "exp_summary" = character(),
+                       "variable" = character(),
+                       "protein" = character(),
+                       "protein_concentration_uM" = numeric(),
+                       
+                       "dye" = character(),
+                       "dye_concentration_uM" = numeric(),
+                       "buffer" = character(),
+                       "additive" = character(),
+                       "additive_description" = character(),
+                       "additive_concentration_uM" = numeric(),
+                       "thermocycling_protocol" = character(),
+                       "fluorescent_channel" = character(),
+                       "instrument" = character(),
+                       "additional_notes" = character(),
+                       "directory" = character(),
+                       "subset" = character())
+  }
+  
+  # ----- Column names
+  test_that("annotations includes reqiured columns", {
+    expect_in(names(template), names(annotated))
+  })
+  
+  # test_that("data has 'variable' column which is genuinely unique to a single trace", {
+  #   temp_dup <- annotated %>%
+  #     dplyr::group_by(.data[[.id_col]]) %>%
+  #     dplyr::mutate(unique_temps = !duplicated(Temperature))
+  #   
+  #   expect_true(all(temp_dup$unique_temps))
+  # })
+  
+
+  # dataset value contains one of the accepted names
+  test_that("dataset contains one of the accepted values", {
+    subset_names <- c(
+      "SYPROcanon",
+      "SYPROnoncanon",
+      "canon",
+      "noncanon",
+      "errata",
+      "buffer"
+    )
+    expect_in(annotated$subset, subset_names)
+  })
+  
+  # test for post-assignments
+  test_that("all variables have a single assignment", {
+    int <- annotated |> 
+      select(all_of(c(.id_col, "subset"))) |> 
+      distinct() |> 
+      group_by(.data[[.id_col]]) |> 
+      tally()
+    expect_true(all(int$n == 1)) })
+  
+  # ---- no duplicate ID annotations
+  test_that("Only one annotation per ID", {
+    expect_true(n_distinct(annotated$id) == length(annotated$id))
+  })
+  
+}
+
+```
+
+Simplify to just the 
+```{r}
+
+```
+
+Determine the number of entries
+```{r}
+annotated_dsfbase$id |> n_distinct() # [1] 6686 <- pretty much the right number. Great! 
+```
+
+
+Automated tests
+```{r}
+
+```
+
+
+```{r}
+test_annotated <- function(){
+  
+}
+
+
+mtgroup <- "cyl"
+
+mtcars |> group_by(.data[[mtgroup]]) |> summarise()
+mtcars |> group_by(cyl) |> summarise()
+```
+
+
+
+```{r}
+test_annotation(annotated_experiments)
+```
+
+
