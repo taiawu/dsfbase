@@ -1758,52 +1758,130 @@ submission</p>
 as well as to disambiguate naming/versioning</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Create the “for final manuscript” folder</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZnM6OmRpcl9jcmVhdGUoXCIuLi9fX2ZpbmFsX2ZpbGVzX2Zvcl9zdWJtaXNzaW9uL2RzZmJhc2UvXCIpICMgYWN0dWFsIGRzZmJhc2UgY3N2c1xuZnM6OmRpcl9jcmVhdGUoXCIuLi9fX2ZpbmFsX2ZpbGVzX2Zvcl9zdWJtaXNzaW9uL3N1cHBsZW1lbnRhbF9kYXRhL1wiKSAjIFNJXG5gYGAifQ== -->
-<pre class="r"><code>fs::dir_create(&quot;../__final_files_for_submission/dsfbase/&quot;) # actual dsfbase csvs
-fs::dir_create(&quot;../__final_files_for_submission/supplemental_data/&quot;) # SI</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>DSFbase</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGlyX2NvcHkocGF0aCA9IFwiLi4vMDNfZmluYWxfZHNmYmFzZS9jc3ZzXCIsXG4gICAgICAgICBuZXdfcGF0aCA9IFwiLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9kc2ZiYXNlL1wiLFxuICAgICAgICAgb3ZlcndyaXRlID0gVFJVRSlcbmBgYCJ9 -->
-<pre class="r"><code>dir_copy(path = &quot;../03_final_dsfbase/csvs&quot;,
-         new_path = &quot;../__final_files_for_submission/dsfbase/&quot;,
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGBcbmBgYCJ9 -->
+<pre class="r"><code>```r
+library(tidyverse)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+Create the &quot;for final manuscript&quot; folder
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZnM6OmRpcl9jcmVhdGUoXFwuLi9fX2ZpbmFsX2ZpbGVzX2Zvcl9zdWJtaXNzaW9uL2RzZmJhc2UvXFwpICMgYWN0dWFsIGRzZmJhc2UgY3N2c1xuZnM6OmRpcl9jcmVhdGUoXFwuLi9fX2ZpbmFsX2ZpbGVzX2Zvcl9zdWJtaXNzaW9uL3N1cHBsZW1lbnRhbF9kYXRhL1xcKSAjIFNJXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+fs::dir_create(\../__final_files_for_submission/dsfbase/\) # actual dsfbase csvs
+fs::dir_create(\../__final_files_for_submission/supplemental_data/\) # SI</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+DSFbase
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGlyX2NvcHkocGF0aCA9IFxcLi4vMDNfZmluYWxfZHNmYmFzZS9jc3ZzXFwsXG4gICAgICAgICBuZXdfcGF0aCA9IFxcLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9kc2ZiYXNlL1xcLFxuICAgICAgICAgb3ZlcndyaXRlID0gVFJVRSlcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+dir_copy(path = \../03_final_dsfbase/csvs\,
+         new_path = \../__final_files_for_submission/dsfbase/\,
          overwrite = TRUE)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+Data S1: detailed experimental conditions
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGlyX2NvcHkocGF0aCA9IFxcL1VzZXJzL3N0dWRlbnQvRGVza3RvcC8yMDI0LTAyLTEzIHRhaWEgZmlsZXMvMjAyMzEyMDVfdmVyc2lvbi8wM19maW5hbF9kc2ZiYXNlL2V4cGVyaW1lbnRhbF9jb25kaXRpb25zL2RzZmJhc2VfZXhwZXJpbWVudGFsX2NvbmRpdGlvbnMuY3N2XFwsXG4gICAgICAgICBuZXdfcGF0aCA9IFxcLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9kc2ZiYXNlL0RhdGFfUzFfZXhwZXJpbWVudGFsX2NvbmRpdGlvbnMuY3N2XFwpXG5cbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+dir_copy(path = \/Users/student/Desktop/2024-02-13 taia files/20231205_version/03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.csv\,
+         new_path = \../__final_files_for_submission/dsfbase/Data_S1_experimental_conditions.csv\)
+</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6IGBwYXRoYCBtdXN0IGJlIGEgZGlyZWN0b3J5XG4ifQ== --&gt;
+</code></pre>
+<p>Error: <code>path</code> must be a directory</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+Data S2: Subset and sub-subset assignments for all entries in DSFbase by ID. 
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmlsZV9jb3B5KHBhdGggPSBcIi4uLzAzX2ZpbmFsX2RzZmJhc2UvZHNmYmFzZV9zdWJzZXRfYXNzaWdubWVudHMuY3N2XCIsXG4gICAgICAgICBuZXdfcGF0aCA9IFwiLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9zdXBwbGVtZW50YWxfZGF0YS9EYXRhX1MyX3N1YnNldF9hc3NpZ25tZW50c19ieV9pZC5jc3ZcIilcbmBgYCJ9 --&gt;
+
+```r
+file_copy(path = &quot;../03_final_dsfbase/dsfbase_subset_assignments.csv&quot;,
+         new_path = &quot;../__final_files_for_submission/supplemental_data/Data_S2_subset_assignments_by_id.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Data S1: detailed experimental conditions</p>
+<p>Data S3: UMAP</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGlyX2NvcHkocGF0aCA9IFwiL1VzZXJzL3N0dWRlbnQvRGVza3RvcC8yMDI0LTAyLTEzIHRhaWEgZmlsZXMvMjAyMzEyMDVfdmVyc2lvbi8wM19maW5hbF9kc2ZiYXNlL2V4cGVyaW1lbnRhbF9jb25kaXRpb25zL2RzZmJhc2VfZXhwZXJpbWVudGFsX2NvbmRpdGlvbnMuY3N2XCIsXG4gICAgICAgICBuZXdfcGF0aCA9IFwiLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9kc2ZiYXNlL0RhdGFfUzFfZXhwZXJpbWVudGFsX2NvbmRpdGlvbnMuY3N2XCIpXG5cbmBgYCJ9 -->
-<pre class="r"><code>dir_copy(path = &quot;/Users/student/Desktop/2024-02-13 taia files/20231205_version/03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.csv&quot;,
-         new_path = &quot;../__final_files_for_submission/dsfbase/Data_S1_experimental_conditions.csv&quot;)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmlsZV9jb3B5KHBhdGggPSBcIi4uLy4uLzAzX2ZpbmFsX2RzZmJhc2UvZHNmYmFzZV9zdWJzZXRfYXNzaWdubWVudHMuY3N2XCIsXG4gICAgICAgICBuZXdfcGF0aCA9IFwiLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9zdXBwbGVtZW50YWxfZGF0YS9EYXRhX1MyX3N1YnNldF9hc3NpZ25tZW50c19ieV9pZC5jc3ZcIilcblxuYGBgIn0= -->
+<pre class="r"><code>file_copy(path = &quot;../../03_final_dsfbase/dsfbase_subset_assignments.csv&quot;,
+         new_path = &quot;../__final_files_for_submission/supplemental_data/Data_S2_subset_assignments_by_id.csv&quot;)
 </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6IGBwYXRoYCBtdXN0IGJlIGEgZGlyZWN0b3J5XG4ifQ== -->
-<pre><code>Error: `path` must be a directory</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gZmlsZV9jb3B5KHBhdGggPSBcIi4uLy4uLzAzX2ZpbmFsX2RzZmJhc2UvZHNmYmFzZV9zdWJzZXRfYXNzaWdubWVudHMuY3N2XCIsICA6IFxuICBjb3VsZCBub3QgZmluZCBmdW5jdGlvbiBcImZpbGVfY29weVwiXG4ifQ== -->
+<pre><code>Error in file_copy(path = &quot;../../03_final_dsfbase/dsfbase_subset_assignments.csv&quot;,  : 
+  could not find function &quot;file_copy&quot;</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Data S2: Subset and sub-subset assignments for all entries in DSFbase
-by ID.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKR2VuZXJhdGUgZGF0YSBmaWxlcyB3aXRoIHRoZSBmaWxlIG5hbWVzIHVzZWQgaW4gdGhlIGZpbmFsIHN1Ym1pc3Npb24KClRoaXMgc3RlcCBkb25lIHByb2dyYW1tYXRpY2FsbHkgdG8gc3RyZWFtbGluZSB1cGRhdGluZyBvZiB0aGVzZSBmaWxlcwphcyB3ZWxsIGFzIHRvIGRpc2FtYmlndWF0ZSBuYW1pbmcvdmVyc2lvbmluZwoKYGBge3J9CiNsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShmcykKYGBgCgpDcmVhdGUgdGhlICJmb3IgZmluYWwgbWFudXNjcmlwdCIgZm9sZGVyCmBgYHtyfQpmczo6ZGlyX2NyZWF0ZSgiLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9kc2ZiYXNlLyIpICMgYWN0dWFsIGRzZmJhc2UgY3N2cwpmczo6ZGlyX2NyZWF0ZSgiLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9zdXBwbGVtZW50YWxfZGF0YS8iKSAjIFNJCmBgYAoKRFNGYmFzZQpgYGB7cn0KZGlyX2NvcHkocGF0aCA9ICIuLi8wM19maW5hbF9kc2ZiYXNlL2NzdnMiLAogICAgICAgICBuZXdfcGF0aCA9ICIuLi9fX2ZpbmFsX2ZpbGVzX2Zvcl9zdWJtaXNzaW9uL2RzZmJhc2UvIiwKICAgICAgICAgb3ZlcndyaXRlID0gVFJVRSkKYGBgCgpEYXRhIFMxOiBkZXRhaWxlZCBleHBlcmltZW50YWwgY29uZGl0aW9ucwpgYGB7cn0KZmlsZV9jb3B5KHBhdGggPSAiLi4vMDNfZmluYWxfZHNmYmFzZS9leHBlcmltZW50YWxfY29uZGl0aW9ucy9kc2ZiYXNlX2V4cGVyaW1lbnRhbF9jb25kaXRpb25zLmNzdiIsCiAgICAgICAgIG5ld19wYXRoID0gIi4uL19fZmluYWxfZmlsZXNfZm9yX3N1Ym1pc3Npb24vc3VwcGxlbWVudGFsX2RhdGEvRGF0YV9TMV9leHBlcmltZW50YWxfY29uZGl0aW9ucy5jc3YiKQpgYGAKCkRhdGEgUzI6IFN1YnNldCBhbmQgc3ViLXN1YnNldCBhc3NpZ25tZW50cyBmb3IgYWxsIGVudHJpZXMgaW4gRFNGYmFzZSBieSBJRC4gCmBgYHtyfQpmaWxlX2NvcHkocGF0aCA9ICIuLi8wM19maW5hbF9kc2ZiYXNlL2RzZmJhc2Vfc3Vic2V0X2Fzc2lnbm1lbnRzLmNzdiIsCiAgICAgICAgIG5ld19wYXRoID0gIi4uL19fZmluYWxfZmlsZXNfZm9yX3N1Ym1pc3Npb24vc3VwcGxlbWVudGFsX2RhdGEvRGF0YV9TMl9zdWJzZXRfYXNzaWdubWVudHNfYnlfaWQuY3N2IikKYGBgCgoKCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKR2VuZXJhdGUgZGF0YSBmaWxlcyB3aXRoIHRoZSBmaWxlIG5hbWVzIHVzZWQgaW4gdGhlIGZpbmFsIHN1Ym1pc3Npb24KClRoaXMgc3RlcCBkb25lIHByb2dyYW1tYXRpY2FsbHkgdG8gc3RyZWFtbGluZSB1cGRhdGluZyBvZiB0aGVzZSBmaWxlcwphcyB3ZWxsIGFzIHRvIGRpc2FtYmlndWF0ZSBuYW1pbmcvdmVyc2lvbmluZwoKYGBge3J9CiNsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShmcykKYGBgCgpDcmVhdGUgdGhlICJmb3IgZmluYWwgbWFudXNjcmlwdCIgZm9sZGVyCmBgYHtyfQpmczo6ZGlyX2NyZWF0ZSgiLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9kc2ZiYXNlLyIpICMgYWN0dWFsIGRzZmJhc2UgY3N2cwpmczo6ZGlyX2NyZWF0ZSgiLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9zdXBwbGVtZW50YWxfZGF0YS8iKSAjIFNJCmBgYAoKRFNGYmFzZQpgYGB7cn0KZGlyX2NvcHkocGF0aCA9ICIuLi8wM19maW5hbF9kc2ZiYXNlL2NzdnMiLAogICAgICAgICBuZXdfcGF0aCA9ICIuLi9fX2ZpbmFsX2ZpbGVzX2Zvcl9zdWJtaXNzaW9uL2RzZmJhc2UvIiwKICAgICAgICAgb3ZlcndyaXRlID0gVFJVRSkKYGBgCgpEYXRhIFMxOiBkZXRhaWxlZCBleHBlcmltZW50YWwgY29uZGl0aW9ucwpgYGB7cn0KZmlsZV9jb3B5KHBhdGggPSAiLi4vMDNfZmluYWxfZHNmYmFzZS9leHBlcmltZW50YWxfY29uZGl0aW9ucy9kc2ZiYXNlX2V4cGVyaW1lbnRhbF9jb25kaXRpb25zLmNzdiIsCiAgICAgICAgIG5ld19wYXRoID0gIi4uL19fZmluYWxfZmlsZXNfZm9yX3N1Ym1pc3Npb24vc3VwcGxlbWVudGFsX2RhdGEvRGF0YV9TMV9leHBlcmltZW50YWxfY29uZGl0aW9ucy5jc3YiKQpgYGAKCkRhdGEgUzI6IFN1YnNldCBhbmQgc3ViLXN1YnNldCBhc3NpZ25tZW50cyBmb3IgYWxsIGVudHJpZXMgaW4gRFNGYmFzZSBieSBJRC4gCmBgYHtyfQpmaWxlX2NvcHkocGF0aCA9ICIuLi8wM19maW5hbF9kc2ZiYXNlL2RzZmJhc2Vfc3Vic2V0X2Fzc2lnbm1lbnRzLmNzdiIsCiAgICAgICAgIG5ld19wYXRoID0gIi4uL19fZmluYWxfZmlsZXNfZm9yX3N1Ym1pc3Npb24vc3VwcGxlbWVudGFsX2RhdGEvRGF0YV9TMl9zdWJzZXRfYXNzaWdubWVudHNfYnlfaWQuY3N2IikKYGBgCgoKRGF0YSBTMzogVU1BUApgYGB7cn0KdW1hcCA8LSByZWFkX3JkcygiLi4vLi4vLi4vLi4vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL2RzZmJhc2VfVU1BUF9ubjIwMF9tZDBwMi5yZHMiKSB8PiAKICBzZWxlY3QoaWQsIFVNQVAxLCBVTUFQMikKCndyaXRlX2Nzdih1bWFwLCAiLi4vLi4vX19maW5hbF9maWxlc19mb3Jfc3VibWlzc2lvbi9zdXBwbGVtZW50YWxfZGF0YS9EYXRhX1M0X1VNQVAuY3N2IikKYGBgCgoK</div>
 
 
 

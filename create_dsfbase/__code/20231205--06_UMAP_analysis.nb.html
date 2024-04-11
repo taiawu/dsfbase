@@ -1758,25 +1758,30 @@ shapes.</p>
 in hyperparameters Test both raw, first, and second derivative data</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHVtYXApXG5saWJyYXJ5KGdsdWUpXG5saWJyYXJ5KGVtYmVkKSAjIHJlcXVpcmVkIGluc3RhbGxhdGlvbiBvZiBweXRob24gcGFja2FnZSBcInRlbnNvcmZsb3dcIiwgYW5kIHRoZXJlZm9yZSBhbHNvIHJldGljdWxhdGVcbmxpYnJhcnkoZXh0cmFmb250KSAjIGZvciBjYWlyb19wZHMgXG4jIGNhaXJvX3BkZiAod2hpY2ggd2lsbCB0aHJvdyBvYnNjdXJlIGVycm9yIGFsc28gaWYgdGhlIHNhdmUgcGF0aCB0byBnZ3NhdmUgZG9lbnMndCBleGlzdCAtLSBzZWUgaHR0cHM6Ly9naXRodWIuY29tL3RpZHl2ZXJzZS9nZ3Bsb3QyL2lzc3Vlcy80MTY4KVxuXG4jIGhhcyB1bm5lY2Vzc2FyaWx5IGNvbXBsZXggZGlyZWN0b3J5IGNyZWF0aW9uIHN5c3RlbSwgYnV0IHdvcmtzLi4uIFxuc291cmNlKFwiUi9mdW5jdGlvbnMvdW1hcC5SXCIpICMgaGVscGVyIGZ1bmN0aW9ucyB0byBpbXBsZW1lbnQgYW5kIHBsb3QgVU1BUCB1c2luZyB0aWR5bW9kZWxzXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5cbmBgYCJ9 -->
 <pre class="r"><code>library(tidyverse)
-library(umap)
-library(glue)
-library(embed) # required installation of python package &quot;tensorflow&quot;, and therefore also reticulate
-library(extrafont) # for cairo_pds 
-# cairo_pdf (which will throw obscure error also if the save path to ggsave doens&#39;t exist -- see https://github.com/tidyverse/ggplot2/issues/4168)
-
-# has unnecessarily complex directory creation system, but works... 
-source(&quot;R/functions/umap.R&quot;) # helper functions to implement and plot UMAP using tidymodels</code></pre>
+</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBjb3JlIHRpZHl2ZXJzZSBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDIuMC4wIOKUgOKUgFxu4pyUIGRwbHlyICAgICAxLjEuMiAgICAg4pyUIHJlYWRyICAgICAyLjEuNFxu4pyUIGZvcmNhdHMgICAxLjAuMCAgICAg4pyUIHN0cmluZ3IgICAxLjUuMFxu4pyUIGdncGxvdDIgICAzLjQuMiAgICAg4pyUIHRpYmJsZSAgICAzLjIuMVxu4pyUIGx1YnJpZGF0ZSAxLjkuMiAgICAg4pyUIHRpZHlyICAgICAxLjMuMFxu4pyUIHB1cnJyICAgICAxLjAuMSAgICAg4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG7ihLkgVXNlIHRoZSBcdTAwMWJdODs7aHR0cDovL2NvbmZsaWN0ZWQuci1saWIub3JnL1x1MDAwN2NvbmZsaWN0ZWQgcGFja2FnZVx1MDAxYl04OztcdTAwMDcgdG8gZm9yY2UgYWxsIGNvbmZsaWN0cyB0byBiZWNvbWUgZXJyb3JzXG4ifQ== -->
+<pre><code>── Attaching core tidyverse packages ───────────────────────────────────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     ── Conflicts ─────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>========= Calculate the UMAPS ======== (next: analyze and make
 figures for UMAPs) Read in dsfbase, and add derivatives</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHNmYmFzZV9kZXJpdiA8LSByZWFkX3JkcyhcIi4uLzAzX2ZpbmFsX2RzZmJhc2UvZHNmYmFzZV9hbm5vdGF0ZWQucmRzXCIpIHw+IFxuICBncm91cF9ieShpZCkgfD4gXG4gIGFycmFuZ2UoVGVtcGVyYXR1cmUpIHw+IFxuICBtdXRhdGUoZHJmdSA9IHNpZ25hbDo6c2dvbGF5ZmlsdCh4ID0gdmFsdWVfbm9ybSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbSA9IDEpLFxuICAgICAgICAgZGRyZnUgPSBzaWduYWw6OnNnb2xheWZpbHQoeCA9IHZhbHVlX25vcm0sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG0gPSAyKSkgfD4gXG4gIHVuZ3JvdXAoKVxuXG4jICMjIyByZW1vdmUgdGhlIG5zcDMgbWFjMSBzaW5nbGUgcG9pbnQgc2NyZWVuaW5nIGRhdGFcbiMgZHNmYmFzZV9kZXJpdl9ub19uc3AzIDwtIGRzZmJhc2VfZGVyaXYgJT4lIFxuIyAgIGZpbHRlcihleHBfbnVtICE9IFwiRXhwMDg0OVwiKVxuIyBcIkV4cDA4NDlcIiwgXCJFeHAxMTIwXCJcbiMgZHNmYmFzZV9kZXJpdl9ub19zY3JlZW4gPC0gZHNmYmFzZV9kZXJpdiAlPiUgXG4jICAgZmlsdGVyKGV4cF9udW0gIT0gXCJFeHAwODQ5XCIpICMgIT0gXCJQdXJpbmUgbnVjbGVvc2lkZS1saWtlIGNvbXBvdW5kcyBmcm9tIGEgZm9jdXNlZCBzY3JlZW5pbmcgbGlicmFyeS5cIilcbiMgXG4jIGRzZmJhc2VfZGVyaXZfbm9fc2NyZWVuJGlkICU+JSBuX2Rpc3RpbmN0KCkgIyBbMV0gNTc4M1xuIyBkc2ZiYXNlX2Rlcml2JGlkICU+JSBuX2Rpc3RpbmN0KCkgIyBbMV0gNjE2NVxuIyAjIDYxNjUgLSA1NzgzICMgWzFdIDM4MlxuYGBgIn0= -->
-<pre class="r"><code>dsfbase_deriv &lt;- read_rds(&quot;../03_final_dsfbase/dsfbase_annotated.rds&quot;) |&gt; 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZHNmYmFzZV9kZXJpdiA8LSByZWFkX3JkcyhcXC4uLzAzX2ZpbmFsX2RzZmJhc2UvZHNmYmFzZV9hbm5vdGF0ZWQucmRzXFwpIHw+IFxuICBncm91cF9ieShpZCkgfD4gXG4gIGFycmFuZ2UoVGVtcGVyYXR1cmUpIHw+IFxuICBtdXRhdGUoZHJmdSA9IHNpZ25hbDo6c2dvbGF5ZmlsdCh4ID0gdmFsdWVfbm9ybSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbSA9IDEpLFxuICAgICAgICAgZGRyZnUgPSBzaWduYWw6OnNnb2xheWZpbHQoeCA9IHZhbHVlX25vcm0sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG0gPSAyKSkgfD4gXG4gIHVuZ3JvdXAoKVxuXG4jICMjIyByZW1vdmUgdGhlIG5zcDMgbWFjMSBzaW5nbGUgcG9pbnQgc2NyZWVuaW5nIGRhdGFcbiMgZHNmYmFzZV9kZXJpdl9ub19uc3AzIDwtIGRzZmJhc2VfZGVyaXYgJT4lIFxuIyAgIGZpbHRlcihleHBfbnVtICE9IFxcRXhwMDg0OVxcKVxuIyBcXEV4cDA4NDlcXCwgXFxFeHAxMTIwXFxcbiMgZHNmYmFzZV9kZXJpdl9ub19zY3JlZW4gPC0gZHNmYmFzZV9kZXJpdiAlPiUgXG4jICAgZmlsdGVyKGV4cF9udW0gIT0gXFxFeHAwODQ5XFwpICMgIT0gXFxQdXJpbmUgbnVjbGVvc2lkZS1saWtlIGNvbXBvdW5kcyBmcm9tIGEgZm9jdXNlZCBzY3JlZW5pbmcgbGlicmFyeS5cXClcbiMgXG4jIGRzZmJhc2VfZGVyaXZfbm9fc2NyZWVuJGlkICU+JSBuX2Rpc3RpbmN0KCkgIyBbMV0gNTc4M1xuIyBkc2ZiYXNlX2Rlcml2JGlkICU+JSBuX2Rpc3RpbmN0KCkgIyBbMV0gNjE2NVxuIyAjIDYxNjUgLSA1NzgzICMgWzFdIDM4MlxuYGBgXG5gYGAifQ== -->
+<pre class="r"><code>```r
+dsfbase_deriv &lt;- read_rds(\../03_final_dsfbase/dsfbase_annotated.rds\) |&gt; 
   group_by(id) |&gt; 
   arrange(Temperature) |&gt; 
   mutate(drfu = signal::sgolayfilt(x = value_norm,
@@ -1787,51 +1792,79 @@ figures for UMAPs) Read in dsfbase, and add derivatives</p>
 
 # ### remove the nsp3 mac1 single point screening data
 # dsfbase_deriv_no_nsp3 &lt;- dsfbase_deriv %&gt;% 
-#   filter(exp_num != &quot;Exp0849&quot;)
-# &quot;Exp0849&quot;, &quot;Exp1120&quot;
+#   filter(exp_num != \Exp0849\)
+# \Exp0849\, \Exp1120\
 # dsfbase_deriv_no_screen &lt;- dsfbase_deriv %&gt;% 
-#   filter(exp_num != &quot;Exp0849&quot;) # != &quot;Purine nucleoside-like compounds from a focused screening library.&quot;)
+#   filter(exp_num != \Exp0849\) # != \Purine nucleoside-like compounds from a focused screening library.\)
 # 
 # dsfbase_deriv_no_screen$id %&gt;% n_distinct() # [1] 5783
 # dsfbase_deriv$id %&gt;% n_distinct() # [1] 6165
 # # 6165 - 5783 # [1] 382</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Prepare dsfbase for umap, including derivatives</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmZ1IDwtIHByZXBfZm9yX1VNQVAoZHNmYmFzZV9kZXJpdiwgXCJ2YWx1ZV9ub3JtXCIsIGRyb3BfbWFjMSA9IEZBTFNFKVxuZHJmdSA8LSBwcmVwX2Zvcl9VTUFQKGRzZmJhc2VfZGVyaXYsIFwiZHJmdVwiLCBkcm9wX21hYzEgPSBGQUxTRSlcbmRkcmZ1IDwtIHByZXBfZm9yX1VNQVAoZHNmYmFzZV9kZXJpdiwgXCJkZHJmdVwiLCBkcm9wX21hYzEgPSBGQUxTRSlcblxucmZ1JGlkIHw+IG5fZGlzdGluY3QoKSAjIFsxXSA1NzgzXG5yZnUkcHJvdGVpbiB8PiBuX2Rpc3RpbmN0KCkgIyBbMV0gODFcbmBgYCJ9 -->
-<pre class="r"><code>rfu &lt;- prep_for_UMAP(dsfbase_deriv, &quot;value_norm&quot;, drop_mac1 = FALSE)
-drfu &lt;- prep_for_UMAP(dsfbase_deriv, &quot;drfu&quot;, drop_mac1 = FALSE)
-ddrfu &lt;- prep_for_UMAP(dsfbase_deriv, &quot;ddrfu&quot;, drop_mac1 = FALSE)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+Prepare dsfbase for umap, including derivatives
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucmZ1IDwtIHByZXBfZm9yX1VNQVAoZHNmYmFzZV9kZXJpdiwgXFx2YWx1ZV9ub3JtXFwsIGRyb3BfbWFjMSA9IEZBTFNFKVxuZHJmdSA8LSBwcmVwX2Zvcl9VTUFQKGRzZmJhc2VfZGVyaXYsIFxcZHJmdVxcLCBkcm9wX21hYzEgPSBGQUxTRSlcbmRkcmZ1IDwtIHByZXBfZm9yX1VNQVAoZHNmYmFzZV9kZXJpdiwgXFxkZHJmdVxcLCBkcm9wX21hYzEgPSBGQUxTRSlcblxucmZ1JGlkIHw+IG5fZGlzdGluY3QoKSAjIFsxXSA1NzgzXG5yZnUkcHJvdGVpbiB8PiBuX2Rpc3RpbmN0KCkgIyBbMV0gODFcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+rfu &lt;- prep_for_UMAP(dsfbase_deriv, \value_norm\, drop_mac1 = FALSE)
+drfu &lt;- prep_for_UMAP(dsfbase_deriv, \drfu\, drop_mac1 = FALSE)
+ddrfu &lt;- prep_for_UMAP(dsfbase_deriv, \ddrfu\, drop_mac1 = FALSE)
 
 rfu$id |&gt; n_distinct() # [1] 5783
 rfu$protein |&gt; n_distinct() # [1] 81</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Test UMAP parameters for raw data</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzZXQgcGFyYW1ldGVycyB0byBleHBsb3JlXG4udGVzdF9uZWlnaGJvcnMgPC0gYygxMCwgNTAsIDEwMCwgMjAwLCA0MDAsIDgwMClcbi50ZXN0X21pbl9kaXN0cyA8LSBjKDAuMDUsIDAuMSwgMC4yLCAwLjQsIDAuOClcblVNQVBfcGFycyA8LSBleHBhbmQuZ3JpZCgudGVzdF9uZWlnaGJvcnMsIC50ZXN0X21pbl9kaXN0cykgfD4gXG4gIHNldF9uYW1lcyhjKFwibl9uZWlnaGJvcnNcIiwgXCJtaW5fZGlzdHNcIikpXG5cbiMgZGlyZWN0b3JpZXMgdG8gc2F2ZSByZXN1bHRzXG4uZXhwbG9yZV9wYXJzIDwtIFwiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vXCJcbi5zYXZlX3JmdSA8LSBnbHVlOjpnbHVlKFwiey5leHBsb3JlX3BhcnN9cmZ1L1wiKVxuLnNhdmVfZHJmdSA8LSBnbHVlOjpnbHVlKFwiey5leHBsb3JlX3BhcnN9ZHJmdS9cIilcbi5zYXZlX2RkcmZ1IDwtIGdsdWU6OmdsdWUoXCJ7LmV4cGxvcmVfcGFyc31kZHJmdS9cIilcbmZzOjpkaXJfY3JlYXRlKGMoLnNhdmVfcmZ1LCAuc2F2ZV9kcmZ1LCAuc2F2ZV9kZHJmdSkpXG5cbmV4cGxvcmVfVU1BUF9wYXJzKHJmdSwgXG4gICAgICAgICAgICAgICAgICAubl9uZWlnaGJvcnMgPSBVTUFQX3BhcnMkbl9uZWlnaGJvcnMsXG4gICAgICAgICAgICAgICAgICAubWluX2Rpc3RzID0gVU1BUF9wYXJzJG1pbl9kaXN0cyxcbiAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFwiRGF0YTogbm9ybWFsaXplZCBSRlUuIFxcbiBJbmNsdWRlcyBmdWxsIDYxNjUgZW50cmllcyBpbiBEU0ZiYXNlLlwiLFxuICAgICAgICAgICAgICAgICAgLnNhdmVfdG8gPSAuc2F2ZV9yZnUsXG4gICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpXG5cblxuZXhwbG9yZV9VTUFQX3BhcnMoZHJmdSxcbiAgICAgICAgICAgICAgICAgIC5uX25laWdoYm9ycyA9IFVNQVBfcGFycyRuX25laWdoYm9ycyxcbiAgICAgICAgICAgICAgICAgIC5taW5fZGlzdHMgPSBVTUFQX3BhcnMkbWluX2Rpc3RzLFxuICAgICAgICAgICAgICAgICAgLm90aGVyX25vdGVzID0gXCJEYXRhOiBub3JtYWxpemVkIFJGVS4gXFxuIEluY2x1ZGVzIGZ1bGwgNjE2NSBlbnRyaWVzIGluIERTRmJhc2UuXCIsXG4gICAgICAgICAgICAgICAgICAuc2F2ZV90byA9IC5zYXZlX2RyZnUsXG4gICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpXG5cbmV4cGxvcmVfVU1BUF9wYXJzKGRkcmZ1LFxuICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzID0gVU1BUF9wYXJzJG5fbmVpZ2hib3JzLFxuICAgICAgICAgICAgICAgICAgLm1pbl9kaXN0cyA9IFVNQVBfcGFycyRtaW5fZGlzdHMsXG4gICAgICAgICAgICAgICAgICAub3RoZXJfbm90ZXMgPSBcIkRhdGE6IG5vcm1hbGl6ZWQgUkZVLiBcXG4gSW5jbHVkZXMgZnVsbCA2MTY1IGVudHJpZXMgaW4gRFNGYmFzZS5cIixcbiAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gLnNhdmVfZGRyZnUsXG4gICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpXG5gYGAifQ== -->
-<pre class="r"><code># set parameters to explore
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+Test UMAP parameters for raw data
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBzZXQgcGFyYW1ldGVycyB0byBleHBsb3JlXG4udGVzdF9uZWlnaGJvcnMgPC0gYygxMCwgNTAsIDEwMCwgMjAwLCA0MDAsIDgwMClcbi50ZXN0X21pbl9kaXN0cyA8LSBjKDAuMDUsIDAuMSwgMC4yLCAwLjQsIDAuOClcblVNQVBfcGFycyA8LSBleHBhbmQuZ3JpZCgudGVzdF9uZWlnaGJvcnMsIC50ZXN0X21pbl9kaXN0cykgfD4gXG4gIHNldF9uYW1lcyhjKFxcbl9uZWlnaGJvcnNcXCwgXFxtaW5fZGlzdHNcXCkpXG5cbiMgZGlyZWN0b3JpZXMgdG8gc2F2ZSByZXN1bHRzXG4uZXhwbG9yZV9wYXJzIDwtIFxcLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vXFxcbi5zYXZlX3JmdSA8LSBnbHVlOjpnbHVlKFxcey5leHBsb3JlX3BhcnN9cmZ1L1xcKVxuLnNhdmVfZHJmdSA8LSBnbHVlOjpnbHVlKFxcey5leHBsb3JlX3BhcnN9ZHJmdS9cXClcbi5zYXZlX2RkcmZ1IDwtIGdsdWU6OmdsdWUoXFx7LmV4cGxvcmVfcGFyc31kZHJmdS9cXClcbmZzOjpkaXJfY3JlYXRlKGMoLnNhdmVfcmZ1LCAuc2F2ZV9kcmZ1LCAuc2F2ZV9kZHJmdSkpXG5cbmV4cGxvcmVfVU1BUF9wYXJzKHJmdSwgXG4gICAgICAgICAgICAgICAgICAubl9uZWlnaGJvcnMgPSBVTUFQX3BhcnMkbl9uZWlnaGJvcnMsXG4gICAgICAgICAgICAgICAgICAubWluX2Rpc3RzID0gVU1BUF9wYXJzJG1pbl9kaXN0cyxcbiAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFxcRGF0YTogbm9ybWFsaXplZCBSRlUuIFxcbiBJbmNsdWRlcyBmdWxsIDYxNjUgZW50cmllcyBpbiBEU0ZiYXNlLlxcLFxuICAgICAgICAgICAgICAgICAgLnNhdmVfdG8gPSAuc2F2ZV9yZnUsXG4gICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpXG5cblxuZXhwbG9yZV9VTUFQX3BhcnMoZHJmdSxcbiAgICAgICAgICAgICAgICAgIC5uX25laWdoYm9ycyA9IFVNQVBfcGFycyRuX25laWdoYm9ycyxcbiAgICAgICAgICAgICAgICAgIC5taW5fZGlzdHMgPSBVTUFQX3BhcnMkbWluX2Rpc3RzLFxuICAgICAgICAgICAgICAgICAgLm90aGVyX25vdGVzID0gXFxEYXRhOiBub3JtYWxpemVkIFJGVS4gXFxuIEluY2x1ZGVzIGZ1bGwgNjE2NSBlbnRyaWVzIGluIERTRmJhc2UuXFwsXG4gICAgICAgICAgICAgICAgICAuc2F2ZV90byA9IC5zYXZlX2RyZnUsXG4gICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpXG5cbmV4cGxvcmVfVU1BUF9wYXJzKGRkcmZ1LFxuICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzID0gVU1BUF9wYXJzJG5fbmVpZ2hib3JzLFxuICAgICAgICAgICAgICAgICAgLm1pbl9kaXN0cyA9IFVNQVBfcGFycyRtaW5fZGlzdHMsXG4gICAgICAgICAgICAgICAgICAub3RoZXJfbm90ZXMgPSBcXERhdGE6IG5vcm1hbGl6ZWQgUkZVLiBcXG4gSW5jbHVkZXMgZnVsbCA2MTY1IGVudHJpZXMgaW4gRFNGYmFzZS5cXCxcbiAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gLnNhdmVfZGRyZnUsXG4gICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+# set parameters to explore
 .test_neighbors &lt;- c(10, 50, 100, 200, 400, 800)
 .test_min_dists &lt;- c(0.05, 0.1, 0.2, 0.4, 0.8)
 UMAP_pars &lt;- expand.grid(.test_neighbors, .test_min_dists) |&gt; 
-  set_names(c(&quot;n_neighbors&quot;, &quot;min_dists&quot;))
+  set_names(c(\n_neighbors\, \min_dists\))
 
 # directories to save results
-.explore_pars &lt;- &quot;../04_UMAP_analysis/parameter_exploration/&quot;
-.save_rfu &lt;- glue::glue(&quot;{.explore_pars}rfu/&quot;)
-.save_drfu &lt;- glue::glue(&quot;{.explore_pars}drfu/&quot;)
-.save_ddrfu &lt;- glue::glue(&quot;{.explore_pars}ddrfu/&quot;)
+.explore_pars &lt;- \../04_UMAP_analysis/parameter_exploration/\
+.save_rfu &lt;- glue::glue(\{.explore_pars}rfu/\)
+.save_drfu &lt;- glue::glue(\{.explore_pars}drfu/\)
+.save_ddrfu &lt;- glue::glue(\{.explore_pars}ddrfu/\)
 fs::dir_create(c(.save_rfu, .save_drfu, .save_ddrfu))
 
 explore_UMAP_pars(rfu, 
                   .n_neighbors = UMAP_pars$n_neighbors,
                   .min_dists = UMAP_pars$min_dists,
-                  .other_notes = &quot;Data: normalized RFU. \n Includes full 6165 entries in DSFbase.&quot;,
+                  .other_notes = \Data: normalized RFU. \n Includes full 6165 entries in DSFbase.\,
                   .save_to = .save_rfu,
                   .save_input = TRUE)
 
@@ -1839,97 +1872,135 @@ explore_UMAP_pars(rfu,
 explore_UMAP_pars(drfu,
                   .n_neighbors = UMAP_pars$n_neighbors,
                   .min_dists = UMAP_pars$min_dists,
-                  .other_notes = &quot;Data: normalized RFU. \n Includes full 6165 entries in DSFbase.&quot;,
+                  .other_notes = \Data: normalized RFU. \n Includes full 6165 entries in DSFbase.\,
                   .save_to = .save_drfu,
                   .save_input = TRUE)
 
 explore_UMAP_pars(ddrfu,
                   .n_neighbors = UMAP_pars$n_neighbors,
                   .min_dists = UMAP_pars$min_dists,
-                  .other_notes = &quot;Data: normalized RFU. \n Includes full 6165 entries in DSFbase.&quot;,
+                  .other_notes = \Data: normalized RFU. \n Includes full 6165 entries in DSFbase.\,
                   .save_to = .save_ddrfu,
                   .save_input = TRUE)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Conclusion: the final results are relatively insensitive to the
-parameters (see SI figure making below), and also the form on the input
-data (RFU, dRFU, and ddRFU). That’s a good sign that the separation we
-are seeing is not an artifact of the specific processing or
-hyper-parameters of UMAP. Going to use the raw RFU clustering, since
-that is one less processing step.</p>
-<p>The “clearest” visualization, in my opinion, is the RFU data with 200
-neighbors and min_dist = 0.2</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgb3ZlcndyaXRlIHRoZSBvbGQgcHJvdGVpbiBuYW1lIGNvbHVtbnNcbmlkX2Fubm90YXRpb25zIDwtIHJlYWRfcmRzKFwiLi4vMDNfZmluYWxfZHNmYmFzZS9leHBlcmltZW50YWxfY29uZGl0aW9ucy9kc2ZiYXNlX2V4cGVyaW1lbnRhbF9jb25kaXRpb25zLnJkc1wiKVxuXG51bWFwXzIwMCA8LSByZWFkX3JkcyhcIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL3JmdS9yZXN1bHRzL2RzZmJhc2VfdW1hcF9qdWljZV9uZWlnaGJvcnNfMjAwX21pbmRpc3RfMC4yLnJkc1wiKSAlPiVcbiAgc2VsZWN0KC1jKFwicHJvdGVpblwiLCBcInN1YnNldFwiKSkgJT4lIFxuICBsZWZ0X2pvaW4oaWRfYW5ub3RhdGlvbnMsIGJ5ID0gam9pbl9ieShcImlkXCIpKVxuYGBgIn0= -->
-<pre class="r"><code>## overwrite the old protein name columns
-id_annotations &lt;- read_rds(&quot;../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds&quot;)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
 
-umap_200 &lt;- read_rds(&quot;../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.2.rds&quot;) %&gt;%
-  select(-c(&quot;protein&quot;, &quot;subset&quot;)) %&gt;% 
-  left_join(id_annotations, by = join_by(&quot;id&quot;))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<div id="make-si-facet-figures-visualizing-the-impact-of-input-parameters" class="section level8">
-<p class="heading">———- Make SI facet figures visualizing the impact of
-input parameters</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIC0tICByYXcgcmZ1XG5yZnVfdW1hcHMgPC0gY29tYmluZV91bWFwX2RhdGEoXCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9cIilcblxud3JpdGVfcmRzKHJmdV91bWFwcywgXCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX3JmdV9hbGxfcGFyYW1ldGVyX3Jlc3VsdHMucmRzXCIpXG5cbmZhY2V0X3VtYXBfcGFycyhyZnVfdW1hcHMsIFxuICAgICAgICAgICAgICAgIHBsb3RfdGl0bGUgPSBcIlVNQVAgcmVzdWx0czsgcmF3IFJGVSBkYXRhXCIsXG4gICAgICAgICAgICAgICAgXCJyZnVcIiwgXG4gICAgICAgICAgICAgXCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX3JmdV9wYXJhbWV0ZXJfY29tcGFyaXNvbi5wZGZcIilcblxuIyMjIC0tICBmaXJzdCBkZXJpdmF0aXZlXG5kcmZ1X3VtYXBzIDwtIGNvbWJpbmVfdW1hcF9kYXRhKFwiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3Jlc3VsdHMvXCIpXG5cbndyaXRlX3JkcyhkcmZ1X3VtYXBzLCBcIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RyZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX2RyZnVfYWxsX3BhcmFtZXRlcl9yZXN1bHRzLnJkc1wiKVxuXG5cbmZhY2V0X3VtYXBfcGFycyhkcmZ1X3VtYXBzLCBcbiAgICAgICAgICAgICAgICBwbG90X3RpdGxlID0gXCJVTUFQIHJlc3VsdHM7IGRSRlUgZGF0YVwiLFxuICAgICAgICAgICAgICAgIFwiZHJmdVwiLCBcbiAgICAgICAgICAgICBcIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RyZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX2RyZnVfcGFyYW1ldGVyX2NvbXBhcmlzb24ucGRmXCIpXG5cbiMjIyAtLSAgc2Vjb25kIGRlcml2YXRpdmVcbmRkcmZ1X3VtYXBzIDwtIGNvbWJpbmVfdW1hcF9kYXRhKFwiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vZGRyZnUvcmVzdWx0cy9cIilcblxud3JpdGVfcmRzKGRkcmZ1X3VtYXBzLCBcIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RkcmZ1L3BhcmFtZXRlcl9zdW1tYXJ5L2RzZmJhc2VfdW1hcF9kZHJmdV9hbGxfcGFyYW1ldGVyX3Jlc3VsdHMucmRzXCIpXG5cbmZhY2V0X3VtYXBfcGFycyhkZHJmdV91bWFwcywgXG4gICAgICAgICAgICAgICAgcGxvdF90aXRsZSA9IFwiVU1BUCByZXN1bHRzOyBkZFJGVSBkYXRhXCIsXG4gICAgICAgICAgICAgICAgXCJkZHJmdVwiLCBcbiAgICAgICAgICAgICBcIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RkcmZ1L3BhcmFtZXRlcl9zdW1tYXJ5L2RzZmJhc2VfdW1hcF9kZHJmdV9wYXJhbWV0ZXJfY29tcGFyaXNvbi5wZGZcIilcbmBgYCJ9 -->
-<pre class="r"><code>### --  raw rfu
-rfu_umaps &lt;- combine_umap_data(&quot;../04_UMAP_analysis/parameter_exploration/rfu/results/&quot;)
+&lt;!-- rnb-chunk-end --&gt;
 
-write_rds(rfu_umaps, &quot;../04_UMAP_analysis/parameter_exploration/rfu/parameter_summary/dsfbase_umap_rfu_all_parameter_results.rds&quot;)
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+Conclusion: the final results are relatively insensitive to the parameters (see SI figure making below), and also the form on the input data (RFU, dRFU, and ddRFU). That&#39;s a good sign that the separation we are seeing is not an artifact of the specific processing or hyper-parameters of UMAP. Going to use the raw RFU clustering, since that is one less processing step. 
+
+The &quot;clearest&quot; visualization, in my opinion, is the RFU data with 200 neighbors and min_dist = 0.2
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+Make final version of umap 200 to save as supplemnetal file
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+######## ---------- Make SI facet figures visualizing the impact of input parameters
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyMjIC0tICByYXcgcmZ1XG5yZnVfdW1hcHMgPC0gY29tYmluZV91bWFwX2RhdGEoXFwuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9cXClcblxud3JpdGVfcmRzKHJmdV91bWFwcywgXFwuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX3JmdV9hbGxfcGFyYW1ldGVyX3Jlc3VsdHMucmRzXFwpXG5cbmZhY2V0X3VtYXBfcGFycyhyZnVfdW1hcHMsIFxuICAgICAgICAgICAgICAgIHBsb3RfdGl0bGUgPSBcXFVNQVAgcmVzdWx0czsgcmF3IFJGVSBkYXRhXFwsXG4gICAgICAgICAgICAgICAgXFxyZnVcXCwgXG4gICAgICAgICAgICAgXFwuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX3JmdV9wYXJhbWV0ZXJfY29tcGFyaXNvbi5wZGZcXClcblxuIyMjIC0tICBmaXJzdCBkZXJpdmF0aXZlXG5kcmZ1X3VtYXBzIDwtIGNvbWJpbmVfdW1hcF9kYXRhKFxcLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3Jlc3VsdHMvXFwpXG5cbndyaXRlX3JkcyhkcmZ1X3VtYXBzLCBcXC4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RyZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX2RyZnVfYWxsX3BhcmFtZXRlcl9yZXN1bHRzLnJkc1xcKVxuXG5cbmZhY2V0X3VtYXBfcGFycyhkcmZ1X3VtYXBzLCBcbiAgICAgICAgICAgICAgICBwbG90X3RpdGxlID0gXFxVTUFQIHJlc3VsdHM7IGRSRlUgZGF0YVxcLFxuICAgICAgICAgICAgICAgIFxcZHJmdVxcLCBcbiAgICAgICAgICAgICBcXC4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RyZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX2RyZnVfcGFyYW1ldGVyX2NvbXBhcmlzb24ucGRmXFwpXG5cbiMjIyAtLSAgc2Vjb25kIGRlcml2YXRpdmVcbmRkcmZ1X3VtYXBzIDwtIGNvbWJpbmVfdW1hcF9kYXRhKFxcLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vZGRyZnUvcmVzdWx0cy9cXClcblxud3JpdGVfcmRzKGRkcmZ1X3VtYXBzLCBcXC4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RkcmZ1L3BhcmFtZXRlcl9zdW1tYXJ5L2RzZmJhc2VfdW1hcF9kZHJmdV9hbGxfcGFyYW1ldGVyX3Jlc3VsdHMucmRzXFwpXG5cbmZhY2V0X3VtYXBfcGFycyhkZHJmdV91bWFwcywgXG4gICAgICAgICAgICAgICAgcGxvdF90aXRsZSA9IFxcVU1BUCByZXN1bHRzOyBkZFJGVSBkYXRhXFwsXG4gICAgICAgICAgICAgICAgXFxkZHJmdVxcLCBcbiAgICAgICAgICAgICBcXC4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RkcmZ1L3BhcmFtZXRlcl9zdW1tYXJ5L2RzZmJhc2VfdW1hcF9kZHJmdV9wYXJhbWV0ZXJfY29tcGFyaXNvbi5wZGZcXClcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+### --  raw rfu
+rfu_umaps &lt;- combine_umap_data(\../04_UMAP_analysis/parameter_exploration/rfu/results/\)
+
+write_rds(rfu_umaps, \../04_UMAP_analysis/parameter_exploration/rfu/parameter_summary/dsfbase_umap_rfu_all_parameter_results.rds\)
 
 facet_umap_pars(rfu_umaps, 
-                plot_title = &quot;UMAP results; raw RFU data&quot;,
-                &quot;rfu&quot;, 
-             &quot;../04_UMAP_analysis/parameter_exploration/rfu/parameter_summary/dsfbase_umap_rfu_parameter_comparison.pdf&quot;)
+                plot_title = \UMAP results; raw RFU data\,
+                \rfu\, 
+             \../04_UMAP_analysis/parameter_exploration/rfu/parameter_summary/dsfbase_umap_rfu_parameter_comparison.pdf\)
 
 ### --  first derivative
-drfu_umaps &lt;- combine_umap_data(&quot;../04_UMAP_analysis/parameter_exploration/rfu/results/&quot;)
+drfu_umaps &lt;- combine_umap_data(\../04_UMAP_analysis/parameter_exploration/rfu/results/\)
 
-write_rds(drfu_umaps, &quot;../04_UMAP_analysis/parameter_exploration/drfu/parameter_summary/dsfbase_umap_drfu_all_parameter_results.rds&quot;)
+write_rds(drfu_umaps, \../04_UMAP_analysis/parameter_exploration/drfu/parameter_summary/dsfbase_umap_drfu_all_parameter_results.rds\)
 
 
 facet_umap_pars(drfu_umaps, 
-                plot_title = &quot;UMAP results; dRFU data&quot;,
-                &quot;drfu&quot;, 
-             &quot;../04_UMAP_analysis/parameter_exploration/drfu/parameter_summary/dsfbase_umap_drfu_parameter_comparison.pdf&quot;)
+                plot_title = \UMAP results; dRFU data\,
+                \drfu\, 
+             \../04_UMAP_analysis/parameter_exploration/drfu/parameter_summary/dsfbase_umap_drfu_parameter_comparison.pdf\)
 
 ### --  second derivative
-ddrfu_umaps &lt;- combine_umap_data(&quot;../04_UMAP_analysis/parameter_exploration/ddrfu/results/&quot;)
+ddrfu_umaps &lt;- combine_umap_data(\../04_UMAP_analysis/parameter_exploration/ddrfu/results/\)
 
-write_rds(ddrfu_umaps, &quot;../04_UMAP_analysis/parameter_exploration/ddrfu/parameter_summary/dsfbase_umap_ddrfu_all_parameter_results.rds&quot;)
+write_rds(ddrfu_umaps, \../04_UMAP_analysis/parameter_exploration/ddrfu/parameter_summary/dsfbase_umap_ddrfu_all_parameter_results.rds\)
 
 facet_umap_pars(ddrfu_umaps, 
-                plot_title = &quot;UMAP results; ddRFU data&quot;,
-                &quot;ddrfu&quot;, 
-             &quot;../04_UMAP_analysis/parameter_exploration/ddrfu/parameter_summary/dsfbase_umap_ddrfu_parameter_comparison.pdf&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="make-main-panel-figure-of-umap-200-0.2" class="section level7">
-<p class="heading">——— Make main panel figure of UMAP 200 / 0.2</p>
-<p>Make the main panel plot</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucF91bWFwIDwtIHBsb3RfVU1BUChVTUFQX2RhdGEgPSB1bWFwXzIwMCxcbiAgICAgICAgICAubl9uZWlnaGJvcnMgPSAyMDAsICMganVzdCBmb3IgbWFraW5nIGxhYmVsc1xuICAgICAgICAgIC5taW5fZGlzdCA9IDAuMiwgIyBqdXN0IGZvciBtYWtpbmcgbGFiZWxzXG4gICAgICAgICAgLmZhY2V0ID0gRkFMU0UsICMgZG9uJ3QgZmFjZXQgaW4gdGhlIG1haW4gcGFuZWxcbiAgICAgICAgICAub3RoZXJfbm90ZXMgPSBcImlucHV0IGRhdGE6IFJGVS4gQWxsIDY1MTUgZW50cmllZCBpbmNsdWRlZCBpbiBhbmFseXNpcy5cIiwgIyBrZWVwIGluIHRpdGxlIGZvciByZW1pbmRlci4gQ3JvcCBpbiB0aGUgZmluYWwgZmlndXJlLlxuICAgICAgICAgIC5zYXZlX3RvID0gXCIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvbWFpbl90ZXh0L1wiLFxuICAgICAgICAgIC5zYXZlX25hbWUgPSBcImRzZmJhc2VfdW1hcF9cIixcbiAgICAgICAgICAucmV0dXJuX3Bsb3QgPSBUUlVFLFxuICAgICAgICAgIC5kc2ZiYXNlX2NvbG9ycyA9IGMoXCJjYW5vblwiID0gXCIjMzAxMjNCXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIm5vbmNhbm9uXCIgPSBcIiMxQkU0QjdcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwic3BlY3VsYXRpdmVcIiA9IFwiI0ZBQkEzOVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJlcnJhdGFcIiA9IFwiIzdBMDQwM1wiKSlcblxucF91bWFwX2ZpbmFsIDwtIHBfdW1hcCArXG5cbiAgICAjIGFkanVzdCB0aGVtZVxuICAgIGhyYnJ0aGVtZXM6OnRoZW1lX2lwc3VtKGJhc2Vfc2l6ZSA9IDEyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGF4aXNfdGl0bGVfc2l6ZSA9IDEyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cmlwX3RleHRfc2l6ZSA9IDEyKSArXG4gIFxuICAgIHRoZW1lKGFzcGVjdC5yYXRpbyA9IDEsIGxlZ2VuZC5wb3NpdGlvbiA9IFwidG9wXCIsIGxlZ2VuZC5qdXN0aWZpY2F0aW9uID0gXCJsZWZ0XCIpICsgXG4gICAgbGFicyhzdWJ0aXRsZSA9IFwiaW5wdXQgZGF0YTogUkZVLiBBbGwgNjUxNSBlbnRyaWVkIGluY2x1ZGVkIGluIGFuYWx5c2lzLlwiKSBcblxuZ2dzYXZlKFwiLi4vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL21haW5fdGV4dC9kc2ZiYXNlX3VtYXBfMjAwX21pbl9kaXN0XzAuMi5wZGZcIixcbiAgICAgICB3aWR0aCA9IDUuNSwgIyBmYWNldCBwbG90cyBnZXQgc2F2ZWQgbGFyZ2VyXG4gICAgICAgICBoZWlnaHQgPSA1LjUsICMgZmFjZXQgcGxvdHMgZ2V0IHNhdmVkIGxhcmdlclxuICAgICAgICAgZGV2aWNlID0gY2Fpcm9fcGRmKVxuXG5gYGAifQ== -->
-<pre class="r"><code>p_umap &lt;- plot_UMAP(UMAP_data = umap_200,
+                plot_title = \UMAP results; ddRFU data\,
+                \ddrfu\, 
+             \../04_UMAP_analysis/parameter_exploration/ddrfu/parameter_summary/dsfbase_umap_ddrfu_parameter_comparison.pdf\)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+####### --------- Make main panel figure of UMAP 200 / 0.2
+Make the main panel plot
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucF91bWFwIDwtIHBsb3RfVU1BUChVTUFQX2RhdGEgPSB1bWFwXzIwMCxcbiAgICAgICAgICAubl9uZWlnaGJvcnMgPSAyMDAsICMganVzdCBmb3IgbWFraW5nIGxhYmVsc1xuICAgICAgICAgIC5taW5fZGlzdCA9IDAuMiwgIyBqdXN0IGZvciBtYWtpbmcgbGFiZWxzXG4gICAgICAgICAgLmZhY2V0ID0gRkFMU0UsICMgZG9uJ3QgZmFjZXQgaW4gdGhlIG1haW4gcGFuZWxcbiAgICAgICAgICAub3RoZXJfbm90ZXMgPSBcXGlucHV0IGRhdGE6IFJGVS4gQWxsIDY1MTUgZW50cmllZCBpbmNsdWRlZCBpbiBhbmFseXNpcy5cXCwgIyBrZWVwIGluIHRpdGxlIGZvciByZW1pbmRlci4gQ3JvcCBpbiB0aGUgZmluYWwgZmlndXJlLlxuICAgICAgICAgIC5zYXZlX3RvID0gXFwuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvbWFpbl90ZXh0L1xcLFxuICAgICAgICAgIC5zYXZlX25hbWUgPSBcXGRzZmJhc2VfdW1hcF9cXCxcbiAgICAgICAgICAucmV0dXJuX3Bsb3QgPSBUUlVFLFxuICAgICAgICAgIC5kc2ZiYXNlX2NvbG9ycyA9IGMoXFxjYW5vblxcID0gXFwjMzAxMjNCXFwsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcXG5vbmNhbm9uXFwgPSBcXCMxQkU0QjdcXCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxcc3BlY3VsYXRpdmVcXCA9IFxcI0ZBQkEzOVxcLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXFxlcnJhdGFcXCA9IFxcIzdBMDQwM1xcKSlcblxucF91bWFwX2ZpbmFsIDwtIHBfdW1hcCArXG5cbiAgICAjIGFkanVzdCB0aGVtZVxuICAgIGhyYnJ0aGVtZXM6OnRoZW1lX2lwc3VtKGJhc2Vfc2l6ZSA9IDEyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGF4aXNfdGl0bGVfc2l6ZSA9IDEyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cmlwX3RleHRfc2l6ZSA9IDEyKSArXG4gIFxuICAgIHRoZW1lKGFzcGVjdC5yYXRpbyA9IDEsIGxlZ2VuZC5wb3NpdGlvbiA9IFxcdG9wXFwsIGxlZ2VuZC5qdXN0aWZpY2F0aW9uID0gXFxsZWZ0XFwpICsgXG4gICAgbGFicyhzdWJ0aXRsZSA9IFxcaW5wdXQgZGF0YTogUkZVLiBBbGwgNjUxNSBlbnRyaWVkIGluY2x1ZGVkIGluIGFuYWx5c2lzLlxcKSBcblxuZ2dzYXZlKFxcLi4vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL21haW5fdGV4dC9kc2ZiYXNlX3VtYXBfMjAwX21pbl9kaXN0XzAuMi5wZGZcXCxcbiAgICAgICB3aWR0aCA9IDUuNSwgIyBmYWNldCBwbG90cyBnZXQgc2F2ZWQgbGFyZ2VyXG4gICAgICAgICBoZWlnaHQgPSA1LjUsICMgZmFjZXQgcGxvdHMgZ2V0IHNhdmVkIGxhcmdlclxuICAgICAgICAgZGV2aWNlID0gY2Fpcm9fcGRmKVxuXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+p_umap &lt;- plot_UMAP(UMAP_data = umap_200,
           .n_neighbors = 200, # just for making labels
           .min_dist = 0.2, # just for making labels
           .facet = FALSE, # don&#39;t facet in the main panel
-          .other_notes = &quot;input data: RFU. All 6515 entried included in analysis.&quot;, # keep in title for reminder. Crop in the final figure.
-          .save_to = &quot;../04_UMAP_analysis/final_parameters/plots/main_text/&quot;,
-          .save_name = &quot;dsfbase_umap_&quot;,
+          .other_notes = \input data: RFU. All 6515 entried included in analysis.\, # keep in title for reminder. Crop in the final figure.
+          .save_to = \../04_UMAP_analysis/final_parameters/plots/main_text/\,
+          .save_name = \dsfbase_umap_\,
           .return_plot = TRUE,
-          .dsfbase_colors = c(&quot;canon&quot; = &quot;#30123B&quot;,
-                              &quot;noncanon&quot; = &quot;#1BE4B7&quot;,
-                              &quot;speculative&quot; = &quot;#FABA39&quot;,
-                              &quot;errata&quot; = &quot;#7A0403&quot;))
+          .dsfbase_colors = c(\canon\ = \#30123B\,
+                              \noncanon\ = \#1BE4B7\,
+                              \speculative\ = \#FABA39\,
+                              \errata\ = \#7A0403\))
 
 p_umap_final &lt;- p_umap +
 
@@ -1938,84 +2009,123 @@ p_umap_final &lt;- p_umap +
                             axis_title_size = 12,
                             strip_text_size = 12) +
   
-    theme(aspect.ratio = 1, legend.position = &quot;top&quot;, legend.justification = &quot;left&quot;) + 
-    labs(subtitle = &quot;input data: RFU. All 6515 entried included in analysis.&quot;) 
+    theme(aspect.ratio = 1, legend.position = \top\, legend.justification = \left\) + 
+    labs(subtitle = \input data: RFU. All 6515 entried included in analysis.\) 
 
-ggsave(&quot;../04_UMAP_analysis/final_parameters/plots/main_text/dsfbase_umap_200_min_dist_0.2.pdf&quot;,
+ggsave(\../04_UMAP_analysis/final_parameters/plots/main_text/dsfbase_umap_200_min_dist_0.2.pdf\,
        width = 5.5, # facet plots get saved larger
          height = 5.5, # facet plots get saved larger
          device = cairo_pdf)
 </code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<div id="make-si-facet-figures-displaying-where-different-proteins-are-placed-in-the-umaps" class="section level8">
-<p class="heading">———- Make SI facet figures displaying where different
-proteins are placed in the UMAPs</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdF9VTUFQX2J5X3Byb3RlaW4odW1hcF8yMDAsIDIwMCwgMC4yLCBcbiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsXG4gICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCxcbiAgICAgICAgICAgICAgICAgICAgIC5uY29sID0gNixcbiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFwiQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy5cIixcbiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXCIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi9cIilcblxuXG4jIyMgc2hvdyBmb3IgYSBjb3VwbGUgb2Ygb3RoZXIgZXh0cmVtZSBwYXJhbWV0ZXIgZXhhbXBsZXNcbnVtYXBfMTAgPC0gcmVhZF9yZHMoXCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9kc2ZiYXNlX3VtYXBfanVpY2VfbmVpZ2hib3JzXzEwX21pbmRpc3RfMC4yLnJkc1wiKSAlPiVcbiAgc2VsZWN0KC1jKFwicHJvdGVpblwiLCBcInN1YnNldFwiKSkgJT4lIFxuICBsZWZ0X2pvaW4oaWRfYW5ub3RhdGlvbnMsIGJ5ID0gam9pbl9ieShcImlkXCIpKVxuXG5wbG90X1VNQVBfYnlfcHJvdGVpbih1bWFwXzEwLCAxMCwgMC4yLCBcbiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsXG4gICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCxcbiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFwiQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy5cIixcbiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXCIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi9cIilcblxudW1hcF80MDAgPC0gcmVhZF9yZHMoXCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9kc2ZiYXNlX3VtYXBfanVpY2VfbmVpZ2hib3JzXzQwMF9taW5kaXN0XzAuMi5yZHNcIikgJT4lXG4gIHNlbGVjdCgtYyhcInByb3RlaW5cIiwgXCJzdWJzZXRcIikpICU+JSBcbiAgbGVmdF9qb2luKGlkX2Fubm90YXRpb25zLCBieSA9IGpvaW5fYnkoXCJpZFwiKSlcblxucGxvdF9VTUFQX2J5X3Byb3RlaW4odW1hcF80MDAsIDQwMCwgMC4yLCBcbiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsXG4gICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCxcbiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFwiQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy5cIixcbiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXCIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi9cIilcblxudW1hcF8yMDBfcDggPC0gcmVhZF9yZHMoXCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9kc2ZiYXNlX3VtYXBfanVpY2VfbmVpZ2hib3JzXzIwMF9taW5kaXN0XzAuOC5yZHNcIikgJT4lXG4gIHNlbGVjdCgtYyhcInByb3RlaW5cIiwgXCJzdWJzZXRcIikpICU+JSBcbiAgbGVmdF9qb2luKGlkX2Fubm90YXRpb25zLCBieSA9IGpvaW5fYnkoXCJpZFwiKSlcblxucGxvdF9VTUFQX2J5X3Byb3RlaW4odW1hcF8yMDBfcDgsIDIwMCwgMC44LCBcbiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsXG4gICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCxcbiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFwiQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy5cIixcbiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXCIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi9cIilcblxuYGBgIn0= -->
-<pre class="r"><code>plot_UMAP_by_protein(umap_200, 200, 0.2, 
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+######## ---------- Make SI facet figures displaying where different proteins are placed in the UMAPs
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucGxvdF9VTUFQX2J5X3Byb3RlaW4odW1hcF8yMDAsIDIwMCwgMC4yLCBcbiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsXG4gICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCxcbiAgICAgICAgICAgICAgICAgICAgIC5uY29sID0gNixcbiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFxcQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy5cXCxcbiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXFwuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi9cXClcblxuXG4jIyMgc2hvdyBmb3IgYSBjb3VwbGUgb2Ygb3RoZXIgZXh0cmVtZSBwYXJhbWV0ZXIgZXhhbXBsZXNcbnVtYXBfMTAgPC0gcmVhZF9yZHMoXFwuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9kc2ZiYXNlX3VtYXBfanVpY2VfbmVpZ2hib3JzXzEwX21pbmRpc3RfMC4yLnJkc1xcKSAlPiVcbiAgc2VsZWN0KC1jKFxccHJvdGVpblxcLCBcXHN1YnNldFxcKSkgJT4lIFxuICBsZWZ0X2pvaW4oaWRfYW5ub3RhdGlvbnMsIGJ5ID0gam9pbl9ieShcXGlkXFwpKVxuXG5wbG90X1VNQVBfYnlfcHJvdGVpbih1bWFwXzEwLCAxMCwgMC4yLCBcbiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsXG4gICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCxcbiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFxcQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy5cXCxcbiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXFwuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi9cXClcblxudW1hcF80MDAgPC0gcmVhZF9yZHMoXFwuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9kc2ZiYXNlX3VtYXBfanVpY2VfbmVpZ2hib3JzXzQwMF9taW5kaXN0XzAuMi5yZHNcXCkgJT4lXG4gIHNlbGVjdCgtYyhcXHByb3RlaW5cXCwgXFxzdWJzZXRcXCkpICU+JSBcbiAgbGVmdF9qb2luKGlkX2Fubm90YXRpb25zLCBieSA9IGpvaW5fYnkoXFxpZFxcKSlcblxucGxvdF9VTUFQX2J5X3Byb3RlaW4odW1hcF80MDAsIDQwMCwgMC4yLCBcbiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsXG4gICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCxcbiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFxcQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy5cXCxcbiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXFwuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi9cXClcblxudW1hcF8yMDBfcDggPC0gcmVhZF9yZHMoXFwuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9kc2ZiYXNlX3VtYXBfanVpY2VfbmVpZ2hib3JzXzIwMF9taW5kaXN0XzAuOC5yZHNcXCkgJT4lXG4gIHNlbGVjdCgtYyhcXHByb3RlaW5cXCwgXFxzdWJzZXRcXCkpICU+JSBcbiAgbGVmdF9qb2luKGlkX2Fubm90YXRpb25zLCBieSA9IGpvaW5fYnkoXFxpZFxcKSlcblxucGxvdF9VTUFQX2J5X3Byb3RlaW4odW1hcF8yMDBfcDgsIDIwMCwgMC44LCBcbiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsXG4gICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCxcbiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFxcQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy5cXCxcbiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXFwuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi9cXClcblxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+plot_UMAP_by_protein(umap_200, 200, 0.2, 
                      .plot_width = 15,
                      .plot_height = 40,
                      .ncol = 6,
-                     .other_notes = &quot;All 6515 entries included in analysis.&quot;,
-                     .save_to = &quot;../04_UMAP_analysis/final_parameters/plots/by_protein/&quot;)
+                     .other_notes = \All 6515 entries included in analysis.\,
+                     .save_to = \../04_UMAP_analysis/final_parameters/plots/by_protein/\)
 
 
 ### show for a couple of other extreme parameter examples
-umap_10 &lt;- read_rds(&quot;../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_10_mindist_0.2.rds&quot;) %&gt;%
-  select(-c(&quot;protein&quot;, &quot;subset&quot;)) %&gt;% 
-  left_join(id_annotations, by = join_by(&quot;id&quot;))
+umap_10 &lt;- read_rds(\../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_10_mindist_0.2.rds\) %&gt;%
+  select(-c(\protein\, \subset\)) %&gt;% 
+  left_join(id_annotations, by = join_by(\id\))
 
 plot_UMAP_by_protein(umap_10, 10, 0.2, 
                      .plot_width = 15,
                      .plot_height = 40,
-                     .other_notes = &quot;All 6515 entries included in analysis.&quot;,
-                     .save_to = &quot;../04_UMAP_analysis/final_parameters/plots/by_protein/&quot;)
+                     .other_notes = \All 6515 entries included in analysis.\,
+                     .save_to = \../04_UMAP_analysis/final_parameters/plots/by_protein/\)
 
-umap_400 &lt;- read_rds(&quot;../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_400_mindist_0.2.rds&quot;) %&gt;%
-  select(-c(&quot;protein&quot;, &quot;subset&quot;)) %&gt;% 
-  left_join(id_annotations, by = join_by(&quot;id&quot;))
+umap_400 &lt;- read_rds(\../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_400_mindist_0.2.rds\) %&gt;%
+  select(-c(\protein\, \subset\)) %&gt;% 
+  left_join(id_annotations, by = join_by(\id\))
 
 plot_UMAP_by_protein(umap_400, 400, 0.2, 
                      .plot_width = 15,
                      .plot_height = 40,
-                     .other_notes = &quot;All 6515 entries included in analysis.&quot;,
-                     .save_to = &quot;../04_UMAP_analysis/final_parameters/plots/by_protein/&quot;)
+                     .other_notes = \All 6515 entries included in analysis.\,
+                     .save_to = \../04_UMAP_analysis/final_parameters/plots/by_protein/\)
 
-umap_200_p8 &lt;- read_rds(&quot;../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.8.rds&quot;) %&gt;%
-  select(-c(&quot;protein&quot;, &quot;subset&quot;)) %&gt;% 
-  left_join(id_annotations, by = join_by(&quot;id&quot;))
+umap_200_p8 &lt;- read_rds(\../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.8.rds\) %&gt;%
+  select(-c(\protein\, \subset\)) %&gt;% 
+  left_join(id_annotations, by = join_by(\id\))
 
 plot_UMAP_by_protein(umap_200_p8, 200, 0.8, 
                      .plot_width = 15,
                      .plot_height = 40,
-                     .other_notes = &quot;All 6515 entries included in analysis.&quot;,
-                     .save_to = &quot;../04_UMAP_analysis/final_parameters/plots/by_protein/&quot;)
+                     .other_notes = \All 6515 entries included in analysis.\,
+                     .save_to = \../04_UMAP_analysis/final_parameters/plots/by_protein/\)
 </code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Compare UMAP separation to dsfworld Tma calculations</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<hr />
-<div id="scratch-work-below-this-line" class="section level9">
-<p class="heading">scratch work below this line</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2ZzOjpkaXJfY3JlYXRlKFwiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3N1bW1hcnlfcGxvdC9cIilcblxucGxvdF9VTUFQKHVtYXBfMjAwLFxuICAgICAgICAgIDIwMCxcbiAgICAgICAgICAwLjIsXG4gICAgICAgICAgZmFjZXQgPSBGQUxTRSxcbiAgICAgICAgICAuc2F2ZV90byA9IFwiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3N1bW1hcnlfcGxvdC9cIixcbiAgICAgICAgICAgICAgICAgICAgICAuc2F2ZV9uYW1lID0gXCJkc2ZiYXNlX3VtYXBfcGFyYW1ldGVyX2NvbXBhcmlzb25cIilcblxucGxvdF9VTUFQXG5cbnBsb3RfVU1BUCA8LSBmdW5jdGlvbihVTUFQX2RhdGEsXG4gICAgICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzLFxuICAgICAgICAgICAgICAgICAgICAgIC5taW5fZGlzdCxcbiAgICAgICAgICAgICAgICAgICAgICAuZmFjZXQgPSBUUlVFLFxuICAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFwiTnNwMyBtYWMxIHNjcmVlbiBleGNsdWRlZCBmcm9tIGFuYWx5c2lzLlwiLFxuICAgICAgICAgICAgICAgICAgICAgIC54ID0gXCJVTUFQMVwiLFxuICAgICAgICAgICAgICAgICAgICAgIC55ID0gXCJVTUFQMlwiLFxuICAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXCIvVXNlcnMvdGFpYXNlYW53dS9EZXNrdG9wL3Byb2dyYW1taW5nL2RzZmJhc2UvMDVfYW5hbHlzZXMvMV9VTUFQL29wdGltaXphdGlvbnMvcGxvdHMvXCIsXG4gICAgICAgICAgICAgICAgICAgICAgLnNhdmVfbmFtZSA9IFwiZHNmYmFzZV91bWFwX1wiLFxuXG4gICAgICAgICAgICAgICAgICAgICAgLmRzZmJhc2VfY29sb3JzID0gYyhcImNhbm9uXCIgPSBcIiMzMDEyM0JcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwibm9uY2Fub25cIiA9IFwiIzFCRTRCN1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJzcGVjdWxhdGl2ZVwiID0gXCIjRkFCQTM5XCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcImVycmF0YVwiID0gXCIjN0EwNDAzXCIpLFxuICAgICAgICAgICAgICAgICAgICAgIC5yZXR1cm5fcGxvdCA9IEZBTFNFLFxuICAgICAgICAgICAgICAgICAgICAgIC4uLikgXG5gYGAifQ== -->
-<pre class="r"><code>#fs::dir_create(&quot;../04_UMAP_analysis/parameter_exploration/rfu/summary_plot/&quot;)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+
+Compare UMAP separation to dsfworld Tma calculations
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+-------
+######### scratch work below this line
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuI2ZzOjpkaXJfY3JlYXRlKFxcLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3N1bW1hcnlfcGxvdC9cXClcblxucGxvdF9VTUFQKHVtYXBfMjAwLFxuICAgICAgICAgIDIwMCxcbiAgICAgICAgICAwLjIsXG4gICAgICAgICAgZmFjZXQgPSBGQUxTRSxcbiAgICAgICAgICAuc2F2ZV90byA9IFxcLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3N1bW1hcnlfcGxvdC9cXCxcbiAgICAgICAgICAgICAgICAgICAgICAuc2F2ZV9uYW1lID0gXFxkc2ZiYXNlX3VtYXBfcGFyYW1ldGVyX2NvbXBhcmlzb25cXClcblxucGxvdF9VTUFQXG5cbnBsb3RfVU1BUCA8LSBmdW5jdGlvbihVTUFQX2RhdGEsXG4gICAgICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzLFxuICAgICAgICAgICAgICAgICAgICAgIC5taW5fZGlzdCxcbiAgICAgICAgICAgICAgICAgICAgICAuZmFjZXQgPSBUUlVFLFxuICAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFxcTnNwMyBtYWMxIHNjcmVlbiBleGNsdWRlZCBmcm9tIGFuYWx5c2lzLlxcLFxuICAgICAgICAgICAgICAgICAgICAgIC54ID0gXFxVTUFQMVxcLFxuICAgICAgICAgICAgICAgICAgICAgIC55ID0gXFxVTUFQMlxcLFxuICAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXFwvVXNlcnMvdGFpYXNlYW53dS9EZXNrdG9wL3Byb2dyYW1taW5nL2RzZmJhc2UvMDVfYW5hbHlzZXMvMV9VTUFQL29wdGltaXphdGlvbnMvcGxvdHMvXFwsXG4gICAgICAgICAgICAgICAgICAgICAgLnNhdmVfbmFtZSA9IFxcZHNmYmFzZV91bWFwX1xcLFxuXG4gICAgICAgICAgICAgICAgICAgICAgLmRzZmJhc2VfY29sb3JzID0gYyhcXGNhbm9uXFwgPSBcXCMzMDEyM0JcXCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxcbm9uY2Fub25cXCA9IFxcIzFCRTRCN1xcLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXFxzcGVjdWxhdGl2ZVxcID0gXFwjRkFCQTM5XFwsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcXGVycmF0YVxcID0gXFwjN0EwNDAzXFwpLFxuICAgICAgICAgICAgICAgICAgICAgIC5yZXR1cm5fcGxvdCA9IEZBTFNFLFxuICAgICAgICAgICAgICAgICAgICAgIC4uLikgXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+#fs::dir_create(\../04_UMAP_analysis/parameter_exploration/rfu/summary_plot/\)
 
 plot_UMAP(umap_200,
           200,
           0.2,
           facet = FALSE,
-          .save_to = &quot;../04_UMAP_analysis/parameter_exploration/rfu/summary_plot/&quot;,
-                      .save_name = &quot;dsfbase_umap_parameter_comparison&quot;)
+          .save_to = \../04_UMAP_analysis/parameter_exploration/rfu/summary_plot/\,
+                      .save_name = \dsfbase_umap_parameter_comparison\)
 
 plot_UMAP
 
@@ -2023,25 +2133,46 @@ plot_UMAP &lt;- function(UMAP_data,
                       .n_neighbors,
                       .min_dist,
                       .facet = TRUE,
-                      .other_notes = &quot;Nsp3 mac1 screen excluded from analysis.&quot;,
-                      .x = &quot;UMAP1&quot;,
-                      .y = &quot;UMAP2&quot;,
-                      .save_to = &quot;/Users/taiaseanwu/Desktop/programming/dsfbase/05_analyses/1_UMAP/optimizations/plots/&quot;,
-                      .save_name = &quot;dsfbase_umap_&quot;,
+                      .other_notes = \Nsp3 mac1 screen excluded from analysis.\,
+                      .x = \UMAP1\,
+                      .y = \UMAP2\,
+                      .save_to = \/Users/taiaseanwu/Desktop/programming/dsfbase/05_analyses/1_UMAP/optimizations/plots/\,
+                      .save_name = \dsfbase_umap_\,
 
-                      .dsfbase_colors = c(&quot;canon&quot; = &quot;#30123B&quot;,
-                                          &quot;noncanon&quot; = &quot;#1BE4B7&quot;,
-                                          &quot;speculative&quot; = &quot;#FABA39&quot;,
-                                          &quot;errata&quot; = &quot;#7A0403&quot;),
+                      .dsfbase_colors = c(\canon\ = \#30123B\,
+                                          \noncanon\ = \#1BE4B7\,
+                                          \speculative\ = \#FABA39\,
+                                          \errata\ = \#7A0403\),
                       .return_plot = FALSE,
                       ...) </code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICBcbiAgVU1BUF9wcm90ZWluX3N1YnNldF8yMDAgPC1cbiAgICB1bWFwXzIwMCB8PlxuICAgIHVuaXRlKHN1YnN1YnNldF9wcm90ZWluLCBjKHN1YnN1YnNldF9mLCBwcm90ZWluKSwgcmVtb3ZlID0gRkFMU0UpIHw+XG4gICAgYXJyYW5nZShzdWJzdWJzZXRfZikgfD5cbiAgICBtdXRhdGUoc3Vic3Vic2V0X3Byb3RlaW5fZiA9IGZhY3RvcihzdWJzdWJzZXRfcHJvdGVpbiwgbGV2ZWxzID0gdW5pcXVlKHN1YnN1YnNldF9wcm90ZWluKSkpXG5cblxuVU1BUF9wcm90ZWluX3N1YnNldF8yMDAkc3Vic3Vic2V0X3Byb3RlaW5fZiAlPiUgdW5pcXVlKClcbmBgYCJ9 -->
-<pre class="r"><code>  
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+
+
+
+
+
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuICBcbiAgVU1BUF9wcm90ZWluX3N1YnNldF8yMDAgPC1cbiAgICB1bWFwXzIwMCB8PlxuICAgIHVuaXRlKHN1YnN1YnNldF9wcm90ZWluLCBjKHN1YnN1YnNldF9mLCBwcm90ZWluKSwgcmVtb3ZlID0gRkFMU0UpIHw+XG4gICAgYXJyYW5nZShzdWJzdWJzZXRfZikgfD5cbiAgICBtdXRhdGUoc3Vic3Vic2V0X3Byb3RlaW5fZiA9IGZhY3RvcihzdWJzdWJzZXRfcHJvdGVpbiwgbGV2ZWxzID0gdW5pcXVlKHN1YnN1YnNldF9wcm90ZWluKSkpXG5cblxuVU1BUF9wcm90ZWluX3N1YnNldF8yMDAkc3Vic3Vic2V0X3Byb3RlaW5fZiAlPiUgdW5pcXVlKClcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+  
   UMAP_protein_subset_200 &lt;-
     umap_200 |&gt;
     unite(subsubset_protein, c(subsubset_f, protein), remove = FALSE) |&gt;
@@ -2050,98 +2181,47 @@ plot_UMAP &lt;- function(UMAP_data,
 
 
 UMAP_protein_subset_200$subsubset_protein_f %&gt;% unique()</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICMjIC0tLSBtYWtlIHBsb3Rcbm1ha2VfbWFpbl9wYW5lbF9VTUFQIDwtIGZ1bmN0aW9uKFVNQVBfZGF0YSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC5jb2xvcl9ieSxcbiAgICAgICAgICAgICAgICAgICAgICAubl9uZWlnaGJvcnMsXG4gICAgICAgICAgICAgICAgICAgICAgLm1pbl9kaXN0LFxuICAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFwiTnNwMyBtYWMxIHNjcmVlbiBleGNsdWRlZCBmcm9tIGFuYWx5c2lzLlwiLFxuICAgICAgICAgICAgICAgICAgICAgIC54ID0gXCJVTUFQMVwiLFxuICAgICAgICAgICAgICAgICAgICAgIC55ID0gXCJVTUFQMlwiLFxuICAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXCIuLi9Vc2Vycy90YWlhc2Vhbnd1L0Rlc2t0b3AvcHJvZ3JhbW1pbmcvZHNmYmFzZS8wNV9hbmFseXNlcy8xX1VNQVAvb3B0aW1pemF0aW9ucy9wbG90cy9cIixcbiAgICAgICAgICAgICAgICAgICAgICAuc2F2ZV9uYW1lID0gXCJkc2ZiYXNlX3VtYXBfXCIsXG4gICAgICAgICAgICAgICAgICAgICAgLnJldHVybl9wbG90ID0gRkFMU0UsXG4gICAgICAgICAgICAgICAgICAgICAgLi4uKSB7XG4gIFxuICAjIyAtLS0gY3JlYXRlIHBsb3QgbmFtZXMgYW5kIGFubm90YXRpb25zXG4gIC5wbG90X3RpdGxlIDwtIGdsdWUoXCJVTUFQIG9mIERTRmJhc2UuIFxcbiB7Lm5fbmVpZ2hib3JzfSBuZWlnaGJvcnM7IHsubWluX2Rpc3R9IG1pbiBkaXN0LlwiKVxuICAucGxvdF9zdWJ0aXRsZSA8LSBnbHVlKFwiUGFyYW1ldGVyczogbmVpZ2hib3JzID0gey5uX25laWdoYm9yc30sIG1pbl9kaXN0ID0gey5taW5fZGlzdH0uIFxcbiBHb3RjaGEgc3Vic2V0IG5vdCBkaXNwbGF5ZWQuIFxcbiBOb3Rlczogey5vdGhlcl9ub3Rlc31cIilcbiAgXG4gICMgY3JlYXRlIHRoZSBzYXZlIGxvY2F0aW9uLCBpZiBpdCBpc24ndCBhbHJlYWR5IHRoZXJlXG4gIGZzOjpkaXJfY3JlYXRlKC5zYXZlX3RvKVxuICBcbiAgVU1BUF9wcm90ZWluX3N1YnNldCA8LVxuICAgIFVNQVBfZGF0YSB8PlxuICAgIHVuaXRlKHN1YnN1YnNldF9wcm90ZWluLCBjKHN1YnN1YnNldF9mLCBwcm90ZWluKSwgcmVtb3ZlID0gRkFMU0UpIHw+XG4gICAgYXJyYW5nZShzdWJzdWJzZXRfZikgfD5cbiAgICBtdXRhdGUoc3Vic3Vic2V0X3Byb3RlaW5fZiA9IGZhY3RvcihzdWJzdWJzZXRfcHJvdGVpbiwgbGV2ZWxzID0gdW5pcXVlKHN1YnN1YnNldF9wcm90ZWluKSkpIHw+XG4gICAgbXV0YXRlKHN1YnN1YnNldF9wbG90ID0gZmFjdG9yKGdzdWIoc3Vic3Vic2V0LCBwYXR0ZXJuID0gXCJTWVBST1wiLCByZXBsYWNlbWVudCA9IFwiXCIpLCBsZXZlbHMgPSBjKFwiY2Fub25cIiwgXCJtaWRjYW5vblwiLCBcIm5vbmNhbm9uXCIsIFwibGF0ZW5vbmNhbm9uXCIsIFwiZXJyYXRhXCIpKSlcblxuICAjIyAtLS0gbWFrZSBwbG90XG4gIHBfVU1BUCA8LSBcbiAgICBVTUFQX3Byb3RlaW5fc3Vic2V0IHw+IFxuICAgIGdncGxvdChhZXMoLmRhdGFbWy54XV0sIC5kYXRhW1sueV1dKSkgK1xuICAgIFxuICAgICAjIGNvbG9yIHBvaW50cyBmb3IgZWFjaCBzdWJzZXRcbiAgICBnZW9tX3BvaW50KGFlcyhjb2xvciA9IHN1YnN1YnNldF9wbG90KSwgXG4gICAgICAgICAgICAgICAgIGFscGhhID0gMC4zLCBcbiAgICAgICAgICAgICAgICAgc2l6ZSA9IDAuMikgK1xuICAgIFxuICAgICNzY2FsZV9jb2xvcl92aXJpZGlzX2Qob3B0aW9uID0gXCJ0dXJib1wiKSArXG4gICAgIHNjYWxlX2NvbG9yX3ZpcmlkaXNfZCgpICtcbiAgICBcbiAgICAjIGFkZCBsYWJlbHNcbiAgICBsYWJzKHRpdGxlID0gLnBsb3RfdGl0bGUsXG4gICAgICAgICBzdWJ0aXRsZSA9IHN0cl93cmFwKC5wbG90X3N1YnRpdGxlLCA1MCkpICtcbiAgICBcbiAgICAjIGFkanVzdCB0aGVtZVxuICAgIGhyYnJ0aGVtZXM6OnRoZW1lX2lwc3VtKGJhc2Vfc2l6ZSA9IDIwLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cmlwX3RleHRfc2l6ZSA9IDIwKSArXG4gICAgXG4gICAgdGhlbWUoYXNwZWN0LnJhdGlvID0gMSkgK1xuICAgIFxuICAgICMgaW5jcmVhc2Ugc2l6ZSBhbmQgYWxwaGEgaW4gZ3VpZGVzIHRvIG1ha2UgdGhlbSB2aXNpYmxlXG4gICAgIGd1aWRlcyhjb2xvdXIgPSBndWlkZV9sZWdlbmQob3ZlcnJpZGUuYWVzID0gbGlzdChhbHBoYSA9IDEsIHNpemUgPSAxKSkpICsgIyBkb24ndCBtYWtlIGxlZ2VuZCByZWFsbHkgdHJhbnNwYXJlbnRcbiAgICBcbiAgICBsYWJzKHN1YnRpdGxlID0gc3RyX3dyYXAoXCJOc3AzIG1hYzEgc2NyZWVuIGV4Y2x1ZGVkIGZyb20gYW5hbHlzaXMuXCIpLFxuICAgICAgIGNvbG9yID0gXCJTdWJzZXRcIikgK1xuICBcbiAgICAjIGFkanVzdCB0aGVtZVxuICAgIGhyYnJ0aGVtZXM6OnRoZW1lX2lwc3VtKGJhc2Vfc2l6ZSA9IDE2LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGF4aXNfdGl0bGVfc2l6ZSA9IDE0LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cmlwX3RleHRfc2l6ZSA9IDEyKSArXG4gICAgXG4gICAgdGhlbWUoYXNwZWN0LnJhdGlvID0gMSxcbiAgICAgICAgICBsZWdlbmQucG9zaXRpb24gPSBcInRvcFwiLFxuICAgICAgICAgIGxlZ2VuZC5qdXN0aWZpY2F0aW9uPSdsZWZ0JykgXG5cbmdnc2F2ZShcIi4uLzA0X1VNQVBfYW5hbHlzaXMvZmluYWxfcGFyYW1ldGVycy9wbG90cy9tYWluX3RleHQvZHNmYmFzZV91bWFwXzEwMF9taW5fZGlzdF8wLjIucGRmXCIsXG4gICAgICAgd2lkdGggPSA2LCAjIGZhY2V0IHBsb3RzIGdldCBzYXZlZCBsYXJnZXJcbiAgICAgICAgIGhlaWdodCA9IDYsICMgZmFjZXQgcGxvdHMgZ2V0IHNhdmVkIGxhcmdlclxuICAgICAgICAgZGV2aWNlID0gY2Fpcm9fcGRmKVxuICBcbn1cblxucF91bWFwIDwtIG1ha2VfbWFpbl9wYW5lbF9VTUFQKFVNQVBfZGF0YSA9IHVtYXBfMjAwICU+JSBmaWx0ZXIoc3Vic2V0ICE9IFwiZXJyYXRhXCIpLFxuICAgICAgICAgIC5uX25laWdoYm9ycyA9IDIwMCwgIyBqdXN0IGZvciBtYWtpbmcgbGFiZWxzXG4gICAgICAgICAgLm1pbl9kaXN0ID0gMC4yLCAjIGp1c3QgZm9yIG1ha2luZyBsYWJlbHNcbiAgICAgICAgICAuZmFjZXQgPSBGQUxTRSwgIyBkb24ndCBmYWNldCBpbiB0aGUgbWFpbiBwYW5lbFxuICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFwiTnNwMyBtYWMxIHNjcmVlbiBleGNsdWRlZCBhbmQgZXJyYXRhIGZyb20gYW5hbHlzaXMuXCIsICMga2VlcCBpbiB0aXRsZSBmb3IgcmVtaW5kZXIuIENyb3AgaW4gdGhlIGZpbmFsIGZpZ3VyZS5cbiAgICAgICAgICAuc2F2ZV90byA9IFwiLi4vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL21haW5fdGV4dC9cIixcbiAgICAgICAgICAuc2F2ZV9uYW1lID0gXCJkc2ZiYXNlX3VtYXBfXCIsXG4gICAgICAgICAgLnJldHVybl9wbG90ID0gVFJVRSlcblxuXG51bWFwXzIwMCAlPiUgbXV0YXRlKHN1YnN1YnNldF9wbG90ID0gZ3N1YihzdWJzdWJzZXQsIHBhdHRlcm4gPSBcIlNZUFJPXCIsIHJlcGxhY2VtZW50ID0gXCJcIikpICU+JSBwdWxsKHN1YnN1YnNldF9wbG90KSAlPiUgdW5pcXVlKClcbmBgYCJ9 -->
-<pre class="r"><code> ## --- make plot
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuICMjIC0tLSBtYWtlIHBsb3Rcbm1ha2VfbWFpbl9wYW5lbF9VTUFQIDwtIGZ1bmN0aW9uKFVNQVBfZGF0YSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC5jb2xvcl9ieSxcbiAgICAgICAgICAgICAgICAgICAgICAubl9uZWlnaGJvcnMsXG4gICAgICAgICAgICAgICAgICAgICAgLm1pbl9kaXN0LFxuICAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9IFxcTnNwMyBtYWMxIHNjcmVlbiBleGNsdWRlZCBmcm9tIGFuYWx5c2lzLlxcLFxuICAgICAgICAgICAgICAgICAgICAgIC54ID0gXFxVTUFQMVxcLFxuICAgICAgICAgICAgICAgICAgICAgIC55ID0gXFxVTUFQMlxcLFxuICAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gXFwuLi9Vc2Vycy90YWlhc2Vhbnd1L0Rlc2t0b3AvcHJvZ3JhbW1pbmcvZHNmYmFzZS8wNV9hbmFseXNlcy8xX1VNQVAvb3B0aW1pemF0aW9ucy9wbG90cy9cXCxcbiAgICAgICAgICAgICAgICAgICAgICAuc2F2ZV9uYW1lID0gXFxkc2ZiYXNlX3VtYXBfXFwsXG4gICAgICAgICAgICAgICAgICAgICAgLnJldHVybl9wbG90ID0gRkFMU0UsXG4gICAgICAgICAgICAgICAgICAgICAgLi4uKSB7XG4gIFxuICAjIyAtLS0gY3JlYXRlIHBsb3QgbmFtZXMgYW5kIGFubm90YXRpb25zXG4gIC5wbG90X3RpdGxlIDwtIGdsdWUoXFxVTUFQIG9mIERTRmJhc2UuIFxcbiB7Lm5fbmVpZ2hib3JzfSBuZWlnaGJvcnM7IHsubWluX2Rpc3R9IG1pbiBkaXN0LlxcKVxuICAucGxvdF9zdWJ0aXRsZSA8LSBnbHVlKFxcUGFyYW1ldGVyczogbmVpZ2hib3JzID0gey5uX25laWdoYm9yc31cbmBgYCJ9 --&gt;
+
+```r
+```r
+ ## --- make plot
 make_main_panel_UMAP &lt;- function(UMAP_data,
                                  .color_by,
                       .n_neighbors,
                       .min_dist,
-                      .other_notes = &quot;Nsp3 mac1 screen excluded from analysis.&quot;,
-                      .x = &quot;UMAP1&quot;,
-                      .y = &quot;UMAP2&quot;,
-                      .save_to = &quot;../Users/taiaseanwu/Desktop/programming/dsfbase/05_analyses/1_UMAP/optimizations/plots/&quot;,
-                      .save_name = &quot;dsfbase_umap_&quot;,
+                      .other_notes = \Nsp3 mac1 screen excluded from analysis.\,
+                      .x = \UMAP1\,
+                      .y = \UMAP2\,
+                      .save_to = \../Users/taiaseanwu/Desktop/programming/dsfbase/05_analyses/1_UMAP/optimizations/plots/\,
+                      .save_name = \dsfbase_umap_\,
                       .return_plot = FALSE,
                       ...) {
   
   ## --- create plot names and annotations
-  .plot_title &lt;- glue(&quot;UMAP of DSFbase. \n {.n_neighbors} neighbors; {.min_dist} min dist.&quot;)
-  .plot_subtitle &lt;- glue(&quot;Parameters: neighbors = {.n_neighbors}, min_dist = {.min_dist}. \n Gotcha subset not displayed. \n Notes: {.other_notes}&quot;)
-  
-  # create the save location, if it isn&#39;t already there
-  fs::dir_create(.save_to)
-  
-  UMAP_protein_subset &lt;-
-    UMAP_data |&gt;
-    unite(subsubset_protein, c(subsubset_f, protein), remove = FALSE) |&gt;
-    arrange(subsubset_f) |&gt;
-    mutate(subsubset_protein_f = factor(subsubset_protein, levels = unique(subsubset_protein))) |&gt;
-    mutate(subsubset_plot = factor(gsub(subsubset, pattern = &quot;SYPRO&quot;, replacement = &quot;&quot;), levels = c(&quot;canon&quot;, &quot;midcanon&quot;, &quot;noncanon&quot;, &quot;latenoncanon&quot;, &quot;errata&quot;)))
-
-  ## --- make plot
-  p_UMAP &lt;- 
-    UMAP_protein_subset |&gt; 
-    ggplot(aes(.data[[.x]], .data[[.y]])) +
-    
-     # color points for each subset
-    geom_point(aes(color = subsubset_plot), 
-                 alpha = 0.3, 
-                 size = 0.2) +
-    
-    #scale_color_viridis_d(option = &quot;turbo&quot;) +
-     scale_color_viridis_d() +
-    
-    # add labels
-    labs(title = .plot_title,
-         subtitle = str_wrap(.plot_subtitle, 50)) +
-    
-    # adjust theme
-    hrbrthemes::theme_ipsum(base_size = 20,
-                            strip_text_size = 20) +
-    
-    theme(aspect.ratio = 1) +
-    
-    # increase size and alpha in guides to make them visible
-     guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don&#39;t make legend really transparent
-    
-    labs(subtitle = str_wrap(&quot;Nsp3 mac1 screen excluded from analysis.&quot;),
-       color = &quot;Subset&quot;) +
-  
-    # adjust theme
-    hrbrthemes::theme_ipsum(base_size = 16,
-                            axis_title_size = 14,
-                            strip_text_size = 12) +
-    
-    theme(aspect.ratio = 1,
-          legend.position = &quot;top&quot;,
-          legend.justification=&#39;left&#39;) 
-
-ggsave(&quot;../04_UMAP_analysis/final_parameters/plots/main_text/dsfbase_umap_100_min_dist_0.2.pdf&quot;,
-       width = 6, # facet plots get saved larger
-         height = 6, # facet plots get saved larger
-         device = cairo_pdf)
-  
-}
-
-p_umap &lt;- make_main_panel_UMAP(UMAP_data = umap_200 %&gt;% filter(subset != &quot;errata&quot;),
-          .n_neighbors = 200, # just for making labels
-          .min_dist = 0.2, # just for making labels
-          .facet = FALSE, # don&#39;t facet in the main panel
-          .other_notes = &quot;Nsp3 mac1 screen excluded and errata from analysis.&quot;, # keep in title for reminder. Crop in the final figure.
-          .save_to = &quot;../04_UMAP_analysis/final_parameters/plots/main_text/&quot;,
-          .save_name = &quot;dsfbase_umap_&quot;,
-          .return_plot = TRUE)
-
-
-umap_200 %&gt;% mutate(subsubset_plot = gsub(subsubset, pattern = &quot;SYPRO&quot;, replacement = &quot;&quot;)) %&gt;% pull(subsubset_plot) %&gt;% unique()</code></pre>
+  .plot_title &lt;- glue(\UMAP of DSFbase. \n {.n_neighbors} neighbors; {.min_dist} min dist.\)
+  .plot_subtitle &lt;- glue(\Parameters: neighbors = {.n_neighbors}</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiY2Fub25cIiAgICAgICAgXCJlcnJhdGFcIiAgICAgICBcIm1pZGNhbm9uXCIgICAgIFwibm9uY2Fub25cIiAgICAgXCJsYXRlbm9uY2Fub25cIlxuIn0= -->
-<pre><code>[1] &quot;canon&quot;        &quot;errata&quot;       &quot;midcanon&quot;     &quot;noncanon&quot;     &quot;latenoncanon&quot;</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFxcY2Fub25cXCAgICAgICAgXFxlcnJhdGFcXCAgICAgICBcXG1pZGNhbm9uXFwgICAgIFxcbm9uY2Fub25cXCAgICAgXFxsYXRlbm9uY2Fub25cXFxuIn0= -->
+<pre><code>[1] \canon\        \errata\       \midcanon\     \noncanon\     \latenoncanon\</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2149,8 +2229,9 @@ umap_200 %&gt;% mutate(subsubset_plot = gsub(subsubset, pattern = &quot;SYPRO&qu
 plot of the UMAP results</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxudW1hcF9kZW5zaXR5IDwtIHVtYXBfMTAwIHw+IFxuICBnZ3Bsb3QoYWVzKHggPSBVTUFQMSwgeSA9IFVNQVAyKSkgK1xuICBcbiAgZ2VvbV9kZW5zaXR5XzJkX2ZpbGxlZChkYXRhID0gc2VsZWN0KHVtYXBfMTAwLCAtc3Vic2V0KSxcbiAgICAgICAgICAgICAgICAgICAgICAgICBhbHBoYSA9IDAuNSkgK1xuICBnZW9tX2RlbnNpdHlfMmQoZGF0YSA9IHNlbGVjdCh1bWFwXzEwMCwgLXN1YnNldCksXG4gICAgICAgICAgICAgICAgICBsaW5ld2lkdGggPSAwLjI1LCBjb2xvdXIgPSBcXGJsYWNrXFwpICtcbiAgXG4gICMgZ2VvbV9kZW5zaXR5XzJkX2ZpbGxlZChhbHBoYSA9IDAuNSkgK1xuICAjIGdlb21fZGVuc2l0eV8yZChsaW5ld2lkdGggPSAwLjI1LCBjb2xvdXIgPSBcXGJsYWNrXFwpICtcbiAgXG4gIGdlb21fcG9pbnQoc2l6ZSA9IDAuMDUsIGFscGhhID0gMC44KStcbiAgZmFjZXRfd3JhcCh+c3Vic2V0LCBuY29sID0gMikgK1xuICBocmJydGhlbWVzOjp0aGVtZV9pcHN1bSgpICtcbiAgdGhlbWUoYXNwZWN0LnJhdGlvID0gMSlcblxuZ2dzYXZlKGZpbGVuYW1lID0gXFwvVXNlcnMvdGFpYXNlYW53dS9EZXNrdG9wL3Byb2dyYW1taW5nL2RzZmJhc2UvMjAyMzEyMDVfdmVyc2lvbi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvZGVuc2l0eS9VTUFQXzEwMF9uZWlnaGJvcnNfMHAyX21pbmRpc3RfZGVuc2l0eS5wZGZcXCxcbiAgICAgICB3aWR0aCA9IDEwLFxuICAgICAgICBoZWlnaHQgPSAxNSxcbiAgICAgICBkZXZpY2UgPSBjYWlyb19wZGYpXG5gYGBcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYGBgclxudW1hcF9kZW5zaXR5IDwtIHVtYXBfMTAwIHw+IFxuICBnZ3Bsb3QoYWVzKHggPSBVTUFQMSwgeSA9IFVNQVAyKSkgK1xuICBcbiAgZ2VvbV9kZW5zaXR5XzJkX2ZpbGxlZChkYXRhID0gc2VsZWN0KHVtYXBfMTAwLCAtc3Vic2V0KSxcbiAgICAgICAgICAgICAgICAgICAgICAgICBhbHBoYSA9IDAuNSkgK1xuICBnZW9tX2RlbnNpdHlfMmQoZGF0YSA9IHNlbGVjdCh1bWFwXzEwMCwgLXN1YnNldCksXG4gICAgICAgICAgICAgICAgICBsaW5ld2lkdGggPSAwLjI1LCBjb2xvdXIgPSBcXGJsYWNrXFwpICtcbiAgXG4gICMgZ2VvbV9kZW5zaXR5XzJkX2ZpbGxlZChhbHBoYSA9IDAuNSkgK1xuICAjIGdlb21fZGVuc2l0eV8yZChsaW5ld2lkdGggPSAwLjI1LCBjb2xvdXIgPSBcXGJsYWNrXFwpICtcbiAgXG4gIGdlb21fcG9pbnQoc2l6ZSA9IDAuMDUsIGFscGhhID0gMC44KStcbiAgZmFjZXRfd3JhcCh+c3Vic2V0LCBuY29sID0gMikgK1xuICBocmJydGhlbWVzOjp0aGVtZV9pcHN1bSgpICtcbiAgdGhlbWUoYXNwZWN0LnJhdGlvID0gMSlcblxuZ2dzYXZlKGZpbGVuYW1lID0gXFwvVXNlcnMvdGFpYXNlYW53dS9EZXNrdG9wL3Byb2dyYW1taW5nL2RzZmJhc2UvMjAyMzEyMDVfdmVyc2lvbi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvZGVuc2l0eS9VTUFQXzEwMF9uZWlnaGJvcnNfMHAyX21pbmRpc3RfZGVuc2l0eS5wZGZcXCxcbiAgICAgICB3aWR0aCA9IDEwLFxuICAgICAgICBoZWlnaHQgPSAxNSxcbiAgICAgICBkZXZpY2UgPSBjYWlyb19wZGYpXG5gYGBcbmBgYFxuYGBgIn0= -->
 <pre class="r"><code>```r
+```r
 umap_density &lt;- umap_100 |&gt; 
   ggplot(aes(x = UMAP1, y = UMAP2)) +
   
@@ -2171,36 +2252,23 @@ ggsave(filename = \/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_versio
        width = 10,
         height = 15,
        device = cairo_pdf)</code></pre>
-<pre><code>
-&lt;!-- rnb-source-end --&gt;
-
-&lt;!-- rnb-chunk-end --&gt;
-
-
-&lt;!-- rnb-text-begin --&gt;
-
-
-
-&lt;!-- rnb-text-end --&gt;
-
-
-&lt;!-- rnb-chunk-begin --&gt;
-
-
-&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxudW1hcF9kZW5zaXR5MiA8LSB1bWFwXzEwMCB8PiBcbiAgZ2dwbG90KGFlcyh4ID0gVU1BUDEsIHkgPSBVTUFQMikpICtcbiAgIyBcbiAgIyBnZW9tX2RlbnNpdHlfMmRfZmlsbGVkKGRhdGEgPSBzZWxlY3QodW1hcF8xMDAsIC1zdWJzZXQpLFxuICAjICAgICAgICAgICAgICAgICAgICAgICAgYWxwaGEgPSAwLjUpICtcbiAgIyBnZW9tX2RlbnNpdHlfMmQoZGF0YSA9IHNlbGVjdCh1bWFwXzEwMCwgLXN1YnNldCksXG4gICMgICAgICAgICAgICAgICAgIGxpbmV3aWR0aCA9IDAuMjUsIGNvbG91ciA9IFxcYmxhY2tcXCkgK1xuICBcbiAgZ2VvbV9kZW5zaXR5XzJkX2ZpbGxlZChhbHBoYSA9IDAuNSwgY29udG91cl92YXIgPSBcXGNvdW50XFwpICtcbiAgZ2VvbV9kZW5zaXR5XzJkKGxpbmV3aWR0aCA9IDAuMjUsIGNvbG91ciA9IFxcYmxhY2tcXCwgIGNvbnRvdXJfdmFyID0gXFxjb3VudFxcKSArXG4gIFxuICBnZW9tX3BvaW50KHNpemUgPSAwLjA1LCBhbHBoYSA9IDAuOCkrXG4gIGZhY2V0X3dyYXAofnN1YnNldCwgbmNvbCA9IDIpICtcbiAgaHJicnRoZW1lczo6dGhlbWVfaXBzdW0oKSArXG4gIHRoZW1lKGFzcGVjdC5yYXRpbyA9IDEpXG5cblxuZ2dzYXZlKGZpbGVuYW1lID0gXFwvVXNlcnMvdGFpYXNlYW53dS9EZXNrdG9wL3Byb2dyYW1taW5nL2RzZmJhc2UvMjAyMzEyMDVfdmVyc2lvbi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvZGVuc2l0eS9VTUFQXzEwMF9uZWlnaGJvcnNfMHAyX21pbmRpc3RfZGVuc2l0eV9mYWNldC5wZGZcXCxcbiAgICAgICB3aWR0aCA9IDEwLFxuICAgICAgICBoZWlnaHQgPSAxNSxcbiAgICAgICBkZXZpY2UgPSBjYWlyb19wZGYpXG5cbmBgYFxuYGBgIn0= --&gt;
-
-```r
-```r
-umap_density2 &lt;- umap_100 |&gt; 
+<pre><code></code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudW1hcF9kZW5zaXR5MiA8LSB1bWFwXzEwMCB8PiBcbiAgZ2dwbG90KGFlcyh4ID0gVU1BUDEsIHkgPSBVTUFQMikpICtcbiAgIyBcbiAgIyBnZW9tX2RlbnNpdHlfMmRfZmlsbGVkKGRhdGEgPSBzZWxlY3QodW1hcF8xMDAsIC1zdWJzZXQpLFxuICAjICAgICAgICAgICAgICAgICAgICAgICAgYWxwaGEgPSAwLjUpICtcbiAgIyBnZW9tX2RlbnNpdHlfMmQoZGF0YSA9IHNlbGVjdCh1bWFwXzEwMCwgLXN1YnNldCksXG4gICMgICAgICAgICAgICAgICAgIGxpbmV3aWR0aCA9IDAuMjUsIGNvbG91ciA9IFwiYmxhY2tcIikgK1xuICBcbiAgZ2VvbV9kZW5zaXR5XzJkX2ZpbGxlZChhbHBoYSA9IDAuNSwgY29udG91cl92YXIgPSBcImNvdW50XCIpICtcbiAgZ2VvbV9kZW5zaXR5XzJkKGxpbmV3aWR0aCA9IDAuMjUsIGNvbG91ciA9IFwiYmxhY2tcIiwgIGNvbnRvdXJfdmFyID0gXCJjb3VudFwiKSArXG4gIFxuICBnZW9tX3BvaW50KHNpemUgPSAwLjA1LCBhbHBoYSA9IDAuOCkrXG4gIGZhY2V0X3dyYXAofnN1YnNldCwgbmNvbCA9IDIpICtcbiAgaHJicnRoZW1lczo6dGhlbWVfaXBzdW0oKSArXG4gIHRoZW1lKGFzcGVjdC5yYXRpbyA9IDEpXG5cblxuZ2dzYXZlKGZpbGVuYW1lID0gXCIvVXNlcnMvdGFpYXNlYW53dS9EZXNrdG9wL3Byb2dyYW1taW5nL2RzZmJhc2UvMjAyMzEyMDVfdmVyc2lvbi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvZGVuc2l0eS9VTUFQXzEwMF9uZWlnaGJvcnNfMHAyX21pbmRpc3RfZGVuc2l0eV9mYWNldC5wZGZcIixcbiAgICAgICB3aWR0aCA9IDEwLFxuICAgICAgICBoZWlnaHQgPSAxNSxcbiAgICAgICBkZXZpY2UgPSBjYWlyb19wZGYpXG5cbmBgYCJ9 -->
+<pre class="r"><code>umap_density2 &lt;- umap_100 |&gt; 
   ggplot(aes(x = UMAP1, y = UMAP2)) +
   # 
   # geom_density_2d_filled(data = select(umap_100, -subset),
   #                        alpha = 0.5) +
   # geom_density_2d(data = select(umap_100, -subset),
-  #                 linewidth = 0.25, colour = \black\) +
+  #                 linewidth = 0.25, colour = &quot;black&quot;) +
   
-  geom_density_2d_filled(alpha = 0.5, contour_var = \count\) +
-  geom_density_2d(linewidth = 0.25, colour = \black\,  contour_var = \count\) +
+  geom_density_2d_filled(alpha = 0.5, contour_var = &quot;count&quot;) +
+  geom_density_2d(linewidth = 0.25, colour = &quot;black&quot;,  contour_var = &quot;count&quot;) +
   
   geom_point(size = 0.05, alpha = 0.8)+
   facet_wrap(~subset, ncol = 2) +
@@ -2208,19 +2276,15 @@ umap_density2 &lt;- umap_100 |&gt;
   theme(aspect.ratio = 1)
 
 
-ggsave(filename = \/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/04_UMAP_analysis/final_parameters/plots/density/UMAP_100_neighbors_0p2_mindist_density_facet.pdf\,
+ggsave(filename = &quot;/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/04_UMAP_analysis/final_parameters/plots/density/UMAP_100_neighbors_0p2_mindist_density_facet.pdf&quot;,
        width = 10,
         height = 15,
        device = cairo_pdf)
 </code></pre>
-<p>```</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
-</div>
-</div>
-</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQpMb29rcyBsaWtlIFVNQVAgaXMgdGhlIGN1cnJlbnQgYmVzdCBhbmFseXNpcyBmb3IgdGhlIGN1cnZlIHNoYXBlcy4KCkluIHRoaXMgbm90ZWJvb2ssIGNyZWF0ZSBhIHJlcHJvZHVjaWJsZSBVTUFQIGFuYWx5c2lzClRlc3QgdmFyaWF0aW9ucyBpbiBoeXBlcnBhcmFtZXRlcnMKVGVzdCBib3RoIHJhdywgZmlyc3QsIGFuZCBzZWNvbmQgZGVyaXZhdGl2ZSBkYXRhCgpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkodW1hcCkKbGlicmFyeShnbHVlKQpsaWJyYXJ5KGVtYmVkKSAjIHJlcXVpcmVkIGluc3RhbGxhdGlvbiBvZiBweXRob24gcGFja2FnZSAidGVuc29yZmxvdyIsIGFuZCB0aGVyZWZvcmUgYWxzbyByZXRpY3VsYXRlCmxpYnJhcnkoZXh0cmFmb250KSAjIGZvciBjYWlyb19wZHMgCiMgY2Fpcm9fcGRmICh3aGljaCB3aWxsIHRocm93IG9ic2N1cmUgZXJyb3IgYWxzbyBpZiB0aGUgc2F2ZSBwYXRoIHRvIGdnc2F2ZSBkb2Vucyd0IGV4aXN0IC0tIHNlZSBodHRwczovL2dpdGh1Yi5jb20vdGlkeXZlcnNlL2dncGxvdDIvaXNzdWVzLzQxNjgpCgojIGhhcyB1bm5lY2Vzc2FyaWx5IGNvbXBsZXggZGlyZWN0b3J5IGNyZWF0aW9uIHN5c3RlbSwgYnV0IHdvcmtzLi4uIApzb3VyY2UoIlIvZnVuY3Rpb25zL3VtYXAuUiIpICMgaGVscGVyIGZ1bmN0aW9ucyB0byBpbXBsZW1lbnQgYW5kIHBsb3QgVU1BUCB1c2luZyB0aWR5bW9kZWxzCmBgYAoKPT09PT09PT09IENhbGN1bGF0ZSB0aGUgVU1BUFMgPT09PT09PT0gKG5leHQ6IGFuYWx5emUgYW5kIG1ha2UgZmlndXJlcyBmb3IgVU1BUHMpClJlYWQgaW4gZHNmYmFzZSwgYW5kIGFkZCBkZXJpdmF0aXZlcwpgYGB7cn0KZHNmYmFzZV9kZXJpdiA8LSByZWFkX3JkcygiLi4vMDNfZmluYWxfZHNmYmFzZS9kc2ZiYXNlX2Fubm90YXRlZC5yZHMiKSB8PiAKICBncm91cF9ieShpZCkgfD4gCiAgYXJyYW5nZShUZW1wZXJhdHVyZSkgfD4gCiAgbXV0YXRlKGRyZnUgPSBzaWduYWw6OnNnb2xheWZpbHQoeCA9IHZhbHVlX25vcm0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbSA9IDEpLAogICAgICAgICBkZHJmdSA9IHNpZ25hbDo6c2dvbGF5ZmlsdCh4ID0gdmFsdWVfbm9ybSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtID0gMikpIHw+IAogIHVuZ3JvdXAoKQoKIyMgcHJldmlvdXMgdmVyc2lvbnMgaGFkIHJlbW92ZWQgdGhlIG5zcDMgc2NyZWVuCiMjIGJ1dCB0aGUgZmluYWwgZG9lcyBub3QsIGJlY2F1c2UgaXQgd2Fzbid0IHdvcnRoIHRoZSBhZGRlZCBjb21wbGV4aXR5CmBgYAoKUHJlcGFyZSBkc2ZiYXNlIGZvciB1bWFwLCBpbmNsdWRpbmcgZGVyaXZhdGl2ZXMKYGBge3J9CnJmdSA8LSBwcmVwX2Zvcl9VTUFQKGRzZmJhc2VfZGVyaXYsICJ2YWx1ZV9ub3JtIiwgZHJvcF9tYWMxID0gRkFMU0UpCmRyZnUgPC0gcHJlcF9mb3JfVU1BUChkc2ZiYXNlX2Rlcml2LCAiZHJmdSIsIGRyb3BfbWFjMSA9IEZBTFNFKQpkZHJmdSA8LSBwcmVwX2Zvcl9VTUFQKGRzZmJhc2VfZGVyaXYsICJkZHJmdSIsIGRyb3BfbWFjMSA9IEZBTFNFKQoKcmZ1JGlkIHw+IG5fZGlzdGluY3QoKSAjIFsxXSA1NzgzCnJmdSRwcm90ZWluIHw+IG5fZGlzdGluY3QoKSAjIFsxXSA4MQpgYGAKClRlc3QgVU1BUCBwYXJhbWV0ZXJzIGZvciByYXcgZGF0YQpgYGB7cn0KIyBzZXQgcGFyYW1ldGVycyB0byBleHBsb3JlCi50ZXN0X25laWdoYm9ycyA8LSBjKDEwLCA1MCwgMTAwLCAyMDAsIDQwMCwgODAwKQoudGVzdF9taW5fZGlzdHMgPC0gYygwLjA1LCAwLjEsIDAuMiwgMC40LCAwLjgpClVNQVBfcGFycyA8LSBleHBhbmQuZ3JpZCgudGVzdF9uZWlnaGJvcnMsIC50ZXN0X21pbl9kaXN0cykgfD4gCiAgc2V0X25hbWVzKGMoIm5fbmVpZ2hib3JzIiwgIm1pbl9kaXN0cyIpKQoKIyBkaXJlY3RvcmllcyB0byBzYXZlIHJlc3VsdHMKLmV4cGxvcmVfcGFycyA8LSAiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vIgouc2F2ZV9yZnUgPC0gZ2x1ZTo6Z2x1ZSgiey5leHBsb3JlX3BhcnN9cmZ1LyIpCi5zYXZlX2RyZnUgPC0gZ2x1ZTo6Z2x1ZSgiey5leHBsb3JlX3BhcnN9ZHJmdS8iKQouc2F2ZV9kZHJmdSA8LSBnbHVlOjpnbHVlKCJ7LmV4cGxvcmVfcGFyc31kZHJmdS8iKQpmczo6ZGlyX2NyZWF0ZShjKC5zYXZlX3JmdSwgLnNhdmVfZHJmdSwgLnNhdmVfZGRyZnUpKQoKZXhwbG9yZV9VTUFQX3BhcnMocmZ1LCAKICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzID0gVU1BUF9wYXJzJG5fbmVpZ2hib3JzLAogICAgICAgICAgICAgICAgICAubWluX2Rpc3RzID0gVU1BUF9wYXJzJG1pbl9kaXN0cywKICAgICAgICAgICAgICAgICAgLm90aGVyX25vdGVzID0gIkRhdGE6IG5vcm1hbGl6ZWQgUkZVLiBcbiBJbmNsdWRlcyBmdWxsIDYxNjUgZW50cmllcyBpbiBEU0ZiYXNlLiIsCiAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gLnNhdmVfcmZ1LAogICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpCgoKZXhwbG9yZV9VTUFQX3BhcnMoZHJmdSwKICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzID0gVU1BUF9wYXJzJG5fbmVpZ2hib3JzLAogICAgICAgICAgICAgICAgICAubWluX2Rpc3RzID0gVU1BUF9wYXJzJG1pbl9kaXN0cywKICAgICAgICAgICAgICAgICAgLm90aGVyX25vdGVzID0gIkRhdGE6IG5vcm1hbGl6ZWQgUkZVLiBcbiBJbmNsdWRlcyBmdWxsIDYxNjUgZW50cmllcyBpbiBEU0ZiYXNlLiIsCiAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gLnNhdmVfZHJmdSwKICAgICAgICAgICAgICAgICAgLnNhdmVfaW5wdXQgPSBUUlVFKQoKZXhwbG9yZV9VTUFQX3BhcnMoZGRyZnUsCiAgICAgICAgICAgICAgICAgIC5uX25laWdoYm9ycyA9IFVNQVBfcGFycyRuX25laWdoYm9ycywKICAgICAgICAgICAgICAgICAgLm1pbl9kaXN0cyA9IFVNQVBfcGFycyRtaW5fZGlzdHMsCiAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9ICJEYXRhOiBub3JtYWxpemVkIFJGVS4gXG4gSW5jbHVkZXMgZnVsbCA2MTY1IGVudHJpZXMgaW4gRFNGYmFzZS4iLAogICAgICAgICAgICAgICAgICAuc2F2ZV90byA9IC5zYXZlX2RkcmZ1LAogICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpCmBgYAoKCkNvbmNsdXNpb246IHRoZSBmaW5hbCByZXN1bHRzIGFyZSByZWxhdGl2ZWx5IGluc2Vuc2l0aXZlIHRvIHRoZSBwYXJhbWV0ZXJzIChzZWUgU0kgZmlndXJlIG1ha2luZyBiZWxvdyksIGFuZCBhbHNvIHRoZSBmb3JtIG9uIHRoZSBpbnB1dCBkYXRhIChSRlUsIGRSRlUsIGFuZCBkZFJGVSkuIFRoYXQncyBhIGdvb2Qgc2lnbiB0aGF0IHRoZSBzZXBhcmF0aW9uIHdlIGFyZSBzZWVpbmcgaXMgbm90IGFuIGFydGlmYWN0IG9mIHRoZSBzcGVjaWZpYyBwcm9jZXNzaW5nIG9yIGh5cGVyLXBhcmFtZXRlcnMgb2YgVU1BUC4gR29pbmcgdG8gdXNlIHRoZSByYXcgUkZVIGNsdXN0ZXJpbmcsIHNpbmNlIHRoYXQgaXMgb25lIGxlc3MgcHJvY2Vzc2luZyBzdGVwLiAKClRoZSAiY2xlYXJlc3QiIHZpc3VhbGl6YXRpb24sIGluIG15IG9waW5pb24sIGlzIHRoZSBSRlUgZGF0YSB3aXRoIDIwMCBuZWlnaGJvcnMgYW5kIG1pbl9kaXN0ID0gMC4yCmBgYHtyfQojIyBvdmVyd3JpdGUgdGhlIG9sZCBwcm90ZWluIG5hbWUgY29sdW1ucwppZF9hbm5vdGF0aW9ucyA8LSByZWFkX3JkcygiLi4vMDNfZmluYWxfZHNmYmFzZS9leHBlcmltZW50YWxfY29uZGl0aW9ucy9kc2ZiYXNlX2V4cGVyaW1lbnRhbF9jb25kaXRpb25zLnJkcyIpCgp1bWFwXzIwMCA8LSByZWFkX3JkcygiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3Jlc3VsdHMvZHNmYmFzZV91bWFwX2p1aWNlX25laWdoYm9yc18yMDBfbWluZGlzdF8wLjIucmRzIikgJT4lCiAgc2VsZWN0KC1jKCJwcm90ZWluIiwgInN1YnNldCIpKSAlPiUgCiAgbGVmdF9qb2luKGlkX2Fubm90YXRpb25zLCBieSA9IGpvaW5fYnkoImlkIikpCmBgYAoKIyMjIyMjIyMgLS0tLS0tLS0tLSBNYWtlIFNJIGZhY2V0IGZpZ3VyZXMgdmlzdWFsaXppbmcgdGhlIGltcGFjdCBvZiBpbnB1dCBwYXJhbWV0ZXJzCmBgYHtyfQojIyMgLS0gIHJhdyByZnUKcmZ1X3VtYXBzIDwtIGNvbWJpbmVfdW1hcF9kYXRhKCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy8iKQoKd3JpdGVfcmRzKHJmdV91bWFwcywgIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL3JmdS9wYXJhbWV0ZXJfc3VtbWFyeS9kc2ZiYXNlX3VtYXBfcmZ1X2FsbF9wYXJhbWV0ZXJfcmVzdWx0cy5yZHMiKQoKZmFjZXRfdW1hcF9wYXJzKHJmdV91bWFwcywgCiAgICAgICAgICAgICAgICBwbG90X3RpdGxlID0gIlVNQVAgcmVzdWx0czsgcmF3IFJGVSBkYXRhIiwKICAgICAgICAgICAgICAgICJyZnUiLCAKICAgICAgICAgICAgICIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX3JmdV9wYXJhbWV0ZXJfY29tcGFyaXNvbi5wZGYiKQoKIyMjIC0tICBmaXJzdCBkZXJpdmF0aXZlCmRyZnVfdW1hcHMgPC0gY29tYmluZV91bWFwX2RhdGEoIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL3JmdS9yZXN1bHRzLyIpCgp3cml0ZV9yZHMoZHJmdV91bWFwcywgIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RyZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX2RyZnVfYWxsX3BhcmFtZXRlcl9yZXN1bHRzLnJkcyIpCgoKZmFjZXRfdW1hcF9wYXJzKGRyZnVfdW1hcHMsIAogICAgICAgICAgICAgICAgcGxvdF90aXRsZSA9ICJVTUFQIHJlc3VsdHM7IGRSRlUgZGF0YSIsCiAgICAgICAgICAgICAgICAiZHJmdSIsIAogICAgICAgICAgICAgIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RyZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX2RyZnVfcGFyYW1ldGVyX2NvbXBhcmlzb24ucGRmIikKCiMjIyAtLSAgc2Vjb25kIGRlcml2YXRpdmUKZGRyZnVfdW1hcHMgPC0gY29tYmluZV91bWFwX2RhdGEoIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RkcmZ1L3Jlc3VsdHMvIikKCndyaXRlX3JkcyhkZHJmdV91bWFwcywgIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL2RkcmZ1L3BhcmFtZXRlcl9zdW1tYXJ5L2RzZmJhc2VfdW1hcF9kZHJmdV9hbGxfcGFyYW1ldGVyX3Jlc3VsdHMucmRzIikKCmZhY2V0X3VtYXBfcGFycyhkZHJmdV91bWFwcywgCiAgICAgICAgICAgICAgICBwbG90X3RpdGxlID0gIlVNQVAgcmVzdWx0czsgZGRSRlUgZGF0YSIsCiAgICAgICAgICAgICAgICAiZGRyZnUiLCAKICAgICAgICAgICAgICIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9kZHJmdS9wYXJhbWV0ZXJfc3VtbWFyeS9kc2ZiYXNlX3VtYXBfZGRyZnVfcGFyYW1ldGVyX2NvbXBhcmlzb24ucGRmIikKYGBgCgojIyMjIyMjIC0tLS0tLS0tLSBNYWtlIG1haW4gcGFuZWwgZmlndXJlIG9mIFVNQVAgMjAwIC8gMC4yCk1ha2UgdGhlIG1haW4gcGFuZWwgcGxvdApgYGB7cn0KcF91bWFwIDwtIHBsb3RfVU1BUChVTUFQX2RhdGEgPSB1bWFwXzIwMCwKICAgICAgICAgIC5uX25laWdoYm9ycyA9IDIwMCwgIyBqdXN0IGZvciBtYWtpbmcgbGFiZWxzCiAgICAgICAgICAubWluX2Rpc3QgPSAwLjIsICMganVzdCBmb3IgbWFraW5nIGxhYmVscwogICAgICAgICAgLmZhY2V0ID0gRkFMU0UsICMgZG9uJ3QgZmFjZXQgaW4gdGhlIG1haW4gcGFuZWwKICAgICAgICAgIC5vdGhlcl9ub3RlcyA9ICJpbnB1dCBkYXRhOiBSRlUuIEFsbCA2NTE1IGVudHJpZWQgaW5jbHVkZWQgaW4gYW5hbHlzaXMuIiwgIyBrZWVwIGluIHRpdGxlIGZvciByZW1pbmRlci4gQ3JvcCBpbiB0aGUgZmluYWwgZmlndXJlLgogICAgICAgICAgLnNhdmVfdG8gPSAiLi4vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL21haW5fdGV4dC8iLAogICAgICAgICAgLnNhdmVfbmFtZSA9ICJkc2ZiYXNlX3VtYXBfIiwKICAgICAgICAgIC5yZXR1cm5fcGxvdCA9IFRSVUUsCiAgICAgICAgICAuZHNmYmFzZV9jb2xvcnMgPSBjKCJjYW5vbiIgPSAiIzMwMTIzQiIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJub25jYW5vbiIgPSAiIzFCRTRCNyIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzcGVjdWxhdGl2ZSIgPSAiI0ZBQkEzOSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJlcnJhdGEiID0gIiM3QTA0MDMiKSkKCnBfdW1hcF9maW5hbCA8LSBwX3VtYXAgKwoKICAgICMgYWRqdXN0IHRoZW1lCiAgICBocmJydGhlbWVzOjp0aGVtZV9pcHN1bShiYXNlX3NpemUgPSAxMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGF4aXNfdGl0bGVfc2l6ZSA9IDEyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RyaXBfdGV4dF9zaXplID0gMTIpICsKICAKICAgIHRoZW1lKGFzcGVjdC5yYXRpbyA9IDEsIGxlZ2VuZC5wb3NpdGlvbiA9ICJ0b3AiLCBsZWdlbmQuanVzdGlmaWNhdGlvbiA9ICJsZWZ0IikgKyAKICAgIGxhYnMoc3VidGl0bGUgPSAiaW5wdXQgZGF0YTogUkZVLiBBbGwgNjUxNSBlbnRyaWVkIGluY2x1ZGVkIGluIGFuYWx5c2lzLiIpIAoKZ2dzYXZlKCIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvbWFpbl90ZXh0L2RzZmJhc2VfdW1hcF8yMDBfbWluX2Rpc3RfMC4yLnBkZiIsCiAgICAgICB3aWR0aCA9IDUuNSwgIyBmYWNldCBwbG90cyBnZXQgc2F2ZWQgbGFyZ2VyCiAgICAgICAgIGhlaWdodCA9IDUuNSwgIyBmYWNldCBwbG90cyBnZXQgc2F2ZWQgbGFyZ2VyCiAgICAgICAgIGRldmljZSA9IGNhaXJvX3BkZikKCmBgYAoKIyMjIyMjIyMgLS0tLS0tLS0tLSBNYWtlIFNJIGZhY2V0IGZpZ3VyZXMgZGlzcGxheWluZyB3aGVyZSBkaWZmZXJlbnQgcHJvdGVpbnMgYXJlIHBsYWNlZCBpbiB0aGUgVU1BUHMKYGBge3J9CnBsb3RfVU1BUF9ieV9wcm90ZWluKHVtYXBfMjAwLCAyMDAsIDAuMiwgCiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsCiAgICAgICAgICAgICAgICAgICAgIC5wbG90X2hlaWdodCA9IDQwLAogICAgICAgICAgICAgICAgICAgICAubmNvbCA9IDYsCiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9ICJBbGwgNjUxNSBlbnRyaWVzIGluY2x1ZGVkIGluIGFuYWx5c2lzLiIsCiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gIi4uLzA0X1VNQVBfYW5hbHlzaXMvZmluYWxfcGFyYW1ldGVycy9wbG90cy9ieV9wcm90ZWluLyIpCgoKIyMjIHNob3cgZm9yIGEgY291cGxlIG9mIG90aGVyIGV4dHJlbWUgcGFyYW1ldGVyIGV4YW1wbGVzCnVtYXBfMTAgPC0gcmVhZF9yZHMoIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL3JmdS9yZXN1bHRzL2RzZmJhc2VfdW1hcF9qdWljZV9uZWlnaGJvcnNfMTBfbWluZGlzdF8wLjIucmRzIikgJT4lCiAgc2VsZWN0KC1jKCJwcm90ZWluIiwgInN1YnNldCIpKSAlPiUgCiAgbGVmdF9qb2luKGlkX2Fubm90YXRpb25zLCBieSA9IGpvaW5fYnkoImlkIikpCgpwbG90X1VNQVBfYnlfcHJvdGVpbih1bWFwXzEwLCAxMCwgMC4yLCAKICAgICAgICAgICAgICAgICAgICAgLnBsb3Rfd2lkdGggPSAxNSwKICAgICAgICAgICAgICAgICAgICAgLnBsb3RfaGVpZ2h0ID0gNDAsCiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9ICJBbGwgNjUxNSBlbnRyaWVzIGluY2x1ZGVkIGluIGFuYWx5c2lzLiIsCiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gIi4uLzA0X1VNQVBfYW5hbHlzaXMvZmluYWxfcGFyYW1ldGVycy9wbG90cy9ieV9wcm90ZWluLyIpCgp1bWFwXzQwMCA8LSByZWFkX3JkcygiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3Jlc3VsdHMvZHNmYmFzZV91bWFwX2p1aWNlX25laWdoYm9yc180MDBfbWluZGlzdF8wLjIucmRzIikgJT4lCiAgc2VsZWN0KC1jKCJwcm90ZWluIiwgInN1YnNldCIpKSAlPiUgCiAgbGVmdF9qb2luKGlkX2Fubm90YXRpb25zLCBieSA9IGpvaW5fYnkoImlkIikpCgpwbG90X1VNQVBfYnlfcHJvdGVpbih1bWFwXzQwMCwgNDAwLCAwLjIsIAogICAgICAgICAgICAgICAgICAgICAucGxvdF93aWR0aCA9IDE1LAogICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCwKICAgICAgICAgICAgICAgICAgICAgLm90aGVyX25vdGVzID0gIkFsbCA2NTE1IGVudHJpZXMgaW5jbHVkZWQgaW4gYW5hbHlzaXMuIiwKICAgICAgICAgICAgICAgICAgICAgLnNhdmVfdG8gPSAiLi4vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL2J5X3Byb3RlaW4vIikKCnVtYXBfMjAwX3A4IDwtIHJlYWRfcmRzKCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9kc2ZiYXNlX3VtYXBfanVpY2VfbmVpZ2hib3JzXzIwMF9taW5kaXN0XzAuOC5yZHMiKSAlPiUKICBzZWxlY3QoLWMoInByb3RlaW4iLCAic3Vic2V0IikpICU+JSAKICBsZWZ0X2pvaW4oaWRfYW5ub3RhdGlvbnMsIGJ5ID0gam9pbl9ieSgiaWQiKSkKCnBsb3RfVU1BUF9ieV9wcm90ZWluKHVtYXBfMjAwX3A4LCAyMDAsIDAuOCwgCiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsCiAgICAgICAgICAgICAgICAgICAgIC5wbG90X2hlaWdodCA9IDQwLAogICAgICAgICAgICAgICAgICAgICAub3RoZXJfbm90ZXMgPSAiQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy4iLAogICAgICAgICAgICAgICAgICAgICAuc2F2ZV90byA9ICIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi8iKQoKYGBgCgoKCkNvbXBhcmUgVU1BUCBzZXBhcmF0aW9uIHRvIGRzZndvcmxkIFRtYSBjYWxjdWxhdGlvbnMKYGBge3J9CgpgYGAKCgotLS0tLS0tCiMjIyMjIyMjIyBzY3JhdGNoIHdvcmsgYmVsb3cgdGhpcyBsaW5lCgpgYGB7cn0KI2ZzOjpkaXJfY3JlYXRlKCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvc3VtbWFyeV9wbG90LyIpCgpwbG90X1VNQVAodW1hcF8yMDAsCiAgICAgICAgICAyMDAsCiAgICAgICAgICAwLjIsCiAgICAgICAgICBmYWNldCA9IEZBTFNFLAogICAgICAgICAgLnNhdmVfdG8gPSAiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3N1bW1hcnlfcGxvdC8iLAogICAgICAgICAgICAgICAgICAgICAgLnNhdmVfbmFtZSA9ICJkc2ZiYXNlX3VtYXBfcGFyYW1ldGVyX2NvbXBhcmlzb24iKQoKcGxvdF9VTUFQCgpwbG90X1VNQVAgPC0gZnVuY3Rpb24oVU1BUF9kYXRhLAogICAgICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzLAogICAgICAgICAgICAgICAgICAgICAgLm1pbl9kaXN0LAogICAgICAgICAgICAgICAgICAgICAgLmZhY2V0ID0gVFJVRSwKICAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9ICJOc3AzIG1hYzEgc2NyZWVuIGV4Y2x1ZGVkIGZyb20gYW5hbHlzaXMuIiwKICAgICAgICAgICAgICAgICAgICAgIC54ID0gIlVNQVAxIiwKICAgICAgICAgICAgICAgICAgICAgIC55ID0gIlVNQVAyIiwKICAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gIi9Vc2Vycy90YWlhc2Vhbnd1L0Rlc2t0b3AvcHJvZ3JhbW1pbmcvZHNmYmFzZS8wNV9hbmFseXNlcy8xX1VNQVAvb3B0aW1pemF0aW9ucy9wbG90cy8iLAogICAgICAgICAgICAgICAgICAgICAgLnNhdmVfbmFtZSA9ICJkc2ZiYXNlX3VtYXBfIiwKCiAgICAgICAgICAgICAgICAgICAgICAuZHNmYmFzZV9jb2xvcnMgPSBjKCJjYW5vbiIgPSAiIzMwMTIzQiIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJub25jYW5vbiIgPSAiIzFCRTRCNyIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzcGVjdWxhdGl2ZSIgPSAiI0ZBQkEzOSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJlcnJhdGEiID0gIiM3QTA0MDMiKSwKICAgICAgICAgICAgICAgICAgICAgIC5yZXR1cm5fcGxvdCA9IEZBTFNFLAogICAgICAgICAgICAgICAgICAgICAgLi4uKSAKYGBgCgoKCgoKCgoKYGBge3J9CiAgCiAgVU1BUF9wcm90ZWluX3N1YnNldF8yMDAgPC0KICAgIHVtYXBfMjAwIHw+CiAgICB1bml0ZShzdWJzdWJzZXRfcHJvdGVpbiwgYyhzdWJzdWJzZXRfZiwgcHJvdGVpbiksIHJlbW92ZSA9IEZBTFNFKSB8PgogICAgYXJyYW5nZShzdWJzdWJzZXRfZikgfD4KICAgIG11dGF0ZShzdWJzdWJzZXRfcHJvdGVpbl9mID0gZmFjdG9yKHN1YnN1YnNldF9wcm90ZWluLCBsZXZlbHMgPSB1bmlxdWUoc3Vic3Vic2V0X3Byb3RlaW4pKSkKCgpVTUFQX3Byb3RlaW5fc3Vic2V0XzIwMCRzdWJzdWJzZXRfcHJvdGVpbl9mICU+JSB1bmlxdWUoKQpgYGAKCgoKYGBge3J9CiAjIyAtLS0gbWFrZSBwbG90Cm1ha2VfbWFpbl9wYW5lbF9VTUFQIDwtIGZ1bmN0aW9uKFVNQVBfZGF0YSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLmNvbG9yX2J5LAogICAgICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzLAogICAgICAgICAgICAgICAgICAgICAgLm1pbl9kaXN0LAogICAgICAgICAgICAgICAgICAgICAgLm90aGVyX25vdGVzID0gIk5zcDMgbWFjMSBzY3JlZW4gZXhjbHVkZWQgZnJvbSBhbmFseXNpcy4iLAogICAgICAgICAgICAgICAgICAgICAgLnggPSAiVU1BUDEiLAogICAgICAgICAgICAgICAgICAgICAgLnkgPSAiVU1BUDIiLAogICAgICAgICAgICAgICAgICAgICAgLnNhdmVfdG8gPSAiLi4vVXNlcnMvdGFpYXNlYW53dS9EZXNrdG9wL3Byb2dyYW1taW5nL2RzZmJhc2UvMDVfYW5hbHlzZXMvMV9VTUFQL29wdGltaXphdGlvbnMvcGxvdHMvIiwKICAgICAgICAgICAgICAgICAgICAgIC5zYXZlX25hbWUgPSAiZHNmYmFzZV91bWFwXyIsCiAgICAgICAgICAgICAgICAgICAgICAucmV0dXJuX3Bsb3QgPSBGQUxTRSwKICAgICAgICAgICAgICAgICAgICAgIC4uLikgewogIAogICMjIC0tLSBjcmVhdGUgcGxvdCBuYW1lcyBhbmQgYW5ub3RhdGlvbnMKICAucGxvdF90aXRsZSA8LSBnbHVlKCJVTUFQIG9mIERTRmJhc2UuIFxuIHsubl9uZWlnaGJvcnN9IG5laWdoYm9yczsgey5taW5fZGlzdH0gbWluIGRpc3QuIikKICAucGxvdF9zdWJ0aXRsZSA8LSBnbHVlKCJQYXJhbWV0ZXJzOiBuZWlnaGJvcnMgPSB7Lm5fbmVpZ2hib3JzfSwgbWluX2Rpc3QgPSB7Lm1pbl9kaXN0fS4gXG4gR290Y2hhIHN1YnNldCBub3QgZGlzcGxheWVkLiBcbiBOb3Rlczogey5vdGhlcl9ub3Rlc30iKQogIAogICMgY3JlYXRlIHRoZSBzYXZlIGxvY2F0aW9uLCBpZiBpdCBpc24ndCBhbHJlYWR5IHRoZXJlCiAgZnM6OmRpcl9jcmVhdGUoLnNhdmVfdG8pCiAgCiAgVU1BUF9wcm90ZWluX3N1YnNldCA8LQogICAgVU1BUF9kYXRhIHw+CiAgICB1bml0ZShzdWJzdWJzZXRfcHJvdGVpbiwgYyhzdWJzdWJzZXRfZiwgcHJvdGVpbiksIHJlbW92ZSA9IEZBTFNFKSB8PgogICAgYXJyYW5nZShzdWJzdWJzZXRfZikgfD4KICAgIG11dGF0ZShzdWJzdWJzZXRfcHJvdGVpbl9mID0gZmFjdG9yKHN1YnN1YnNldF9wcm90ZWluLCBsZXZlbHMgPSB1bmlxdWUoc3Vic3Vic2V0X3Byb3RlaW4pKSkgfD4KICAgIG11dGF0ZShzdWJzdWJzZXRfcGxvdCA9IGZhY3Rvcihnc3ViKHN1YnN1YnNldCwgcGF0dGVybiA9ICJTWVBSTyIsIHJlcGxhY2VtZW50ID0gIiIpLCBsZXZlbHMgPSBjKCJjYW5vbiIsICJtaWRjYW5vbiIsICJub25jYW5vbiIsICJsYXRlbm9uY2Fub24iLCAiZXJyYXRhIikpKQoKICAjIyAtLS0gbWFrZSBwbG90CiAgcF9VTUFQIDwtIAogICAgVU1BUF9wcm90ZWluX3N1YnNldCB8PiAKICAgIGdncGxvdChhZXMoLmRhdGFbWy54XV0sIC5kYXRhW1sueV1dKSkgKwogICAgCiAgICAgIyBjb2xvciBwb2ludHMgZm9yIGVhY2ggc3Vic2V0CiAgICBnZW9tX3BvaW50KGFlcyhjb2xvciA9IHN1YnN1YnNldF9wbG90KSwgCiAgICAgICAgICAgICAgICAgYWxwaGEgPSAwLjMsIAogICAgICAgICAgICAgICAgIHNpemUgPSAwLjIpICsKICAgIAogICAgI3NjYWxlX2NvbG9yX3ZpcmlkaXNfZChvcHRpb24gPSAidHVyYm8iKSArCiAgICAgc2NhbGVfY29sb3JfdmlyaWRpc19kKCkgKwogICAgCiAgICAjIGFkZCBsYWJlbHMKICAgIGxhYnModGl0bGUgPSAucGxvdF90aXRsZSwKICAgICAgICAgc3VidGl0bGUgPSBzdHJfd3JhcCgucGxvdF9zdWJ0aXRsZSwgNTApKSArCiAgICAKICAgICMgYWRqdXN0IHRoZW1lCiAgICBocmJydGhlbWVzOjp0aGVtZV9pcHN1bShiYXNlX3NpemUgPSAyMCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cmlwX3RleHRfc2l6ZSA9IDIwKSArCiAgICAKICAgIHRoZW1lKGFzcGVjdC5yYXRpbyA9IDEpICsKICAgIAogICAgIyBpbmNyZWFzZSBzaXplIGFuZCBhbHBoYSBpbiBndWlkZXMgdG8gbWFrZSB0aGVtIHZpc2libGUKICAgICBndWlkZXMoY29sb3VyID0gZ3VpZGVfbGVnZW5kKG92ZXJyaWRlLmFlcyA9IGxpc3QoYWxwaGEgPSAxLCBzaXplID0gMSkpKSArICMgZG9uJ3QgbWFrZSBsZWdlbmQgcmVhbGx5IHRyYW5zcGFyZW50CiAgICAKICAgIGxhYnMoc3VidGl0bGUgPSBzdHJfd3JhcCgiTnNwMyBtYWMxIHNjcmVlbiBleGNsdWRlZCBmcm9tIGFuYWx5c2lzLiIpLAogICAgICAgY29sb3IgPSAiU3Vic2V0IikgKwogIAogICAgIyBhZGp1c3QgdGhlbWUKICAgIGhyYnJ0aGVtZXM6OnRoZW1lX2lwc3VtKGJhc2Vfc2l6ZSA9IDE2LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgYXhpc190aXRsZV9zaXplID0gMTQsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJpcF90ZXh0X3NpemUgPSAxMikgKwogICAgCiAgICB0aGVtZShhc3BlY3QucmF0aW8gPSAxLAogICAgICAgICAgbGVnZW5kLnBvc2l0aW9uID0gInRvcCIsCiAgICAgICAgICBsZWdlbmQuanVzdGlmaWNhdGlvbj0nbGVmdCcpIAoKZ2dzYXZlKCIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvbWFpbl90ZXh0L2RzZmJhc2VfdW1hcF8xMDBfbWluX2Rpc3RfMC4yLnBkZiIsCiAgICAgICB3aWR0aCA9IDYsICMgZmFjZXQgcGxvdHMgZ2V0IHNhdmVkIGxhcmdlcgogICAgICAgICBoZWlnaHQgPSA2LCAjIGZhY2V0IHBsb3RzIGdldCBzYXZlZCBsYXJnZXIKICAgICAgICAgZGV2aWNlID0gY2Fpcm9fcGRmKQogIAp9CgpwX3VtYXAgPC0gbWFrZV9tYWluX3BhbmVsX1VNQVAoVU1BUF9kYXRhID0gdW1hcF8yMDAgJT4lIGZpbHRlcihzdWJzZXQgIT0gImVycmF0YSIpLAogICAgICAgICAgLm5fbmVpZ2hib3JzID0gMjAwLCAjIGp1c3QgZm9yIG1ha2luZyBsYWJlbHMKICAgICAgICAgIC5taW5fZGlzdCA9IDAuMiwgIyBqdXN0IGZvciBtYWtpbmcgbGFiZWxzCiAgICAgICAgICAuZmFjZXQgPSBGQUxTRSwgIyBkb24ndCBmYWNldCBpbiB0aGUgbWFpbiBwYW5lbAogICAgICAgICAgLm90aGVyX25vdGVzID0gIk5zcDMgbWFjMSBzY3JlZW4gZXhjbHVkZWQgYW5kIGVycmF0YSBmcm9tIGFuYWx5c2lzLiIsICMga2VlcCBpbiB0aXRsZSBmb3IgcmVtaW5kZXIuIENyb3AgaW4gdGhlIGZpbmFsIGZpZ3VyZS4KICAgICAgICAgIC5zYXZlX3RvID0gIi4uLzA0X1VNQVBfYW5hbHlzaXMvZmluYWxfcGFyYW1ldGVycy9wbG90cy9tYWluX3RleHQvIiwKICAgICAgICAgIC5zYXZlX25hbWUgPSAiZHNmYmFzZV91bWFwXyIsCiAgICAgICAgICAucmV0dXJuX3Bsb3QgPSBUUlVFKQoKCnVtYXBfMjAwICU+JSBtdXRhdGUoc3Vic3Vic2V0X3Bsb3QgPSBnc3ViKHN1YnN1YnNldCwgcGF0dGVybiA9ICJTWVBSTyIsIHJlcGxhY2VtZW50ID0gIiIpKSAlPiUgcHVsbChzdWJzdWJzZXRfcGxvdCkgJT4lIHVuaXF1ZSgpCmBgYAoKCgpBcmUgd2UgbG9zaW5nIGltcG9ydGFudCBpbmZvcm1hdGlvbiB0byBvdmVycGxvdHRpbmc/Ck1ha2UgYSBkZW5zaXR5IHBsb3Qgb2YgdGhlIFVNQVAgcmVzdWx0cwpgYGB7cn0KdW1hcF9kZW5zaXR5IDwtIHVtYXBfMTAwIHw+IAogIGdncGxvdChhZXMoeCA9IFVNQVAxLCB5ID0gVU1BUDIpKSArCiAgCiAgZ2VvbV9kZW5zaXR5XzJkX2ZpbGxlZChkYXRhID0gc2VsZWN0KHVtYXBfMTAwLCAtc3Vic2V0KSwKICAgICAgICAgICAgICAgICAgICAgICAgIGFscGhhID0gMC41KSArCiAgZ2VvbV9kZW5zaXR5XzJkKGRhdGEgPSBzZWxlY3QodW1hcF8xMDAsIC1zdWJzZXQpLAogICAgICAgICAgICAgICAgICBsaW5ld2lkdGggPSAwLjI1LCBjb2xvdXIgPSAiYmxhY2siKSArCiAgCiAgZ2VvbV9wb2ludChzaXplID0gMC4wNSwgYWxwaGEgPSAwLjgpICsKICBmYWNldF93cmFwKH5zdWJzZXQsIG5jb2wgPSAyKSArCiAgaHJicnRoZW1lczo6dGhlbWVfaXBzdW0oKSArCiAgdGhlbWUoYXNwZWN0LnJhdGlvID0gMSkKCmdnc2F2ZShmaWxlbmFtZSA9ICIvVXNlcnMvdGFpYXNlYW53dS9EZXNrdG9wL3Byb2dyYW1taW5nL2RzZmJhc2UvMjAyMzEyMDVfdmVyc2lvbi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvZGVuc2l0eS9VTUFQXzEwMF9uZWlnaGJvcnNfMHAyX21pbmRpc3RfZGVuc2l0eS5wZGYiLAogICAgICAgd2lkdGggPSAxMCwKICAgICAgICBoZWlnaHQgPSAxNSwKICAgICAgIGRldmljZSA9IGNhaXJvX3BkZikKYGBgCgpgYGB7cn0KdW1hcF9kZW5zaXR5MiA8LSB1bWFwXzEwMCB8PiAKICBnZ3Bsb3QoYWVzKHggPSBVTUFQMSwgeSA9IFVNQVAyKSkgKwogICMgCiAgIyBnZW9tX2RlbnNpdHlfMmRfZmlsbGVkKGRhdGEgPSBzZWxlY3QodW1hcF8xMDAsIC1zdWJzZXQpLAogICMgICAgICAgICAgICAgICAgICAgICAgICBhbHBoYSA9IDAuNSkgKwogICMgZ2VvbV9kZW5zaXR5XzJkKGRhdGEgPSBzZWxlY3QodW1hcF8xMDAsIC1zdWJzZXQpLAogICMgICAgICAgICAgICAgICAgIGxpbmV3aWR0aCA9IDAuMjUsIGNvbG91ciA9ICJibGFjayIpICsKICAKICBnZW9tX2RlbnNpdHlfMmRfZmlsbGVkKGFscGhhID0gMC41LCBjb250b3VyX3ZhciA9ICJjb3VudCIpICsKICBnZW9tX2RlbnNpdHlfMmQobGluZXdpZHRoID0gMC4yNSwgY29sb3VyID0gImJsYWNrIiwgIGNvbnRvdXJfdmFyID0gImNvdW50IikgKwogIAogIGdlb21fcG9pbnQoc2l6ZSA9IDAuMDUsIGFscGhhID0gMC44KSsKICBmYWNldF93cmFwKH5zdWJzZXQsIG5jb2wgPSAyKSArCiAgaHJicnRoZW1lczo6dGhlbWVfaXBzdW0oKSArCiAgdGhlbWUoYXNwZWN0LnJhdGlvID0gMSkKCgpnZ3NhdmUoZmlsZW5hbWUgPSAiL1VzZXJzL3RhaWFzZWFud3UvRGVza3RvcC9wcm9ncmFtbWluZy9kc2ZiYXNlLzIwMjMxMjA1X3ZlcnNpb24vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL2RlbnNpdHkvVU1BUF8xMDBfbmVpZ2hib3JzXzBwMl9taW5kaXN0X2RlbnNpdHlfZmFjZXQucGRmIiwKICAgICAgIHdpZHRoID0gMTAsCiAgICAgICAgaGVpZ2h0ID0gMTUsCiAgICAgICBkZXZpY2UgPSBjYWlyb19wZGYpCgpgYGAK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQpMb29rcyBsaWtlIFVNQVAgaXMgdGhlIGN1cnJlbnQgYmVzdCBhbmFseXNpcyBmb3IgdGhlIGN1cnZlIHNoYXBlcy4KCkluIHRoaXMgbm90ZWJvb2ssIGNyZWF0ZSBhIHJlcHJvZHVjaWJsZSBVTUFQIGFuYWx5c2lzClRlc3QgdmFyaWF0aW9ucyBpbiBoeXBlcnBhcmFtZXRlcnMKVGVzdCBib3RoIHJhdywgZmlyc3QsIGFuZCBzZWNvbmQgZGVyaXZhdGl2ZSBkYXRhCgpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkodW1hcCkKbGlicmFyeShnbHVlKQpsaWJyYXJ5KGVtYmVkKSAjIHJlcXVpcmVkIGluc3RhbGxhdGlvbiBvZiBweXRob24gcGFja2FnZSAidGVuc29yZmxvdyIsIGFuZCB0aGVyZWZvcmUgYWxzbyByZXRpY3VsYXRlCmxpYnJhcnkoZXh0cmFmb250KSAjIGZvciBjYWlyb19wZHMgCiMgY2Fpcm9fcGRmICh3aGljaCB3aWxsIHRocm93IG9ic2N1cmUgZXJyb3IgYWxzbyBpZiB0aGUgc2F2ZSBwYXRoIHRvIGdnc2F2ZSBkb2Vucyd0IGV4aXN0IC0tIHNlZSBodHRwczovL2dpdGh1Yi5jb20vdGlkeXZlcnNlL2dncGxvdDIvaXNzdWVzLzQxNjgpCgojIGhhcyB1bm5lY2Vzc2FyaWx5IGNvbXBsZXggZGlyZWN0b3J5IGNyZWF0aW9uIHN5c3RlbSwgYnV0IHdvcmtzLi4uIApzb3VyY2UoIlIvZnVuY3Rpb25zL3VtYXAuUiIpICMgaGVscGVyIGZ1bmN0aW9ucyB0byBpbXBsZW1lbnQgYW5kIHBsb3QgVU1BUCB1c2luZyB0aWR5bW9kZWxzCmBgYAoKPT09PT09PT09IENhbGN1bGF0ZSB0aGUgVU1BUFMgPT09PT09PT0gKG5leHQ6IGFuYWx5emUgYW5kIG1ha2UgZmlndXJlcyBmb3IgVU1BUHMpClJlYWQgaW4gZHNmYmFzZSwgYW5kIGFkZCBkZXJpdmF0aXZlcwpgYGB7cn0KZHNmYmFzZV9kZXJpdiA8LSByZWFkX3JkcygiLi4vMDNfZmluYWxfZHNmYmFzZS9kc2ZiYXNlX2Fubm90YXRlZC5yZHMiKSB8PiAKICBncm91cF9ieShpZCkgfD4gCiAgYXJyYW5nZShUZW1wZXJhdHVyZSkgfD4gCiAgbXV0YXRlKGRyZnUgPSBzaWduYWw6OnNnb2xheWZpbHQoeCA9IHZhbHVlX25vcm0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbSA9IDEpLAogICAgICAgICBkZHJmdSA9IHNpZ25hbDo6c2dvbGF5ZmlsdCh4ID0gdmFsdWVfbm9ybSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtID0gMikpIHw+IAogIHVuZ3JvdXAoKQoKIyMgcHJldmlvdXMgdmVyc2lvbnMgaGFkIHJlbW92ZWQgdGhlIG5zcDMgc2NyZWVuCiMjIGJ1dCB0aGUgZmluYWwgZG9lcyBub3QsIGJlY2F1c2UgaXQgd2Fzbid0IHdvcnRoIHRoZSBhZGRlZCBjb21wbGV4aXR5CmBgYAoKUHJlcGFyZSBkc2ZiYXNlIGZvciB1bWFwLCBpbmNsdWRpbmcgZGVyaXZhdGl2ZXMKYGBge3J9CnJmdSA8LSBwcmVwX2Zvcl9VTUFQKGRzZmJhc2VfZGVyaXYsICJ2YWx1ZV9ub3JtIiwgZHJvcF9tYWMxID0gRkFMU0UpCmRyZnUgPC0gcHJlcF9mb3JfVU1BUChkc2ZiYXNlX2Rlcml2LCAiZHJmdSIsIGRyb3BfbWFjMSA9IEZBTFNFKQpkZHJmdSA8LSBwcmVwX2Zvcl9VTUFQKGRzZmJhc2VfZGVyaXYsICJkZHJmdSIsIGRyb3BfbWFjMSA9IEZBTFNFKQoKcmZ1JGlkIHw+IG5fZGlzdGluY3QoKSAjIFsxXSA1NzgzCnJmdSRwcm90ZWluIHw+IG5fZGlzdGluY3QoKSAjIFsxXSA4MQpgYGAKClRlc3QgVU1BUCBwYXJhbWV0ZXJzIGZvciByYXcgZGF0YQpgYGB7cn0KIyBzZXQgcGFyYW1ldGVycyB0byBleHBsb3JlCi50ZXN0X25laWdoYm9ycyA8LSBjKDEwLCA1MCwgMTAwLCAyMDAsIDQwMCwgODAwKQoudGVzdF9taW5fZGlzdHMgPC0gYygwLjA1LCAwLjEsIDAuMiwgMC40LCAwLjgpClVNQVBfcGFycyA8LSBleHBhbmQuZ3JpZCgudGVzdF9uZWlnaGJvcnMsIC50ZXN0X21pbl9kaXN0cykgfD4gCiAgc2V0X25hbWVzKGMoIm5fbmVpZ2hib3JzIiwgIm1pbl9kaXN0cyIpKQoKIyBkaXJlY3RvcmllcyB0byBzYXZlIHJlc3VsdHMKLmV4cGxvcmVfcGFycyA8LSAiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vIgouc2F2ZV9yZnUgPC0gZ2x1ZTo6Z2x1ZSgiey5leHBsb3JlX3BhcnN9cmZ1LyIpCi5zYXZlX2RyZnUgPC0gZ2x1ZTo6Z2x1ZSgiey5leHBsb3JlX3BhcnN9ZHJmdS8iKQouc2F2ZV9kZHJmdSA8LSBnbHVlOjpnbHVlKCJ7LmV4cGxvcmVfcGFyc31kZHJmdS8iKQpmczo6ZGlyX2NyZWF0ZShjKC5zYXZlX3JmdSwgLnNhdmVfZHJmdSwgLnNhdmVfZGRyZnUpKQoKZXhwbG9yZV9VTUFQX3BhcnMocmZ1LCAKICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzID0gVU1BUF9wYXJzJG5fbmVpZ2hib3JzLAogICAgICAgICAgICAgICAgICAubWluX2Rpc3RzID0gVU1BUF9wYXJzJG1pbl9kaXN0cywKICAgICAgICAgICAgICAgICAgLm90aGVyX25vdGVzID0gIkRhdGE6IG5vcm1hbGl6ZWQgUkZVLiBcbiBJbmNsdWRlcyBmdWxsIDYxNjUgZW50cmllcyBpbiBEU0ZiYXNlLiIsCiAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gLnNhdmVfcmZ1LAogICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpCgoKZXhwbG9yZV9VTUFQX3BhcnMoZHJmdSwKICAgICAgICAgICAgICAgICAgLm5fbmVpZ2hib3JzID0gVU1BUF9wYXJzJG5fbmVpZ2hib3JzLAogICAgICAgICAgICAgICAgICAubWluX2Rpc3RzID0gVU1BUF9wYXJzJG1pbl9kaXN0cywKICAgICAgICAgICAgICAgICAgLm90aGVyX25vdGVzID0gIkRhdGE6IG5vcm1hbGl6ZWQgUkZVLiBcbiBJbmNsdWRlcyBmdWxsIDYxNjUgZW50cmllcyBpbiBEU0ZiYXNlLiIsCiAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gLnNhdmVfZHJmdSwKICAgICAgICAgICAgICAgICAgLnNhdmVfaW5wdXQgPSBUUlVFKQoKZXhwbG9yZV9VTUFQX3BhcnMoZGRyZnUsCiAgICAgICAgICAgICAgICAgIC5uX25laWdoYm9ycyA9IFVNQVBfcGFycyRuX25laWdoYm9ycywKICAgICAgICAgICAgICAgICAgLm1pbl9kaXN0cyA9IFVNQVBfcGFycyRtaW5fZGlzdHMsCiAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9ICJEYXRhOiBub3JtYWxpemVkIFJGVS4gXG4gSW5jbHVkZXMgZnVsbCA2MTY1IGVudHJpZXMgaW4gRFNGYmFzZS4iLAogICAgICAgICAgICAgICAgICAuc2F2ZV90byA9IC5zYXZlX2RkcmZ1LAogICAgICAgICAgICAgICAgICAuc2F2ZV9pbnB1dCA9IFRSVUUpCmBgYAoKCkNvbmNsdXNpb246IHRoZSBmaW5hbCByZXN1bHRzIGFyZSByZWxhdGl2ZWx5IGluc2Vuc2l0aXZlIHRvIHRoZSBwYXJhbWV0ZXJzIChzZWUgU0kgZmlndXJlIG1ha2luZyBiZWxvdyksIGFuZCBhbHNvIHRoZSBmb3JtIG9uIHRoZSBpbnB1dCBkYXRhIChSRlUsIGRSRlUsIGFuZCBkZFJGVSkuIFRoYXQncyBhIGdvb2Qgc2lnbiB0aGF0IHRoZSBzZXBhcmF0aW9uIHdlIGFyZSBzZWVpbmcgaXMgbm90IGFuIGFydGlmYWN0IG9mIHRoZSBzcGVjaWZpYyBwcm9jZXNzaW5nIG9yIGh5cGVyLXBhcmFtZXRlcnMgb2YgVU1BUC4gR29pbmcgdG8gdXNlIHRoZSByYXcgUkZVIGNsdXN0ZXJpbmcsIHNpbmNlIHRoYXQgaXMgb25lIGxlc3MgcHJvY2Vzc2luZyBzdGVwLiAKClRoZSAiY2xlYXJlc3QiIHZpc3VhbGl6YXRpb24sIGluIG15IG9waW5pb24sIGlzIHRoZSBSRlUgZGF0YSB3aXRoIDIwMCBuZWlnaGJvcnMgYW5kIG1pbl9kaXN0ID0gMC4yCmBgYHtyfQojIyBvdmVyd3JpdGUgdGhlIG9sZCBwcm90ZWluIG5hbWUgY29sdW1ucwppZF9hbm5vdGF0aW9ucyA8LSByZWFkX3JkcygiLi4vLi4vLi4vLi4vMDNfZmluYWxfZHNmYmFzZS9leHBlcmltZW50YWxfY29uZGl0aW9ucy9kc2ZiYXNlX2V4cGVyaW1lbnRhbF9jb25kaXRpb25zLnJkcyIpCgp1bWFwXzIwMCA8LSByZWFkX3JkcygiLi4vLi4vLi4vLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3Jlc3VsdHMvZHNmYmFzZV91bWFwX2p1aWNlX25laWdoYm9yc18yMDBfbWluZGlzdF8wLjIucmRzIikgJT4lCiAgc2VsZWN0KC1jKCJwcm90ZWluIiwgInN1YnNldCIpKSAlPiUgCiAgbGVmdF9qb2luKGlkX2Fubm90YXRpb25zLCBieSA9IGpvaW5fYnkoImlkIikpCgp3cml0ZV9yZHMoeCA9IHVtYXBfMjAwLCAKICAgICAgICAgICIuLi8uLi8uLi8uLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvZHNmYmFzZV9VTUFQX25uMjAwX21kMHAyLnJkcyIpCmBgYAoKTWFrZSBmaW5hbCB2ZXJzaW9uIG9mIHVtYXAgMjAwIHRvIHNhdmUgYXMgc3VwcGxlbW5ldGFsIGZpbGUKYGBge3J9CmBgYAoKCiMjIyMjIyMjIC0tLS0tLS0tLS0gTWFrZSBTSSBmYWNldCBmaWd1cmVzIHZpc3VhbGl6aW5nIHRoZSBpbXBhY3Qgb2YgaW5wdXQgcGFyYW1ldGVycwpgYGB7cn0KIyMjIC0tICByYXcgcmZ1CnJmdV91bWFwcyA8LSBjb21iaW5lX3VtYXBfZGF0YSgiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3Jlc3VsdHMvIikKCndyaXRlX3JkcyhyZnVfdW1hcHMsICIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX3JmdV9hbGxfcGFyYW1ldGVyX3Jlc3VsdHMucmRzIikKCmZhY2V0X3VtYXBfcGFycyhyZnVfdW1hcHMsIAogICAgICAgICAgICAgICAgcGxvdF90aXRsZSA9ICJVTUFQIHJlc3VsdHM7IHJhdyBSRlUgZGF0YSIsCiAgICAgICAgICAgICAgICAicmZ1IiwgCiAgICAgICAgICAgICAiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3BhcmFtZXRlcl9zdW1tYXJ5L2RzZmJhc2VfdW1hcF9yZnVfcGFyYW1ldGVyX2NvbXBhcmlzb24ucGRmIikKCiMjIyAtLSAgZmlyc3QgZGVyaXZhdGl2ZQpkcmZ1X3VtYXBzIDwtIGNvbWJpbmVfdW1hcF9kYXRhKCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy8iKQoKd3JpdGVfcmRzKGRyZnVfdW1hcHMsICIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9kcmZ1L3BhcmFtZXRlcl9zdW1tYXJ5L2RzZmJhc2VfdW1hcF9kcmZ1X2FsbF9wYXJhbWV0ZXJfcmVzdWx0cy5yZHMiKQoKCmZhY2V0X3VtYXBfcGFycyhkcmZ1X3VtYXBzLCAKICAgICAgICAgICAgICAgIHBsb3RfdGl0bGUgPSAiVU1BUCByZXN1bHRzOyBkUkZVIGRhdGEiLAogICAgICAgICAgICAgICAgImRyZnUiLCAKICAgICAgICAgICAgICIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9kcmZ1L3BhcmFtZXRlcl9zdW1tYXJ5L2RzZmJhc2VfdW1hcF9kcmZ1X3BhcmFtZXRlcl9jb21wYXJpc29uLnBkZiIpCgojIyMgLS0gIHNlY29uZCBkZXJpdmF0aXZlCmRkcmZ1X3VtYXBzIDwtIGNvbWJpbmVfdW1hcF9kYXRhKCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9kZHJmdS9yZXN1bHRzLyIpCgp3cml0ZV9yZHMoZGRyZnVfdW1hcHMsICIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9kZHJmdS9wYXJhbWV0ZXJfc3VtbWFyeS9kc2ZiYXNlX3VtYXBfZGRyZnVfYWxsX3BhcmFtZXRlcl9yZXN1bHRzLnJkcyIpCgpmYWNldF91bWFwX3BhcnMoZGRyZnVfdW1hcHMsIAogICAgICAgICAgICAgICAgcGxvdF90aXRsZSA9ICJVTUFQIHJlc3VsdHM7IGRkUkZVIGRhdGEiLAogICAgICAgICAgICAgICAgImRkcmZ1IiwgCiAgICAgICAgICAgICAiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vZGRyZnUvcGFyYW1ldGVyX3N1bW1hcnkvZHNmYmFzZV91bWFwX2RkcmZ1X3BhcmFtZXRlcl9jb21wYXJpc29uLnBkZiIpCmBgYAoKIyMjIyMjIyAtLS0tLS0tLS0gTWFrZSBtYWluIHBhbmVsIGZpZ3VyZSBvZiBVTUFQIDIwMCAvIDAuMgpNYWtlIHRoZSBtYWluIHBhbmVsIHBsb3QKYGBge3J9CnBfdW1hcCA8LSBwbG90X1VNQVAoVU1BUF9kYXRhID0gdW1hcF8yMDAsCiAgICAgICAgICAubl9uZWlnaGJvcnMgPSAyMDAsICMganVzdCBmb3IgbWFraW5nIGxhYmVscwogICAgICAgICAgLm1pbl9kaXN0ID0gMC4yLCAjIGp1c3QgZm9yIG1ha2luZyBsYWJlbHMKICAgICAgICAgIC5mYWNldCA9IEZBTFNFLCAjIGRvbid0IGZhY2V0IGluIHRoZSBtYWluIHBhbmVsCiAgICAgICAgICAub3RoZXJfbm90ZXMgPSAiaW5wdXQgZGF0YTogUkZVLiBBbGwgNjUxNSBlbnRyaWVkIGluY2x1ZGVkIGluIGFuYWx5c2lzLiIsICMga2VlcCBpbiB0aXRsZSBmb3IgcmVtaW5kZXIuIENyb3AgaW4gdGhlIGZpbmFsIGZpZ3VyZS4KICAgICAgICAgIC5zYXZlX3RvID0gIi4uLzA0X1VNQVBfYW5hbHlzaXMvZmluYWxfcGFyYW1ldGVycy9wbG90cy9tYWluX3RleHQvIiwKICAgICAgICAgIC5zYXZlX25hbWUgPSAiZHNmYmFzZV91bWFwXyIsCiAgICAgICAgICAucmV0dXJuX3Bsb3QgPSBUUlVFLAogICAgICAgICAgLmRzZmJhc2VfY29sb3JzID0gYygiY2Fub24iID0gIiMzMDEyM0IiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibm9uY2Fub24iID0gIiMxQkU0QjciLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAic3BlY3VsYXRpdmUiID0gIiNGQUJBMzkiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiZXJyYXRhIiA9ICIjN0EwNDAzIikpCgpwX3VtYXBfZmluYWwgPC0gcF91bWFwICsKCiAgICAjIGFkanVzdCB0aGVtZQogICAgaHJicnRoZW1lczo6dGhlbWVfaXBzdW0oYmFzZV9zaXplID0gMTIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBheGlzX3RpdGxlX3NpemUgPSAxMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cmlwX3RleHRfc2l6ZSA9IDEyKSArCiAgCiAgICB0aGVtZShhc3BlY3QucmF0aW8gPSAxLCBsZWdlbmQucG9zaXRpb24gPSAidG9wIiwgbGVnZW5kLmp1c3RpZmljYXRpb24gPSAibGVmdCIpICsgCiAgICBsYWJzKHN1YnRpdGxlID0gImlucHV0IGRhdGE6IFJGVS4gQWxsIDY1MTUgZW50cmllZCBpbmNsdWRlZCBpbiBhbmFseXNpcy4iKSAKCmdnc2F2ZSgiLi4vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL21haW5fdGV4dC9kc2ZiYXNlX3VtYXBfMjAwX21pbl9kaXN0XzAuMi5wZGYiLAogICAgICAgd2lkdGggPSA1LjUsICMgZmFjZXQgcGxvdHMgZ2V0IHNhdmVkIGxhcmdlcgogICAgICAgICBoZWlnaHQgPSA1LjUsICMgZmFjZXQgcGxvdHMgZ2V0IHNhdmVkIGxhcmdlcgogICAgICAgICBkZXZpY2UgPSBjYWlyb19wZGYpCgpgYGAKCiMjIyMjIyMjIC0tLS0tLS0tLS0gTWFrZSBTSSBmYWNldCBmaWd1cmVzIGRpc3BsYXlpbmcgd2hlcmUgZGlmZmVyZW50IHByb3RlaW5zIGFyZSBwbGFjZWQgaW4gdGhlIFVNQVBzCmBgYHtyfQpwbG90X1VNQVBfYnlfcHJvdGVpbih1bWFwXzIwMCwgMjAwLCAwLjIsIAogICAgICAgICAgICAgICAgICAgICAucGxvdF93aWR0aCA9IDE1LAogICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCwKICAgICAgICAgICAgICAgICAgICAgLm5jb2wgPSA2LAogICAgICAgICAgICAgICAgICAgICAub3RoZXJfbm90ZXMgPSAiQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy4iLAogICAgICAgICAgICAgICAgICAgICAuc2F2ZV90byA9ICIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi8iKQoKCiMjIyBzaG93IGZvciBhIGNvdXBsZSBvZiBvdGhlciBleHRyZW1lIHBhcmFtZXRlciBleGFtcGxlcwp1bWFwXzEwIDwtIHJlYWRfcmRzKCIuLi8wNF9VTUFQX2FuYWx5c2lzL3BhcmFtZXRlcl9leHBsb3JhdGlvbi9yZnUvcmVzdWx0cy9kc2ZiYXNlX3VtYXBfanVpY2VfbmVpZ2hib3JzXzEwX21pbmRpc3RfMC4yLnJkcyIpICU+JQogIHNlbGVjdCgtYygicHJvdGVpbiIsICJzdWJzZXQiKSkgJT4lIAogIGxlZnRfam9pbihpZF9hbm5vdGF0aW9ucywgYnkgPSBqb2luX2J5KCJpZCIpKQoKcGxvdF9VTUFQX2J5X3Byb3RlaW4odW1hcF8xMCwgMTAsIDAuMiwgCiAgICAgICAgICAgICAgICAgICAgIC5wbG90X3dpZHRoID0gMTUsCiAgICAgICAgICAgICAgICAgICAgIC5wbG90X2hlaWdodCA9IDQwLAogICAgICAgICAgICAgICAgICAgICAub3RoZXJfbm90ZXMgPSAiQWxsIDY1MTUgZW50cmllcyBpbmNsdWRlZCBpbiBhbmFseXNpcy4iLAogICAgICAgICAgICAgICAgICAgICAuc2F2ZV90byA9ICIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvYnlfcHJvdGVpbi8iKQoKdW1hcF80MDAgPC0gcmVhZF9yZHMoIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL3JmdS9yZXN1bHRzL2RzZmJhc2VfdW1hcF9qdWljZV9uZWlnaGJvcnNfNDAwX21pbmRpc3RfMC4yLnJkcyIpICU+JQogIHNlbGVjdCgtYygicHJvdGVpbiIsICJzdWJzZXQiKSkgJT4lIAogIGxlZnRfam9pbihpZF9hbm5vdGF0aW9ucywgYnkgPSBqb2luX2J5KCJpZCIpKQoKcGxvdF9VTUFQX2J5X3Byb3RlaW4odW1hcF80MDAsIDQwMCwgMC4yLCAKICAgICAgICAgICAgICAgICAgICAgLnBsb3Rfd2lkdGggPSAxNSwKICAgICAgICAgICAgICAgICAgICAgLnBsb3RfaGVpZ2h0ID0gNDAsCiAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9ICJBbGwgNjUxNSBlbnRyaWVzIGluY2x1ZGVkIGluIGFuYWx5c2lzLiIsCiAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gIi4uLzA0X1VNQVBfYW5hbHlzaXMvZmluYWxfcGFyYW1ldGVycy9wbG90cy9ieV9wcm90ZWluLyIpCgp1bWFwXzIwMF9wOCA8LSByZWFkX3JkcygiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3Jlc3VsdHMvZHNmYmFzZV91bWFwX2p1aWNlX25laWdoYm9yc18yMDBfbWluZGlzdF8wLjgucmRzIikgJT4lCiAgc2VsZWN0KC1jKCJwcm90ZWluIiwgInN1YnNldCIpKSAlPiUgCiAgbGVmdF9qb2luKGlkX2Fubm90YXRpb25zLCBieSA9IGpvaW5fYnkoImlkIikpCgpwbG90X1VNQVBfYnlfcHJvdGVpbih1bWFwXzIwMF9wOCwgMjAwLCAwLjgsIAogICAgICAgICAgICAgICAgICAgICAucGxvdF93aWR0aCA9IDE1LAogICAgICAgICAgICAgICAgICAgICAucGxvdF9oZWlnaHQgPSA0MCwKICAgICAgICAgICAgICAgICAgICAgLm90aGVyX25vdGVzID0gIkFsbCA2NTE1IGVudHJpZXMgaW5jbHVkZWQgaW4gYW5hbHlzaXMuIiwKICAgICAgICAgICAgICAgICAgICAgLnNhdmVfdG8gPSAiLi4vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL2J5X3Byb3RlaW4vIikKCmBgYAoKCgpDb21wYXJlIFVNQVAgc2VwYXJhdGlvbiB0byBkc2Z3b3JsZCBUbWEgY2FsY3VsYXRpb25zCmBgYHtyfQoKYGBgCgoKLS0tLS0tLQojIyMjIyMjIyMgc2NyYXRjaCB3b3JrIGJlbG93IHRoaXMgbGluZQoKYGBge3J9CiNmczo6ZGlyX2NyZWF0ZSgiLi4vMDRfVU1BUF9hbmFseXNpcy9wYXJhbWV0ZXJfZXhwbG9yYXRpb24vcmZ1L3N1bW1hcnlfcGxvdC8iKQoKcGxvdF9VTUFQKHVtYXBfMjAwLAogICAgICAgICAgMjAwLAogICAgICAgICAgMC4yLAogICAgICAgICAgZmFjZXQgPSBGQUxTRSwKICAgICAgICAgIC5zYXZlX3RvID0gIi4uLzA0X1VNQVBfYW5hbHlzaXMvcGFyYW1ldGVyX2V4cGxvcmF0aW9uL3JmdS9zdW1tYXJ5X3Bsb3QvIiwKICAgICAgICAgICAgICAgICAgICAgIC5zYXZlX25hbWUgPSAiZHNmYmFzZV91bWFwX3BhcmFtZXRlcl9jb21wYXJpc29uIikKCnBsb3RfVU1BUAoKcGxvdF9VTUFQIDwtIGZ1bmN0aW9uKFVNQVBfZGF0YSwKICAgICAgICAgICAgICAgICAgICAgIC5uX25laWdoYm9ycywKICAgICAgICAgICAgICAgICAgICAgIC5taW5fZGlzdCwKICAgICAgICAgICAgICAgICAgICAgIC5mYWNldCA9IFRSVUUsCiAgICAgICAgICAgICAgICAgICAgICAub3RoZXJfbm90ZXMgPSAiTnNwMyBtYWMxIHNjcmVlbiBleGNsdWRlZCBmcm9tIGFuYWx5c2lzLiIsCiAgICAgICAgICAgICAgICAgICAgICAueCA9ICJVTUFQMSIsCiAgICAgICAgICAgICAgICAgICAgICAueSA9ICJVTUFQMiIsCiAgICAgICAgICAgICAgICAgICAgICAuc2F2ZV90byA9ICIvVXNlcnMvdGFpYXNlYW53dS9EZXNrdG9wL3Byb2dyYW1taW5nL2RzZmJhc2UvMDVfYW5hbHlzZXMvMV9VTUFQL29wdGltaXphdGlvbnMvcGxvdHMvIiwKICAgICAgICAgICAgICAgICAgICAgIC5zYXZlX25hbWUgPSAiZHNmYmFzZV91bWFwXyIsCgogICAgICAgICAgICAgICAgICAgICAgLmRzZmJhc2VfY29sb3JzID0gYygiY2Fub24iID0gIiMzMDEyM0IiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibm9uY2Fub24iID0gIiMxQkU0QjciLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAic3BlY3VsYXRpdmUiID0gIiNGQUJBMzkiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiZXJyYXRhIiA9ICIjN0EwNDAzIiksCiAgICAgICAgICAgICAgICAgICAgICAucmV0dXJuX3Bsb3QgPSBGQUxTRSwKICAgICAgICAgICAgICAgICAgICAgIC4uLikgCmBgYAoKCgoKCgoKCmBgYHtyfQogIAogIFVNQVBfcHJvdGVpbl9zdWJzZXRfMjAwIDwtCiAgICB1bWFwXzIwMCB8PgogICAgdW5pdGUoc3Vic3Vic2V0X3Byb3RlaW4sIGMoc3Vic3Vic2V0X2YsIHByb3RlaW4pLCByZW1vdmUgPSBGQUxTRSkgfD4KICAgIGFycmFuZ2Uoc3Vic3Vic2V0X2YpIHw+CiAgICBtdXRhdGUoc3Vic3Vic2V0X3Byb3RlaW5fZiA9IGZhY3RvcihzdWJzdWJzZXRfcHJvdGVpbiwgbGV2ZWxzID0gdW5pcXVlKHN1YnN1YnNldF9wcm90ZWluKSkpCgoKVU1BUF9wcm90ZWluX3N1YnNldF8yMDAkc3Vic3Vic2V0X3Byb3RlaW5fZiAlPiUgdW5pcXVlKCkKYGBgCgoKCmBgYHtyfQogIyMgLS0tIG1ha2UgcGxvdAptYWtlX21haW5fcGFuZWxfVU1BUCA8LSBmdW5jdGlvbihVTUFQX2RhdGEsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC5jb2xvcl9ieSwKICAgICAgICAgICAgICAgICAgICAgIC5uX25laWdoYm9ycywKICAgICAgICAgICAgICAgICAgICAgIC5taW5fZGlzdCwKICAgICAgICAgICAgICAgICAgICAgIC5vdGhlcl9ub3RlcyA9ICJOc3AzIG1hYzEgc2NyZWVuIGV4Y2x1ZGVkIGZyb20gYW5hbHlzaXMuIiwKICAgICAgICAgICAgICAgICAgICAgIC54ID0gIlVNQVAxIiwKICAgICAgICAgICAgICAgICAgICAgIC55ID0gIlVNQVAyIiwKICAgICAgICAgICAgICAgICAgICAgIC5zYXZlX3RvID0gIi4uL1VzZXJzL3RhaWFzZWFud3UvRGVza3RvcC9wcm9ncmFtbWluZy9kc2ZiYXNlLzA1X2FuYWx5c2VzLzFfVU1BUC9vcHRpbWl6YXRpb25zL3Bsb3RzLyIsCiAgICAgICAgICAgICAgICAgICAgICAuc2F2ZV9uYW1lID0gImRzZmJhc2VfdW1hcF8iLAogICAgICAgICAgICAgICAgICAgICAgLnJldHVybl9wbG90ID0gRkFMU0UsCiAgICAgICAgICAgICAgICAgICAgICAuLi4pIHsKICAKICAjIyAtLS0gY3JlYXRlIHBsb3QgbmFtZXMgYW5kIGFubm90YXRpb25zCiAgLnBsb3RfdGl0bGUgPC0gZ2x1ZSgiVU1BUCBvZiBEU0ZiYXNlLiBcbiB7Lm5fbmVpZ2hib3JzfSBuZWlnaGJvcnM7IHsubWluX2Rpc3R9IG1pbiBkaXN0LiIpCiAgLnBsb3Rfc3VidGl0bGUgPC0gZ2x1ZSgiUGFyYW1ldGVyczogbmVpZ2hib3JzID0gey5uX25laWdoYm9yc30sIG1pbl9kaXN0ID0gey5taW5fZGlzdH0uIFxuIEdvdGNoYSBzdWJzZXQgbm90IGRpc3BsYXllZC4gXG4gTm90ZXM6IHsub3RoZXJfbm90ZXN9IikKICAKICAjIGNyZWF0ZSB0aGUgc2F2ZSBsb2NhdGlvbiwgaWYgaXQgaXNuJ3QgYWxyZWFkeSB0aGVyZQogIGZzOjpkaXJfY3JlYXRlKC5zYXZlX3RvKQogIAogIFVNQVBfcHJvdGVpbl9zdWJzZXQgPC0KICAgIFVNQVBfZGF0YSB8PgogICAgdW5pdGUoc3Vic3Vic2V0X3Byb3RlaW4sIGMoc3Vic3Vic2V0X2YsIHByb3RlaW4pLCByZW1vdmUgPSBGQUxTRSkgfD4KICAgIGFycmFuZ2Uoc3Vic3Vic2V0X2YpIHw+CiAgICBtdXRhdGUoc3Vic3Vic2V0X3Byb3RlaW5fZiA9IGZhY3RvcihzdWJzdWJzZXRfcHJvdGVpbiwgbGV2ZWxzID0gdW5pcXVlKHN1YnN1YnNldF9wcm90ZWluKSkpIHw+CiAgICBtdXRhdGUoc3Vic3Vic2V0X3Bsb3QgPSBmYWN0b3IoZ3N1YihzdWJzdWJzZXQsIHBhdHRlcm4gPSAiU1lQUk8iLCByZXBsYWNlbWVudCA9ICIiKSwgbGV2ZWxzID0gYygiY2Fub24iLCAibWlkY2Fub24iLCAibm9uY2Fub24iLCAibGF0ZW5vbmNhbm9uIiwgImVycmF0YSIpKSkKCiAgIyMgLS0tIG1ha2UgcGxvdAogIHBfVU1BUCA8LSAKICAgIFVNQVBfcHJvdGVpbl9zdWJzZXQgfD4gCiAgICBnZ3Bsb3QoYWVzKC5kYXRhW1sueF1dLCAuZGF0YVtbLnldXSkpICsKICAgIAogICAgICMgY29sb3IgcG9pbnRzIGZvciBlYWNoIHN1YnNldAogICAgZ2VvbV9wb2ludChhZXMoY29sb3IgPSBzdWJzdWJzZXRfcGxvdCksIAogICAgICAgICAgICAgICAgIGFscGhhID0gMC4zLCAKICAgICAgICAgICAgICAgICBzaXplID0gMC4yKSArCiAgICAKICAgICNzY2FsZV9jb2xvcl92aXJpZGlzX2Qob3B0aW9uID0gInR1cmJvIikgKwogICAgIHNjYWxlX2NvbG9yX3ZpcmlkaXNfZCgpICsKICAgIAogICAgIyBhZGQgbGFiZWxzCiAgICBsYWJzKHRpdGxlID0gLnBsb3RfdGl0bGUsCiAgICAgICAgIHN1YnRpdGxlID0gc3RyX3dyYXAoLnBsb3Rfc3VidGl0bGUsIDUwKSkgKwogICAgCiAgICAjIGFkanVzdCB0aGVtZQogICAgaHJicnRoZW1lczo6dGhlbWVfaXBzdW0oYmFzZV9zaXplID0gMjAsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJpcF90ZXh0X3NpemUgPSAyMCkgKwogICAgCiAgICB0aGVtZShhc3BlY3QucmF0aW8gPSAxKSArCiAgICAKICAgICMgaW5jcmVhc2Ugc2l6ZSBhbmQgYWxwaGEgaW4gZ3VpZGVzIHRvIG1ha2UgdGhlbSB2aXNpYmxlCiAgICAgZ3VpZGVzKGNvbG91ciA9IGd1aWRlX2xlZ2VuZChvdmVycmlkZS5hZXMgPSBsaXN0KGFscGhhID0gMSwgc2l6ZSA9IDEpKSkgKyAjIGRvbid0IG1ha2UgbGVnZW5kIHJlYWxseSB0cmFuc3BhcmVudAogICAgCiAgICBsYWJzKHN1YnRpdGxlID0gc3RyX3dyYXAoIk5zcDMgbWFjMSBzY3JlZW4gZXhjbHVkZWQgZnJvbSBhbmFseXNpcy4iKSwKICAgICAgIGNvbG9yID0gIlN1YnNldCIpICsKICAKICAgICMgYWRqdXN0IHRoZW1lCiAgICBocmJydGhlbWVzOjp0aGVtZV9pcHN1bShiYXNlX3NpemUgPSAxNiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGF4aXNfdGl0bGVfc2l6ZSA9IDE0LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RyaXBfdGV4dF9zaXplID0gMTIpICsKICAgIAogICAgdGhlbWUoYXNwZWN0LnJhdGlvID0gMSwKICAgICAgICAgIGxlZ2VuZC5wb3NpdGlvbiA9ICJ0b3AiLAogICAgICAgICAgbGVnZW5kLmp1c3RpZmljYXRpb249J2xlZnQnKSAKCmdnc2F2ZSgiLi4vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL21haW5fdGV4dC9kc2ZiYXNlX3VtYXBfMTAwX21pbl9kaXN0XzAuMi5wZGYiLAogICAgICAgd2lkdGggPSA2LCAjIGZhY2V0IHBsb3RzIGdldCBzYXZlZCBsYXJnZXIKICAgICAgICAgaGVpZ2h0ID0gNiwgIyBmYWNldCBwbG90cyBnZXQgc2F2ZWQgbGFyZ2VyCiAgICAgICAgIGRldmljZSA9IGNhaXJvX3BkZikKICAKfQoKcF91bWFwIDwtIG1ha2VfbWFpbl9wYW5lbF9VTUFQKFVNQVBfZGF0YSA9IHVtYXBfMjAwICU+JSBmaWx0ZXIoc3Vic2V0ICE9ICJlcnJhdGEiKSwKICAgICAgICAgIC5uX25laWdoYm9ycyA9IDIwMCwgIyBqdXN0IGZvciBtYWtpbmcgbGFiZWxzCiAgICAgICAgICAubWluX2Rpc3QgPSAwLjIsICMganVzdCBmb3IgbWFraW5nIGxhYmVscwogICAgICAgICAgLmZhY2V0ID0gRkFMU0UsICMgZG9uJ3QgZmFjZXQgaW4gdGhlIG1haW4gcGFuZWwKICAgICAgICAgIC5vdGhlcl9ub3RlcyA9ICJOc3AzIG1hYzEgc2NyZWVuIGV4Y2x1ZGVkIGFuZCBlcnJhdGEgZnJvbSBhbmFseXNpcy4iLCAjIGtlZXAgaW4gdGl0bGUgZm9yIHJlbWluZGVyLiBDcm9wIGluIHRoZSBmaW5hbCBmaWd1cmUuCiAgICAgICAgICAuc2F2ZV90byA9ICIuLi8wNF9VTUFQX2FuYWx5c2lzL2ZpbmFsX3BhcmFtZXRlcnMvcGxvdHMvbWFpbl90ZXh0LyIsCiAgICAgICAgICAuc2F2ZV9uYW1lID0gImRzZmJhc2VfdW1hcF8iLAogICAgICAgICAgLnJldHVybl9wbG90ID0gVFJVRSkKCgp1bWFwXzIwMCAlPiUgbXV0YXRlKHN1YnN1YnNldF9wbG90ID0gZ3N1YihzdWJzdWJzZXQsIHBhdHRlcm4gPSAiU1lQUk8iLCByZXBsYWNlbWVudCA9ICIiKSkgJT4lIHB1bGwoc3Vic3Vic2V0X3Bsb3QpICU+JSB1bmlxdWUoKQpgYGAKCgoKQXJlIHdlIGxvc2luZyBpbXBvcnRhbnQgaW5mb3JtYXRpb24gdG8gb3ZlcnBsb3R0aW5nPwpNYWtlIGEgZGVuc2l0eSBwbG90IG9mIHRoZSBVTUFQIHJlc3VsdHMKYGBge3J9CnVtYXBfZGVuc2l0eSA8LSB1bWFwXzEwMCB8PiAKICBnZ3Bsb3QoYWVzKHggPSBVTUFQMSwgeSA9IFVNQVAyKSkgKwogIAogIGdlb21fZGVuc2l0eV8yZF9maWxsZWQoZGF0YSA9IHNlbGVjdCh1bWFwXzEwMCwgLXN1YnNldCksCiAgICAgICAgICAgICAgICAgICAgICAgICBhbHBoYSA9IDAuNSkgKwogIGdlb21fZGVuc2l0eV8yZChkYXRhID0gc2VsZWN0KHVtYXBfMTAwLCAtc3Vic2V0KSwKICAgICAgICAgICAgICAgICAgbGluZXdpZHRoID0gMC4yNSwgY29sb3VyID0gImJsYWNrIikgKwogIAogIGdlb21fcG9pbnQoc2l6ZSA9IDAuMDUsIGFscGhhID0gMC44KSArCiAgZmFjZXRfd3JhcCh+c3Vic2V0LCBuY29sID0gMikgKwogIGhyYnJ0aGVtZXM6OnRoZW1lX2lwc3VtKCkgKwogIHRoZW1lKGFzcGVjdC5yYXRpbyA9IDEpCgpnZ3NhdmUoZmlsZW5hbWUgPSAiL1VzZXJzL3RhaWFzZWFud3UvRGVza3RvcC9wcm9ncmFtbWluZy9kc2ZiYXNlLzIwMjMxMjA1X3ZlcnNpb24vMDRfVU1BUF9hbmFseXNpcy9maW5hbF9wYXJhbWV0ZXJzL3Bsb3RzL2RlbnNpdHkvVU1BUF8xMDBfbmVpZ2hib3JzXzBwMl9taW5kaXN0X2RlbnNpdHkucGRmIiwKICAgICAgIHdpZHRoID0gMTAsCiAgICAgICAgaGVpZ2h0ID0gMTUsCiAgICAgICBkZXZpY2UgPSBjYWlyb19wZGYpCmBgYAoKYGBge3J9CnVtYXBfZGVuc2l0eTIgPC0gdW1hcF8xMDAgfD4gCiAgZ2dwbG90KGFlcyh4ID0gVU1BUDEsIHkgPSBVTUFQMikpICsKICAjIAogICMgZ2VvbV9kZW5zaXR5XzJkX2ZpbGxlZChkYXRhID0gc2VsZWN0KHVtYXBfMTAwLCAtc3Vic2V0KSwKICAjICAgICAgICAgICAgICAgICAgICAgICAgYWxwaGEgPSAwLjUpICsKICAjIGdlb21fZGVuc2l0eV8yZChkYXRhID0gc2VsZWN0KHVtYXBfMTAwLCAtc3Vic2V0KSwKICAjICAgICAgICAgICAgICAgICBsaW5ld2lkdGggPSAwLjI1LCBjb2xvdXIgPSAiYmxhY2siKSArCiAgCiAgZ2VvbV9kZW5zaXR5XzJkX2ZpbGxlZChhbHBoYSA9IDAuNSwgY29udG91cl92YXIgPSAiY291bnQiKSArCiAgZ2VvbV9kZW5zaXR5XzJkKGxpbmV3aWR0aCA9IDAuMjUsIGNvbG91ciA9ICJibGFjayIsICBjb250b3VyX3ZhciA9ICJjb3VudCIpICsKICAKICBnZW9tX3BvaW50KHNpemUgPSAwLjA1LCBhbHBoYSA9IDAuOCkrCiAgZmFjZXRfd3JhcCh+c3Vic2V0LCBuY29sID0gMikgKwogIGhyYnJ0aGVtZXM6OnRoZW1lX2lwc3VtKCkgKwogIHRoZW1lKGFzcGVjdC5yYXRpbyA9IDEpCgoKZ2dzYXZlKGZpbGVuYW1lID0gIi9Vc2Vycy90YWlhc2Vhbnd1L0Rlc2t0b3AvcHJvZ3JhbW1pbmcvZHNmYmFzZS8yMDIzMTIwNV92ZXJzaW9uLzA0X1VNQVBfYW5hbHlzaXMvZmluYWxfcGFyYW1ldGVycy9wbG90cy9kZW5zaXR5L1VNQVBfMTAwX25laWdoYm9yc18wcDJfbWluZGlzdF9kZW5zaXR5X2ZhY2V0LnBkZiIsCiAgICAgICB3aWR0aCA9IDEwLAogICAgICAgIGhlaWdodCA9IDE1LAogICAgICAgZGV2aWNlID0gY2Fpcm9fcGRmKQoKYGBgCg==</div>
 
 
 

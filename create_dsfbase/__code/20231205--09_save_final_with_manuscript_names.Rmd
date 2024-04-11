@@ -39,5 +39,12 @@ file_copy(path = "../03_final_dsfbase/dsfbase_subset_assignments.csv",
 ```
 
 
+Data S3: UMAP
+```{r}
+umap <- read_rds("../../../../04_UMAP_analysis/final_parameters/dsfbase_UMAP_nn200_md0p2.rds") |> 
+  select(id, UMAP1, UMAP2)
+
+write_csv(umap, "../../__final_files_for_submission/supplemental_data/Data_S4_UMAP.csv")
+```
 
 

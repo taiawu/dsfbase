@@ -90,12 +90,20 @@ Conclusion: the final results are relatively insensitive to the parameters (see 
 The "clearest" visualization, in my opinion, is the RFU data with 200 neighbors and min_dist = 0.2
 ```{r}
 ## overwrite the old protein name columns
-id_annotations <- read_rds("../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds")
+id_annotations <- read_rds("../../../../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds")
 
-umap_200 <- read_rds("../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.2.rds") %>%
+umap_200 <- read_rds("../../../../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.2.rds") %>%
   select(-c("protein", "subset")) %>% 
   left_join(id_annotations, by = join_by("id"))
+
+write_rds(x = umap_200, 
+          "../../../../04_UMAP_analysis/final_parameters/dsfbase_UMAP_nn200_md0p2.rds")
 ```
+
+Make final version of umap 200 to save as supplemnetal file
+```{r}
+```
+
 
 ######## ---------- Make SI facet figures visualizing the impact of input parameters
 ```{r}
