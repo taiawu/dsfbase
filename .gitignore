@@ -4,3 +4,4 @@
 .Ruserdata
 git_ignore_archived
 create_dsfbase/git_ignore_data
+.DS_Store
