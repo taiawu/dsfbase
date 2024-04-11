@@ -1,0 +1,43 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Generate data files with the file names used in the final submission
+
+This step done programmatically to streamline updating of these files
+as well as to disambiguate naming/versioning
+
+```{r}
+#library(tidyverse)
+library(fs)
+```
+
+Create the "for final manuscript" folder
+```{r}
+fs::dir_create("../__final_files_for_submission/dsfbase/") # actual dsfbase csvs
+fs::dir_create("../__final_files_for_submission/supplemental_data/") # SI
+```
+
+DSFbase
+```{r}
+dir_copy(path = "../03_final_dsfbase/csvs",
+         new_path = "../__final_files_for_submission/dsfbase/",
+         overwrite = TRUE)
+```
+
+Data S1: detailed experimental conditions
+```{r}
+file_copy(path = "../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.csv",
+         new_path = "../__final_files_for_submission/supplemental_data/Data_S1_experimental_conditions.csv")
+```
+
+Data S2: Subset and sub-subset assignments for all entries in DSFbase by ID. 
+```{r}
+file_copy(path = "../03_final_dsfbase/dsfbase_subset_assignments.csv",
+         new_path = "../__final_files_for_submission/supplemental_data/Data_S2_subset_assignments_by_id.csv")
+```
+
+
+
+

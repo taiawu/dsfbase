@@ -1,14 +1,23 @@
+
 # function to add IDs, and save relevant forms, of DSFbase
 update_dsfbase <- function(annotated,
                            subset_order = c("canon", "noncanon", "speculative", "errata"),
                            save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/02_combined_dsfbase/",
+                           add_new_ids = TRUE,
                            ...
 ){
-  # add IDs
-  print("Adding IDs and testing")
-  dsfbase_id <- add_IDs(annotated, subset_order = subset_order) # gets subset order, when supplied to update_dsdfbase ... argument
   
-  if(all(test_annotated_dataset(dsfbase_id))) {
+  # added on Feb 27, to allow re-saving following updates to annotation, but not wanting to trigger re-iding
+  if(add_new_ids){
+    # add IDs
+    print("Adding IDs and testing")
+    dsfbase_id <- add_IDs(annotated, subset_order = subset_order) # gets subset order, when supplied to update_dsdfbase ... argument
+  } else {
+    dsfbase_id <- annotated
+  }
+ 
+  
+  if(all(test_annotated_dataset(dsfbase_id, ...))) {
     fs::dir_create(save_to)
     dsfbase_rds_to <- glue::glue("{save_to}dsfbase_annotated.rds")
     
@@ -62,8 +71,11 @@ update_dsfbase <- function(annotated,
 }
 
 
-write_experimental_conditions <- function(dsfbase_id, save_to, ...){
-  .use_cols <- c("additional_notes", "additive", "additive_concentration_uM", "additive_description", "dye", "dye_concentration_uM", "exp_num", "exp_summary", "fluorescent_channel", "id", "instrument", "protein", "protein_concentration_uM", "protein_original", "subset", "subsubset","thermocycling_protocol", "variable", "well")
+write_experimental_conditions <- function(dsfbase_id, 
+                                          save_to, 
+                                          .use_cols = c("additional_notes", "additive", "additive_concentration_uM", "additive_description", "dye", "dye_concentration_uM", "exp_num", "exp_summary", "fluorescent_channel", "id", "instrument", "protein", "protein_concentration_uM", "protein_original", "subset", "subsubset","thermocycling_protocol", "variable", "well"),
+                                          ...){
+
   
   conditions <- dsfbase_id |> 
     select(all_of(c(.use_cols))) |> 

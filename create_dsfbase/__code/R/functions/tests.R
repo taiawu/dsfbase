@@ -174,7 +174,8 @@ test_dataset <- function(dsf) {
 test_annotated_dataset <- function(annotated, 
                             .use_template = FALSE, 
                             .external_template = NULL,
-                            .id_col = "variable") {
+                            .id_col = "variable",
+                            ...) {
   
   if(.use_template) {
     template <- .external_template
@@ -240,7 +241,7 @@ test_annotated_dataset <- function(annotated,
       "buffer"
     )
     
-    expect_in(annotated$subset, subset_names)
+    testthat::expect_in(annotated$subset, subset_names)
   })
   
   # test for post-assignments

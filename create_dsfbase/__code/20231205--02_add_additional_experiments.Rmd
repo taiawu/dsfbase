@@ -27,11 +27,15 @@ annotated_experiments <- read_rds(ANNOTATION_DIR) |>
   
   # this is more completely contained in the raw data
   select(-subset)
+
+
+#annotated_experiments$protein_original %>% unique()
+
 ```
 
 Read in the raw data, aggregated for all experiments (including dye screens).
 ```{r}
-RAW_DIR <- "/Users/taiaseanwu/Desktop/programming/dsfbase/03_combined_data/dsfbase.rds"
+RAW_DIR <- "../Users/taiaseanwu/Desktop/programming/dsfbase/03_combined_data/dsfbase.rds"
 
 dsfbase_raw_experiments <- read_rds(RAW_DIR) |> 
   
@@ -93,6 +97,15 @@ Save annotated experiments
 ```{r}
 write_rds(annotated_dsfbase_experiments, "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/01_annotated_entries/non_dye_screens/all_non_dye_screens_annotated.rds")
 ```
+
+Checking the protein naming -- somewhere, we introduced duplicates
+```{r}
+annotated_dsfbase_experiments <- read_rds("../01_annotated_entries/non_dye_screens/all_non_dye_screens_annotated.rds")
+
+n_distinct(annotated_dsfbase_experiments$protein)
+n_distinct(annotated_dsfbase_experiments$protein_original)
+```
+
 
 
 

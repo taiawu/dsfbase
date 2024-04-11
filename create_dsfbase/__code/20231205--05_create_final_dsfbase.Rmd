@@ -1,0 +1,305 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+In this notebook, the final DSFbase is updated and saved. 
+This takes place after all reassignments have been completed (see previous notebook)
+
+Save the final subset assignments
+```{r}
+library(glue)
+library(tidyverse)
+library(testthat)
+source("R/functions/tests.R") # function to add new IDs
+source("R/functions/add_IDs.R") # function to add new IDs
+source("R/functions/facet_plot_entries.R") # function to add new IDs
+source("R/functions/save_dsfbase.R") # function to save standard dsfbase output files
+```
+
+
+Read in the current final version of DSFbase
+```{r}
+dsfbase_current <- read_rds("../03_final_dsfbase/dsfbase_annotated.rds")
+```
+
+###### ---- Update 1: Edited protein names after all re-assignments had been completed. 
+Step 1 -- Read in the original annotated experiments, and from it, create a manually editable file to update protein names
+```{r}
+annotated <- bind_rows(read_rds("../01_annotated_entries/dye_screens/all_dye_screens_annotated.rds"), # dye screens
+                       read_rds("../01_annotated_entries/non_dye_screens/all_non_dye_screens_annotated.rds")) 
+
+# create a name map
+protein_name_map <- 
+  annotated %>% 
+  select(protein, protein_original, exp_num, additional_notes, exp_summary) %>%  
+  distinct() 
+
+protein_name_map %>% write_csv("../01_annotated_entries/protein_names/original_protein_names.csv")
+```
+
+Step 2 -- Following manual updating of protein names, read in the edited file
+```{r}
+protein_names_updated <- read_csv("../01_annotated_entries/protein_names/updated_protein_names.csv") %>% 
+  unite(protein_id_num, c(id_num, protein), remove = FALSE)
+
+#### check that the updated protein names are unique
+# check that protein names 
+protein_names_updated %>% 
+  select(protein_name_short, protein_name_long) %>% 
+  distinct() %>% 
+  group_by(protein_name_short) %>% 
+  tally() %>% 
+  filter(n != 1)
+# 0 rows
+
+protein_names_updated %>% 
+  select(protein_name_short, protein_name_long) %>% 
+  distinct() %>% 
+  group_by(protein_name_long) %>% 
+  tally() %>% 
+  filter(n != 1)
+# 0 rows
+
+nonunique <- protein_names_updated %>% 
+  distinct() %>% 
+   group_by(protein, protein_original, exp_num, exp_summary, additional_notes) %>% 
+  tally() %>% 
+  filter(n != 1)
+  # pivot_wider(id_cols = c("protein", "protein_original", 'exp_num', "exp_summary", "additional_notes"))
+
+nonunique # 0 rows
+```
+
+Step 3 -- Create a protein name to variable mapping, to join with DSFbase
+```{r}
+protein_order <- factor(protein_names_updated$protein %>% unique(), levels = protein_names_updated$protein %>% unique())
+
+# protein_name_rejoin 
+protein_name_map_rejoin <- 
+  annotated %>% 
+  select(protein, protein_original, exp_num, additional_notes, exp_summary, variable) %>%  
+  distinct() %>% 
+  group_by(protein, protein_original, exp_num, additional_notes, exp_summary) %>% 
+  nest() %>% 
+  ungroup() %>% 
+  mutate(protein_f = factor(protein, levels = protein_order)) %>% 
+  arrange(protein_f) %>% 
+  mutate(id_num = row_number()) %>% 
+  unnest(cols = c(data)) %>% 
+  unite(protein_id_num, c(id_num, protein), remove = FALSE)
+
+# reciprocally true
+all(protein_names_updated$protein_id_num %in% protein_name_map_rejoin$protein_id_num)
+all(protein_name_map_rejoin$protein_id_num %in% protein_names_updated$protein_id_num)
+
+## create the map
+protein_by_var <- protein_name_map_rejoin %>% 
+  left_join(protein_names_updated %>% select(protein_id_num, protein_name_short, protein_name_long),
+            by = join_by(protein_id_num))  #, protein, protein_original, exp_num, additional_notes, exp_summary, id_num))
+
+# should all be FALSE
+any(is.na(protein_by_var$variable))
+any(is.na(protein_by_var$protein_id_num))
+any(is.na(protein_by_var$protein))
+any(is.na(protein_by_var$protein_name_short))
+any(is.na(protein_by_var$protein_name_long))
+```
+
+Step 4 -- Edit names in DSFbase by combining DSFbase (including annotations, and final IDs) with the updated protein names
+```{r}
+dsfbase_rename <- dsfbase_current %>% 
+  #left_join(protein_names_updated) %>% 
+  left_join(protein_by_var %>% select(variable, protein_name_short, protein_name_long),
+              by = join_by(variable)) %>% 
+  select(-c("protein", # updated/improved by "protein_name_long"
+            "protein_original", # updated/improved by "protein_name_short"
+            "reviewed")) %>% 
+  
+  rename(protein = protein_name_short,
+         protein_description = protein_name_long) %>% 
+  
+  relocate(all_of(c("id",
+                   "subset" ,
+                   "subsubset" ,
+                   "subset_f" ,
+                   "subsubset_f",
+                  
+                  # data
+                  "Temperature" ,
+                  "value",
+                  "value_norm",
+                  
+                  # annotations
+                  "variable",
+                  "exp_summary",
+                  "exp_num",
+                  "well" ,
+                  "protein" ,
+                  "protein_description" ,
+                  "buffer" ,
+                  "protein_concentration_uM",
+                  "dye" ,
+                  "dye_concentration_uM" ,
+                  "additive",
+                  "additive_description" ,
+                  "additive_concentration_uM",
+                  "thermocycling_protocol",
+                  "fluorescent_channel",
+                  "instrument" ,
+                  "additional_notes",
+                  "directory")))
+```
+
+Step 5 -- Create a column name and type template for the automated tests
+```{r}
+final_template <- tibble("id" = character(),
+                   "subset" = character(),
+                   "subsubset" = character(),
+                   "subset_f" = factor(),
+                   "subsubset_f" = factor(),
+                  
+                  # data
+                  "Temperature" = numeric(),
+                  "value"= numeric(),
+                  "value_norm"= numeric(),
+                  
+                  # annotations
+                  "variable" = character(),
+                  "exp_summary"= character(),
+                  "exp_num"= character(),
+                  "well" = character(),
+                  "protein" = character(),
+                  "protein_description"= character() ,
+                  "buffer" = character(),
+                  "protein_concentration_uM"= numeric(),
+                  "dye" = character(),
+                  "dye_concentration_uM" = numeric(),
+                  "additive"= character(),
+                  "additive_description" = character(),
+                  "additive_concentration_uM"= numeric(),
+                  "thermocycling_protocol"= character(),
+                  "fluorescent_channel"= character(),
+                  "instrument" = character(),
+                  "additional_notes"= character(),
+                  "directory"= character())
+
+# # ----- usage
+# test_annotated_dataset(annotated, 
+#                        .use_template = TRUE, 
+#                        .external_template = final_template) 
+#
+
+names(final_template)
+```
+
+###### ---- Update 2: remove Widom 601 DNA from the dataset
+It's not actually a protein; maybe best to focus just on proteins here
+```{r}
+dsfbase_final <- dsfbase_rename %>% 
+  filter(protein != "Widom 601 DNA") %>% 
+  select(-any_of(c("subset_f")))
+  
+  dsfbase_final %>% head()
+```
+
+###### ---- Update 3: add in the missing experimental conditions information 
+Missing dye screen information
+```{r}
+annotated_dye_screens <- read_rds("/Users/student/Desktop/2024-02-13 taia files/20231205_version/01_annotated_entries/dye_screens/all_dye_screens_annotated.rds") |> 
+   select(-c("Temperature", "value", "value_norm")) |> 
+  distinct() 
+
+missing_dye_names <- annotated_dye_screens |> 
+  filter(is.na(dye)) |> 
+  group_by(exp_num, directory) |> 
+  tally()
+
+annotated_dye_screens
+
+missing_dye_names
+
+ds7 <- read_rds("/Users/student/Desktop/2024-02-13 taia files/20231205_version/00_inputs/dye_screens/raw_dye_screens/Exp1252--20211206_all_dye_screens_collected/Ds0007_p300_KIX-full_screen_results.rds")[[1]] |> 
+  #separate(variable, into = c("well", "channel", "type")) |> 
+  select(variable, dye, dye_conc_uM, channel_f) |> 
+  distinct() |> 
+  set_names(c("variable", "dye", "dye_concentration_uM", "fluorescent_channel")) |> 
+  separate(variable, into = c("well", "channel_f", "type")) |> distinct()
+```
+
+```{r}
+fill_in_blanks <- function(dsfbase_annotations,
+                           complete_annotations){
+  
+}
+
+test1 <- c(1,2,3,NA,NA,5,6)
+test2 <- c(1,2,3,0,0,NA,6)
+coalesce(test1, test2)
+```
+
+```{r}
+non_dye_annotations <- read_rds("/Users/student/Desktop/2024-02-13 taia files/20231205_version/01_annotated_entries/non_dye_screens/all_non_dye_screens_annotated.rds") |> 
+   select(-c("Temperature", "value", "value_norm")) |> 
+  distinct() 
+
+non_dye_annotations |> 
+  distinct() |> 
+  filter(is.na(dye)) 
+
+## lame gotta add these back in now
+non_dye_annotations |> 
+  distinct() |> 
+  filter(is.na(additive)) |> 
+  group_by(exp_num, exp_summary, directory) |> 
+  tally()
+
+##
+test_mac1 <- read_rds("../02_aggregated_data/canon/Exp1219_nsp3mac1_canon.rds")
+
+```
+
+
+##### --- Write the updated version of DSFbase
+Write the final version of DSFbase
+```{r}
+fs::dir_copy(path = "../03_final_dsfbase/", 
+            new_path = "../03_final_dsfbase/previous_version_backup/",
+            overwrite = TRUE)
+  
+
+update_dsfbase(dsfbase_final,
+               add_new_ids = TRUE, # keep the same ids, since updated only protein names
+               subset_order = c("canon", "noncanon", "speculative","errata"),
+               save_to = "../03_final_dsfbase/",
+               
+               # pass arguments to test_annotated_dsfbase
+               .use_template = TRUE, 
+               .external_template = final_template, # defined in code chunk above
+               
+               # for writing experimental conditions file
+               .use_cols = names(final_template)[!names(final_template) %in% c("Temperature", "value", "value_norm")])
+
+### add an rds which converts ids from old version to new version
+dsfbase_previous <- read_rds("../03_final_dsfbase/previous_version_backup/dsfbase_annotated.rds") %>% 
+  select(variable, id) %>% 
+  rename(old_id = id) %>% 
+  distinct()
+
+dsfbase_new <- read_rds("../03_final_dsfbase/dsfbase_annotated.rds")
+dsfbase_new$id %>% n_distinct() # [1] 6165
+dsfbase_previous$old_id %>% n_distinct() # [1] 6235
+
+id_map <- 
+  dsfbase_new %>% 
+  select(variable, id) %>% 
+  distinct() %>% 
+  left_join(dsfbase_previous,  by = join_by(variable))
+
+id_map %>% 
+  write_rds("../03_final_dsfbase/previous_version_backup/previous_version_backup/id_mapping_to_updated_dsfbase_final.rds")
+```
+
+
+
+

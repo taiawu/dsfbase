@@ -1,0 +1,405 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+Looks like UMAP is the current best analysis for the curve shapes.
+
+In this notebook, create a reproducible UMAP analysis
+Test variations in hyperparameters
+Test both raw, first, and second derivative data
+
+```{r}
+library(tidyverse)
+library(umap)
+library(glue)
+library(embed) # required installation of python package "tensorflow", and therefore also reticulate
+library(extrafont) # for cairo_pds 
+# cairo_pdf (which will throw obscure error also if the save path to ggsave doens't exist -- see https://github.com/tidyverse/ggplot2/issues/4168)
+
+# has unnecessarily complex directory creation system, but works... 
+source("R/functions/umap.R") # helper functions to implement and plot UMAP using tidymodels
+```
+
+========= Calculate the UMAPS ======== (next: analyze and make figures for UMAPs)
+Read in dsfbase, and add derivatives
+```{r}
+dsfbase_deriv <- read_rds("../03_final_dsfbase/dsfbase_annotated.rds") |> 
+  group_by(id) |> 
+  arrange(Temperature) |> 
+  mutate(drfu = signal::sgolayfilt(x = value_norm,
+                                   m = 1),
+         ddrfu = signal::sgolayfilt(x = value_norm,
+                                   m = 2)) |> 
+  ungroup()
+
+## previous versions had removed the nsp3 screen
+## but the final does not, because it wasn't worth the added complexity
+```
+
+Prepare dsfbase for umap, including derivatives
+```{r}
+rfu <- prep_for_UMAP(dsfbase_deriv, "value_norm", drop_mac1 = FALSE)
+drfu <- prep_for_UMAP(dsfbase_deriv, "drfu", drop_mac1 = FALSE)
+ddrfu <- prep_for_UMAP(dsfbase_deriv, "ddrfu", drop_mac1 = FALSE)
+
+rfu$id |> n_distinct() # [1] 5783
+rfu$protein |> n_distinct() # [1] 81
+```
+
+Test UMAP parameters for raw data
+```{r}
+# set parameters to explore
+.test_neighbors <- c(10, 50, 100, 200, 400, 800)
+.test_min_dists <- c(0.05, 0.1, 0.2, 0.4, 0.8)
+UMAP_pars <- expand.grid(.test_neighbors, .test_min_dists) |> 
+  set_names(c("n_neighbors", "min_dists"))
+
+# directories to save results
+.explore_pars <- "../04_UMAP_analysis/parameter_exploration/"
+.save_rfu <- glue::glue("{.explore_pars}rfu/")
+.save_drfu <- glue::glue("{.explore_pars}drfu/")
+.save_ddrfu <- glue::glue("{.explore_pars}ddrfu/")
+fs::dir_create(c(.save_rfu, .save_drfu, .save_ddrfu))
+
+explore_UMAP_pars(rfu, 
+                  .n_neighbors = UMAP_pars$n_neighbors,
+                  .min_dists = UMAP_pars$min_dists,
+                  .other_notes = "Data: normalized RFU. \n Includes full 6165 entries in DSFbase.",
+                  .save_to = .save_rfu,
+                  .save_input = TRUE)
+
+
+explore_UMAP_pars(drfu,
+                  .n_neighbors = UMAP_pars$n_neighbors,
+                  .min_dists = UMAP_pars$min_dists,
+                  .other_notes = "Data: normalized RFU. \n Includes full 6165 entries in DSFbase.",
+                  .save_to = .save_drfu,
+                  .save_input = TRUE)
+
+explore_UMAP_pars(ddrfu,
+                  .n_neighbors = UMAP_pars$n_neighbors,
+                  .min_dists = UMAP_pars$min_dists,
+                  .other_notes = "Data: normalized RFU. \n Includes full 6165 entries in DSFbase.",
+                  .save_to = .save_ddrfu,
+                  .save_input = TRUE)
+```
+
+
+Conclusion: the final results are relatively insensitive to the parameters (see SI figure making below), and also the form on the input data (RFU, dRFU, and ddRFU). That's a good sign that the separation we are seeing is not an artifact of the specific processing or hyper-parameters of UMAP. Going to use the raw RFU clustering, since that is one less processing step. 
+
+The "clearest" visualization, in my opinion, is the RFU data with 200 neighbors and min_dist = 0.2
+```{r}
+## overwrite the old protein name columns
+id_annotations <- read_rds("../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds")
+
+umap_200 <- read_rds("../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.2.rds") %>%
+  select(-c("protein", "subset")) %>% 
+  left_join(id_annotations, by = join_by("id"))
+```
+
+######## ---------- Make SI facet figures visualizing the impact of input parameters
+```{r}
+### --  raw rfu
+rfu_umaps <- combine_umap_data("../04_UMAP_analysis/parameter_exploration/rfu/results/")
+
+write_rds(rfu_umaps, "../04_UMAP_analysis/parameter_exploration/rfu/parameter_summary/dsfbase_umap_rfu_all_parameter_results.rds")
+
+facet_umap_pars(rfu_umaps, 
+                plot_title = "UMAP results; raw RFU data",
+                "rfu", 
+             "../04_UMAP_analysis/parameter_exploration/rfu/parameter_summary/dsfbase_umap_rfu_parameter_comparison.pdf")
+
+### --  first derivative
+drfu_umaps <- combine_umap_data("../04_UMAP_analysis/parameter_exploration/rfu/results/")
+
+write_rds(drfu_umaps, "../04_UMAP_analysis/parameter_exploration/drfu/parameter_summary/dsfbase_umap_drfu_all_parameter_results.rds")
+
+
+facet_umap_pars(drfu_umaps, 
+                plot_title = "UMAP results; dRFU data",
+                "drfu", 
+             "../04_UMAP_analysis/parameter_exploration/drfu/parameter_summary/dsfbase_umap_drfu_parameter_comparison.pdf")
+
+### --  second derivative
+ddrfu_umaps <- combine_umap_data("../04_UMAP_analysis/parameter_exploration/ddrfu/results/")
+
+write_rds(ddrfu_umaps, "../04_UMAP_analysis/parameter_exploration/ddrfu/parameter_summary/dsfbase_umap_ddrfu_all_parameter_results.rds")
+
+facet_umap_pars(ddrfu_umaps, 
+                plot_title = "UMAP results; ddRFU data",
+                "ddrfu", 
+             "../04_UMAP_analysis/parameter_exploration/ddrfu/parameter_summary/dsfbase_umap_ddrfu_parameter_comparison.pdf")
+```
+
+####### --------- Make main panel figure of UMAP 200 / 0.2
+Make the main panel plot
+```{r}
+p_umap <- plot_UMAP(UMAP_data = umap_200,
+          .n_neighbors = 200, # just for making labels
+          .min_dist = 0.2, # just for making labels
+          .facet = FALSE, # don't facet in the main panel
+          .other_notes = "input data: RFU. All 6515 entried included in analysis.", # keep in title for reminder. Crop in the final figure.
+          .save_to = "../04_UMAP_analysis/final_parameters/plots/main_text/",
+          .save_name = "dsfbase_umap_",
+          .return_plot = TRUE,
+          .dsfbase_colors = c("canon" = "#30123B",
+                              "noncanon" = "#1BE4B7",
+                              "speculative" = "#FABA39",
+                              "errata" = "#7A0403"))
+
+p_umap_final <- p_umap +
+
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 12,
+                            axis_title_size = 12,
+                            strip_text_size = 12) +
+  
+    theme(aspect.ratio = 1, legend.position = "top", legend.justification = "left") + 
+    labs(subtitle = "input data: RFU. All 6515 entried included in analysis.") 
+
+ggsave("../04_UMAP_analysis/final_parameters/plots/main_text/dsfbase_umap_200_min_dist_0.2.pdf",
+       width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+
+```
+
+######## ---------- Make SI facet figures displaying where different proteins are placed in the UMAPs
+```{r}
+plot_UMAP_by_protein(umap_200, 200, 0.2, 
+                     .plot_width = 15,
+                     .plot_height = 40,
+                     .ncol = 6,
+                     .other_notes = "All 6515 entries included in analysis.",
+                     .save_to = "../04_UMAP_analysis/final_parameters/plots/by_protein/")
+
+
+### show for a couple of other extreme parameter examples
+umap_10 <- read_rds("../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_10_mindist_0.2.rds") %>%
+  select(-c("protein", "subset")) %>% 
+  left_join(id_annotations, by = join_by("id"))
+
+plot_UMAP_by_protein(umap_10, 10, 0.2, 
+                     .plot_width = 15,
+                     .plot_height = 40,
+                     .other_notes = "All 6515 entries included in analysis.",
+                     .save_to = "../04_UMAP_analysis/final_parameters/plots/by_protein/")
+
+umap_400 <- read_rds("../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_400_mindist_0.2.rds") %>%
+  select(-c("protein", "subset")) %>% 
+  left_join(id_annotations, by = join_by("id"))
+
+plot_UMAP_by_protein(umap_400, 400, 0.2, 
+                     .plot_width = 15,
+                     .plot_height = 40,
+                     .other_notes = "All 6515 entries included in analysis.",
+                     .save_to = "../04_UMAP_analysis/final_parameters/plots/by_protein/")
+
+umap_200_p8 <- read_rds("../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.8.rds") %>%
+  select(-c("protein", "subset")) %>% 
+  left_join(id_annotations, by = join_by("id"))
+
+plot_UMAP_by_protein(umap_200_p8, 200, 0.8, 
+                     .plot_width = 15,
+                     .plot_height = 40,
+                     .other_notes = "All 6515 entries included in analysis.",
+                     .save_to = "../04_UMAP_analysis/final_parameters/plots/by_protein/")
+
+```
+
+
+
+Compare UMAP separation to dsfworld Tma calculations
+```{r}
+
+```
+
+
+-------
+######### scratch work below this line
+
+```{r}
+#fs::dir_create("../04_UMAP_analysis/parameter_exploration/rfu/summary_plot/")
+
+plot_UMAP(umap_200,
+          200,
+          0.2,
+          facet = FALSE,
+          .save_to = "../04_UMAP_analysis/parameter_exploration/rfu/summary_plot/",
+                      .save_name = "dsfbase_umap_parameter_comparison")
+
+plot_UMAP
+
+plot_UMAP <- function(UMAP_data,
+                      .n_neighbors,
+                      .min_dist,
+                      .facet = TRUE,
+                      .other_notes = "Nsp3 mac1 screen excluded from analysis.",
+                      .x = "UMAP1",
+                      .y = "UMAP2",
+                      .save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/05_analyses/1_UMAP/optimizations/plots/",
+                      .save_name = "dsfbase_umap_",
+
+                      .dsfbase_colors = c("canon" = "#30123B",
+                                          "noncanon" = "#1BE4B7",
+                                          "speculative" = "#FABA39",
+                                          "errata" = "#7A0403"),
+                      .return_plot = FALSE,
+                      ...) 
+```
+
+
+
+
+
+
+
+
+```{r}
+  
+  UMAP_protein_subset_200 <-
+    umap_200 |>
+    unite(subsubset_protein, c(subsubset_f, protein), remove = FALSE) |>
+    arrange(subsubset_f) |>
+    mutate(subsubset_protein_f = factor(subsubset_protein, levels = unique(subsubset_protein)))
+
+
+UMAP_protein_subset_200$subsubset_protein_f %>% unique()
+```
+
+
+
+```{r}
+ ## --- make plot
+make_main_panel_UMAP <- function(UMAP_data,
+                                 .color_by,
+                      .n_neighbors,
+                      .min_dist,
+                      .other_notes = "Nsp3 mac1 screen excluded from analysis.",
+                      .x = "UMAP1",
+                      .y = "UMAP2",
+                      .save_to = "../Users/taiaseanwu/Desktop/programming/dsfbase/05_analyses/1_UMAP/optimizations/plots/",
+                      .save_name = "dsfbase_umap_",
+                      .return_plot = FALSE,
+                      ...) {
+  
+  ## --- create plot names and annotations
+  .plot_title <- glue("UMAP of DSFbase. \n {.n_neighbors} neighbors; {.min_dist} min dist.")
+  .plot_subtitle <- glue("Parameters: neighbors = {.n_neighbors}, min_dist = {.min_dist}. \n Gotcha subset not displayed. \n Notes: {.other_notes}")
+  
+  # create the save location, if it isn't already there
+  fs::dir_create(.save_to)
+  
+  UMAP_protein_subset <-
+    UMAP_data |>
+    unite(subsubset_protein, c(subsubset_f, protein), remove = FALSE) |>
+    arrange(subsubset_f) |>
+    mutate(subsubset_protein_f = factor(subsubset_protein, levels = unique(subsubset_protein))) |>
+    mutate(subsubset_plot = factor(gsub(subsubset, pattern = "SYPRO", replacement = ""), levels = c("canon", "midcanon", "noncanon", "latenoncanon", "errata")))
+
+  ## --- make plot
+  p_UMAP <- 
+    UMAP_protein_subset |> 
+    ggplot(aes(.data[[.x]], .data[[.y]])) +
+    
+     # color points for each subset
+    geom_point(aes(color = subsubset_plot), 
+                 alpha = 0.3, 
+                 size = 0.2) +
+    
+    #scale_color_viridis_d(option = "turbo") +
+     scale_color_viridis_d() +
+    
+    # add labels
+    labs(title = .plot_title,
+         subtitle = str_wrap(.plot_subtitle, 50)) +
+    
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 20,
+                            strip_text_size = 20) +
+    
+    theme(aspect.ratio = 1) +
+    
+    # increase size and alpha in guides to make them visible
+     guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don't make legend really transparent
+    
+    labs(subtitle = str_wrap("Nsp3 mac1 screen excluded from analysis."),
+       color = "Subset") +
+  
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 16,
+                            axis_title_size = 14,
+                            strip_text_size = 12) +
+    
+    theme(aspect.ratio = 1,
+          legend.position = "top",
+          legend.justification='left') 
+
+ggsave("../04_UMAP_analysis/final_parameters/plots/main_text/dsfbase_umap_100_min_dist_0.2.pdf",
+       width = 6, # facet plots get saved larger
+         height = 6, # facet plots get saved larger
+         device = cairo_pdf)
+  
+}
+
+p_umap <- make_main_panel_UMAP(UMAP_data = umap_200 %>% filter(subset != "errata"),
+          .n_neighbors = 200, # just for making labels
+          .min_dist = 0.2, # just for making labels
+          .facet = FALSE, # don't facet in the main panel
+          .other_notes = "Nsp3 mac1 screen excluded and errata from analysis.", # keep in title for reminder. Crop in the final figure.
+          .save_to = "../04_UMAP_analysis/final_parameters/plots/main_text/",
+          .save_name = "dsfbase_umap_",
+          .return_plot = TRUE)
+
+
+umap_200 %>% mutate(subsubset_plot = gsub(subsubset, pattern = "SYPRO", replacement = "")) %>% pull(subsubset_plot) %>% unique()
+```
+
+
+
+Are we losing important information to overplotting?
+Make a density plot of the UMAP results
+```{r}
+umap_density <- umap_100 |> 
+  ggplot(aes(x = UMAP1, y = UMAP2)) +
+  
+  geom_density_2d_filled(data = select(umap_100, -subset),
+                         alpha = 0.5) +
+  geom_density_2d(data = select(umap_100, -subset),
+                  linewidth = 0.25, colour = "black") +
+  
+  geom_point(size = 0.05, alpha = 0.8) +
+  facet_wrap(~subset, ncol = 2) +
+  hrbrthemes::theme_ipsum() +
+  theme(aspect.ratio = 1)
+
+ggsave(filename = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/04_UMAP_analysis/final_parameters/plots/density/UMAP_100_neighbors_0p2_mindist_density.pdf",
+       width = 10,
+        height = 15,
+       device = cairo_pdf)
+```
+
+```{r}
+umap_density2 <- umap_100 |> 
+  ggplot(aes(x = UMAP1, y = UMAP2)) +
+  # 
+  # geom_density_2d_filled(data = select(umap_100, -subset),
+  #                        alpha = 0.5) +
+  # geom_density_2d(data = select(umap_100, -subset),
+  #                 linewidth = 0.25, colour = "black") +
+  
+  geom_density_2d_filled(alpha = 0.5, contour_var = "count") +
+  geom_density_2d(linewidth = 0.25, colour = "black",  contour_var = "count") +
+  
+  geom_point(size = 0.05, alpha = 0.8)+
+  facet_wrap(~subset, ncol = 2) +
+  hrbrthemes::theme_ipsum() +
+  theme(aspect.ratio = 1)
+
+
+ggsave(filename = "/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/04_UMAP_analysis/final_parameters/plots/density/UMAP_100_neighbors_0p2_mindist_density_facet.pdf",
+       width = 10,
+        height = 15,
+       device = cairo_pdf)
+
+```

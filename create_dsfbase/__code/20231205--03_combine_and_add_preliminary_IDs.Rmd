@@ -18,19 +18,131 @@ source("R/functions/facet_plot_entries.R") # function to add new IDs
 source("R/functions/save_dsfbase.R") # function to save standard dsfbase output files
 ```
 
-Read in the annotated experiments
+<!-- Read in the annotated experiments -->
+<!-- ```{r} -->
+<!-- annotated <- bind_rows(read_rds("../01_annotated_entries/dye_screens/all_dye_screens_annotated.rds"), # dye screens -->
+<!--                         read_rds("../01_annotated_entries/non_dye_screens/all_non_dye_screens_annotated.rds")) |>  # non dye screens -->
+
+<!--   # add the subsubsets, which will be amended in the next notebook -->
+<!--   mutate(subsubset = subset, -->
+<!--          subsubset_f = factor(subsubset, levels = c("SYPROcanon", "canon", "SYPROmidcanon", "midcanon", "SYPROnoncanon", "noncanon", "SYPROlatenoncanon", "latenoncanon", "errata"))) -->
+
+<!-- annotated$variable |> n_distinct() # [1] 6239 -->
+
+<!-- test_annotated_dataset(annotated) -->
+<!-- ``` -->
+
+<!-- Create a folder to manually edit protein names and re-join with data -->
+<!-- ```{r} -->
+<!-- protein_name_map <-  -->
+<!--   annotated %>%  -->
+<!--   select(protein, protein_original, exp_num, additional_notes, exp_summary) %>%   -->
+<!--   distinct()  -->
+
+
+<!-- annotated  %>% select(protein, protein_original, exp_num, additional_notes, exp_summary) %>%   -->
+<!--   distinct()  -->
+
+<!-- protein_name_map %>% write_csv("../01_annotated_entries/protein_names/original_protein_names.csv") -->
+
+<!-- protein_names_updated <- read_csv("../01_annotated_entries/protein_names/updated_protein_names_v2.csv") -->
+
+<!-- # check that protein names  -->
+<!-- protein_names_updated %>%  -->
+<!--   select(protein_name_short, protein_name_long) %>%  -->
+<!--   distinct() %>%  -->
+<!--   group_by(protein_name_short) %>%  -->
+<!--   tally() %>%  -->
+<!--   filter(n != 1) -->
+<!-- # 0 rows -->
+
+<!-- protein_names_updated %>%  -->
+<!--   select(protein_name_short, protein_name_long) %>%  -->
+<!--   distinct() %>%  -->
+<!--   group_by(protein_name_long) %>%  -->
+<!--   tally() %>%  -->
+<!--   filter(n != 1) -->
+<!-- # 0 rows -->
+
+<!-- nonunique <- protein_names_updated %>%  -->
+<!--   distinct() %>%  -->
+<!--   # select(protein_name_short, protein_name_long) %>%  -->
+<!--   # distinct() %>%  -->
+<!--    group_by(protein, protein_original, exp_num, exp_summary, additional_notes) %>%  -->
+<!--   tally() %>%  -->
+<!--   filter(n != 1) -->
+<!--   pivot_wider(id_cols = c("protein", "protein_original", 'exp_num', "exp_summary", "additional_notes")) -->
+
+<!-- nonunique -->
+<!-- ``` -->
+<!-- Update protein names -- and save to amend the final DSFbase annotations -->
+<!-- ```{r} -->
+<!-- annotated_renamed <-  -->
+<!--   annotated %>%  -->
+<!--   left_join(protein_names_updated, -->
+<!--               by = join_by(protein,  -->
+<!--                            protein_original,  -->
+<!--                            exp_num,  -->
+<!--                            exp_summary,  -->
+<!--                            additional_notes)) %>%  -->
+<!--   select(-c("id_num", # unnecessary helper column from the names update list -->
+<!--             "protein", # updated/improved by "protein_name_long" -->
+<!--             "protein_original" # updated/improved by "protein_name_short" -->
+<!--             )) %>%  -->
+<!--   # rename(protein = protein_name_long, -->
+<!--   #        protein_original = protein_name_short) -->
+<!--   select(all_of(c("id", # DSFbase id -->
+
+<!--                   # assignments -->
+<!--                   "subset", # subset of  -->
+<!--                   "subsubset", # not yet different from subset -->
+<!--                   "subsubset_f", # not yet different from subset -->
+
+<!--                   ### data -->
+<!--                   "Temperature",  -->
+<!--                   "value",  -->
+<!--                   "value_norm",  -->
+
+<!--                   ### experimental annotations -->
+<!--                   "protein_name_short", # protein name abbreviation -->
+<!--                   "protein_name_long", # full, unabmiguous protein name -->
+<!--                   "well",  -->
+<!--                   "variable", # unique identifier pre-ID -->
+<!--                   "exp_num",  -->
+<!--                   "exp_summary",  -->
+<!--                   "protein_concentration_uM", -->
+<!--                   "dye",  -->
+<!--                   "dye_concentration_uM", -->
+<!--                   "buffer", -->
+<!--                   "additive", -->
+<!--                   "additive_description", -->
+<!--                   "additive_concentration_uM", -->
+<!--                   "thermocycling_protocol", -->
+<!--                   "fluorescent_channel", -->
+<!--                   "instrument", -->
+<!--                   "additional_notes" -->
+<!--                     ))) -->
+
+<!-- annotated %>% nrow() # [1] 436730 -->
+<!-- annotated_renamed %>% nrow() # [1] 436730 -->
+
+<!-- annotated$variable %>% n_distinct() # [1] 6239 -->
+
+<!-- # annotated_renamed %>% write_rds("../01_annotated_entries/protein_names/") -->
+
+<!-- annotated_renamed %>% head() -->
+<!-- ``` -->
+
+# overwrite the protein names
 ```{r}
-annotated <- bind_rows(read_rds("../01_annotated_entries/dye_screens/all_dye_screens_annotated.rds"), # dye screens
-                        read_rds("../01_annotated_entries/non_dye_screens/all_non_dye_screens_annotated.rds")) |>  # non dye screens
-  
-  # add the subsubsets, which will be amended in the next notebook
-  mutate(subsubset = subset,
-         subsubset_f = factor(subsubset, levels = c("SYPROcanon", "canon", "SYPROmidcanon", "midcanon", "SYPROnoncanon", "noncanon", "SYPROlatenoncanon", "latenoncanon", "errata")))
 
-annotated$variable |> n_distinct() # [1] 6239
-
-test_annotated_dataset(annotated)
 ```
+
+
+```{r}
+dsfbase_annotated_original$subsubset %>% table()
+```
+
 
 Directories to save the outputs
 ```{r}
@@ -41,6 +153,12 @@ save_preliminary_plots_to <- "/Users/taiaseanwu/Desktop/programming/dsfbase/2023
 fs::dir_create(save_preliminary_to)
 fs::dir_create(save_preliminary_plots_to)
 ```
+
+
+```{r}
+dsfbase_annotated_original <- read_rds("/Users/student/Desktop/2024-02-13 taia files/20231205_version/03_final_dsfbase/dsfbase_annotated.rds")
+```
+
 
 Add IDs
 ```{r}

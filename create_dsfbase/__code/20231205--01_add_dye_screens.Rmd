@@ -251,6 +251,10 @@ screen_summaries <- read_rds("../00_inputs/dye_screens/dye_screen_annotations/dy
           "buffer" = "TAE", 
           "additional_notes" = "Construct notes: The Widom 601 DNA sequence, used to assemble nucleosomes in vitro; Protein source: Hayden Saunders, Narlikar Lab, UCSF",
           )
+
+screen_summaries %>% select(exp_protein, protein_readable)
+
+
 screen_summaries
 ```
 
@@ -351,6 +355,29 @@ plot_by_subset(annotated_dye_screen, "../01_annotated_entries/dye_screens/", "al
 # 683 entries (is that actually enough? I feel like that's not all of them .... )
 write_rds(annotated_dye_screen, "../01_annotated_entries/dye_screens/all_dye_screens_annotated.rds")
 ```
+
+
+After the fact -- 
+Tally how many unique protein names there are
+```{r}
+annotated_dye_screen <- read_rds("../01_annotated_entries/dye_screens/all_dye_screens_annotated.rds")
+
+
+
+annotated_dye_screen
+
+
+annotated_dye_screen %>% head()
+
+annotated_dye_screen$protein %>% unique()
+annotated_dye_screen$protein_original %>% unique()
+
+n_distinct(annotated_dye_screen$protein ) # [1] 56
+n_distinct(annotated_dye_screen$protein_original) # [1] 50
+
+annotated_dye_screen %>% filter(!is.na(protein_original)) %>% pull(protein) %>% unique()
+```
+
 
 
 

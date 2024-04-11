@@ -1,0 +1,439 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(fs)
+library(glue)
+library(extrafont)
+library(tidyverse)
+```
+
+Read in the most updated version of DSFbase
+```{r}
+dsfbase <- read_rds("../03_final_dsfbase/dsfbase_annotated.rds") |> 
+  separate(id, into = c("dsfbase_version", "subset", "short_id"), sep = "_", remove = FALSE)
+```
+
+Read in the id mapping between the previous and most updated version of DSFbase
+These are used to pull/label the individual subset examples in Figure 1
+```{r}
+id_map <- read_rds("../03_final_dsfbase/previous_version_backup/previous_version_backup/id_mapping_to_updated_dsfbase_final.rds")
+```
+
+Back up previous versions of figures
+```{r}
+fs::dir_create("../05_figures/previous_version_backup/")
+
+fs::dir_copy(path = "../05_figures/", 
+            new_path = "../05_figures/previous_version_backup/",
+            overwrite = TRUE)
+```
+
+=========== Figure 1 - examples of the contents of DSFbase ==============
+Plot all traces together
+```{r}
+plot_all_curves <- function(dsfbase, .subset, .alpha = 0.1){
+  p_basic <- 
+  dsfbase |> 
+    filter(subset == .subset) |> 
+  ggplot(aes(x = Temperature, 
+             y = value_norm, 
+             group = id,
+             alpha = subset_f)) +
+  geom_line(linewidth = 0.05) +
+  scale_alpha_manual(values = c("canon" = .alpha,
+                                "noncanon" = .alpha,
+                                "speculative" = .alpha,
+                                "errata" = .alpha)) +
+  facet_wrap(~subset_f,
+             ncol = 1,
+             scales = "free",
+             labeller = labeller(subset = str_to_title)) +
+  scale_x_continuous(breaks = seq(25, 95, by = 10)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.2)) +
+   hrbrthemes::theme_ipsum(base_size = 11,
+                          strip_text_size = 11,
+                          strip_text_face = "italic") +
+  theme(aspect.ratio = 1,
+        legend.position = "none",
+        plot.background = element_rect(fill = "transparent", color = "transparent")) +
+  labs(x = "Temperature (ºC)",
+       y = "Normalized RFU")
+
+ggsave(glue::glue("../05_figures/figure_1/dsfbase_all_curves_{.subset}.pdf"), 
+       p_basic, 
+       width = 3,
+       height = 3,
+       device = cairo_pdf,
+       bg = "transparent")
+
+}
+
+plot_all_curves(dsfbase, "canon", 0.05)
+plot_all_curves(dsfbase, "noncanon", 0.08)
+plot_all_curves(dsfbase, "speculative", 0.2)
+plot_all_curves(dsfbase, "errata", 0.3)
+```
+
+
+Function to plot individual example curves
+```{r}
+plot_subset_examples <- function(dsfbase, ids, 
+                     subset,
+                     complete_ids = TRUE,
+                     complete_ids_with = "DSFbase001",
+                     .drop_pattern = "DSFbase001_canon_",
+                     .save_to = "../05_figures/figure_1/",
+                     .save_width = 7,
+                     .save_height = 3){
+
+   
+  p_subset <- 
+  dsfbase |> 
+  filter(short_id %in% ids) |> 
+  ggplot(aes(x = Temperature, 
+             y = value_norm, 
+             group = id)) +
+  geom_line(linewidth = 0.4) +
+  facet_wrap(~short_id,
+             ncol = 5,
+             scales = "fixed") +
+  scale_x_continuous(breaks = seq(25, 95, by = 20)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.2)) +
+  hrbrthemes::theme_ipsum(base_size = 9,
+                          strip_text_size = 9,
+                          strip_text_face = "italic") +
+  theme(aspect.ratio = 1,
+        legend.position = "none",
+        plot.background = element_rect(fill = "transparent", color = "transparent")) +
+  labs(title = glue("2024-03-01 DSFbase, examples of {subset} datasets"),
+       x = "Temperature (ºC)",
+       y = "Normalized RFU")
+
+  ## save plot
+.save_name <- glue("{.save_to}dsfbase_{subset}_examples.pdf")
+ggsave(.save_name, 
+       p_subset, 
+       width = .save_width,
+       height = .save_height,
+       device = cairo_pdf,
+       bg = "transparent")
+}
+```
+
+Function to map old ids to new ids 
+```{r}
+update_ids <- function(ids, id_map, .use_short_id = TRUE, ...){
+  if(.use_short_id){
+    id_map <- id_map |>
+      separate(old_id, 
+               into = c("old_dsfbase_version", "old_subset", "old_id"), 
+               sep = "_", remove = FALSE) |>
+      separate(id, 
+               into = c("dsfbase_version", "subset", "id"), 
+               sep = "_", remove = FALSE)
+  }
+  
+  new_ids <-
+    id_map |>
+    filter(old_id %in% ids) 
+  
+  out <- new_ids$id
+  names(out) <- new_ids$old_id
+ 
+  
+  if(all(ids %in% id_map$old_id)){
+    print("All input ids updated")
+  } else {
+    missing_ids <- ids[!ids %in% id_map$old_id]
+    msg <- glue::glue("IDs not present in updated: {glue::glue_collapse(missing_ids, sep = ', ')}")
+    print("Returning only successfully mapped IDs")
+    print(out)
+  }
+  
+  out
+  
+}
+
+update_ids(specultive_examples, id_map)
+```
+
+Choose individual example ids, and update accordingly if necessary
+```{r}
+canon_examples <- c("ID000122", "ID001579", "ID004138", "ID003610", "ID003587")
+noncanon_examples <- c("ID004160", "ID004668", "ID004709",  "ID005004", "ID005590" )
+specultive_examples <- c("ID006013", "ID006021", "ID005815", "ID005961")
+
+# not using any of these in the end
+errata_examples <- c("ID005912",  "ID005930", "ID005815", "ID006067", "ID006094") 
+
+## update 2024-03-01
+canon_examples <- update_ids(canon_examples, id_map)
+noncanon_examples <- update_ids(noncanon_examples, id_map)
+specultive_examples <- update_ids(specultive_examples, id_map)
+errata_examples <- update_ids(errata_examples, id_map)
+
+## add two more speculative
+specultive_examples <- c(specultive_examples, "ID005796", "ID005774")
+
+## replace all of the errata examples
+errata_examples <- c("ID006057", "ID006148", "ID006106" ,  "ID006142" ,  "ID006059")
+```
+
+For Supplemental Table -- conditions and proteins used in Figure 1 examples
+```{r}
+example_proteins <- dsfbase %>% 
+  filter(short_id %in% c(canon_examples, 
+                   noncanon_examples, 
+                   specultive_examples, 
+                   errata_examples)) %>% 
+  select(id, short_id,  subset_f, subsubset_f, exp_summary, exp_num, protein:additional_notes) %>% 
+  distinct()
+
+## save a csv of this; use a subset of this file to create the supplemental table
+example_proteins %>% 
+  write_csv("../05_figures/figure_1/experimental_conditions_for_figure_1_example_curves.csv")
+```
+
+Individual example curves
+```{r}
+plot_subset_examples(dsfbase, canon_examples, "canon")
+
+plot_subset_examples(dsfbase, noncanon_examples, "noncanon")
+
+plot_subset_examples(dsfbase, specultive_examples, "speculative")
+
+plot_subset_examples(dsfbase, errata_examples, "errata")
+```
+
+=========== Figure 2 - UMAP ==============
+-- Read in the UMAP analysis and annotations
+```{r}
+source("R/functions/umap.R") # helper functions to implement and plot UMAP using tidymodels
+## overwrite the old protein name columns
+id_annotations <- read_rds("../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds")
+
+umap_200 <- read_rds("../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.2.rds") %>%
+  select(-c("protein", "subset")) %>% 
+  left_join(id_annotations, by = join_by("id"))
+```
+
+ -- Main panel figure of complete UMAP, colored by subset 
+```{r}
+p_umap <- plot_UMAP(UMAP_data = umap_200,
+          .n_neighbors = 200, # just for making labels
+          .min_dist = 0.2, # just for making labels
+          .facet = FALSE, # don't facet in the main panel
+          .other_notes = "input data: RFU. All 6515 entried included in analysis.", # keep in title for reminder. Crop in the final figure.
+          .save_to = "../04_UMAP_analysis/final_parameters/plots/main_text/",
+          .save_name = "dsfbase_umap_",
+          .return_plot = TRUE,
+          .dsfbase_colors = c("canon" = "#30123B",
+                              "noncanon" = "#1BE4B7",
+                              "speculative" = "#FABA39",
+                              "errata" = "#7A0403"))
+
+p_umap_final <- p_umap +
+
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 12,
+                            axis_title_size = 12,
+                            strip_text_size = 12) +
+  
+    theme(aspect.ratio = 1, legend.position = "top", legend.justification = "left") + 
+    labs(subtitle = "input data: RFU. All 6515 entried included in analysis.") 
+
+# save the main panel figure
+ggsave("../05_figures/figure_3/UMAP_200_min_dist_0.2_main_text_retest.pdf",
+       p_umap_final,
+       width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+```
+
+
+ -- Single-protein UMAPs
+```{r}
+
+p_umap_GS <- plot_UMAP_by_protein(UMAP_data = umap_200 |> filter(protein == "GS (wt)"),
+                                  .n_neighbors = 200, 
+                                  .min_dist = 0.2,
+                                  .other_notes = "GS wt only.",
+                     .save_to = "../05_figures/figure_3/")
+
+
+          .facet = FALSE, # don't facet in the main panel
+          .other_notes = "input data: RFU. All 6515 entried included in analysis.", # keep in title for reminder. Crop in the final figure.
+          .save_to = "../04_UMAP_analysis/final_parameters/plots/main_text/",
+          .save_name = "dsfbase_umap_GS_wt_",
+          .return_plot = TRUE,
+          .dsfbase_colors = c("canon" = "#30123B",
+                              "noncanon" = "#1BE4B7",
+                              "speculative" = "#FABA39",
+                              "errata" = "#7A0403"))
+
+p_umap_GS_final <- p_umap_GS 
+
+p_umap_GS
+# +
+# 
+#     # adjust theme
+#     hrbrthemes::theme_ipsum(base_size = 12,
+#                             axis_title_size = 12,
+#                             strip_text_size = 12) +
+#   
+#     theme(aspect.ratio = 1, legend.position = "top", legend.justification = "left") + 
+#     labs(subtitle = "input data: RFU. All 6515 entried included in analysis.") 
+
+# save the main panel figure
+ggsave("../05_figures/figure_3/UMAP_single_protein_GS_wt.pdf",
+       p_umap_GS,
+       width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+```
+
+
+```{r}
+plot_UMAP_single_protein <- function(.protein,
+                                     UMAP_data,
+                                  
+                                  .save_width = 7,
+                                  .save_height = 7,
+                                 .n_neighbors = 200,
+                                 .min_dist = 0.2,
+                                 .facet = TRUE,
+                                
+                                 .x = "UMAP1",
+                                 .y = "UMAP2",
+                                 .save_to = "../05_figures/figure_3/",
+                                 .save_name = "dsfbase_single_protein_umap_",
+                                 ...) {
+
+  p_UMAP <- 
+    UMAP_data |> 
+    ggplot(aes(x = .data[[.x]], y = .data[[.y]])) +
+    
+    geom_point(data = select(UMAP_data, -protein),
+               color = "grey", 
+               size = 0.05, 
+               alpha = 0.2) +
+    
+    # color points for each subset
+    geom_point(data = UMAP_data |> filter(protein == .protein), 
+               aes(color = subset),
+               alpha = 0.8,
+               size = 1) +
+    # 
+    # facet_wrap(~protein, 
+    #            ncol = 6, 
+    #            scales = "fixed",
+    #            labeller = label_wrap_gen(width = 25, multi_line = TRUE))  +
+    
+    labs(color = NULL) +
+    
+    scale_color_manual(values = c("canon" = "#30123B",
+                              "noncanon" = "#1BE4B7",
+                              "speculative" = "#FABA39",
+                              "errata" = "#7A0403")) +
+    
+    
+  # scale_x_continuous(breaks = seq(25, 95, by = 20)) +
+  # scale_y_continuous(breaks = seq(0, 1, by = 0.2)) +
+  hrbrthemes::theme_ipsum(base_size = 30,
+                          plot_title_size = 32,
+                          axis_title_size = 30,
+                          plot_title_face = "bold",
+                          strip_text_size = 14,
+                          strip_text_face = "italic") +
+  theme(aspect.ratio = 1,
+        legend.position = "none",
+        plot.background = element_rect(fill = "transparent", color = "transparent")) +
+  labs(title = glue("{.protein}"), 
+       x = "UMAP1",
+       y = "UMAP2") +
+ 
+    
+    # increase size and alpha in guides to make them visible
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1)))  # don't make legend really transparent
+  
+  
+  
+  .save_name <-glue("{.save_to}{.save_name}{.n_neighbors}_min_dist_{.min_dist}_for_protein_{.protein}.pdf")
+  
+  ggsave(.save_name,
+         width = .save_width, # facet plots get saved larger
+         height = .save_height, # facet plots get saved larger
+         limitsize = FALSE,
+         device = cairo_pdf)
+  
+}
+
+plot_proteins <- c("GS (R341C)" ,"GS (324S)", "GS (324C)" , "GS (wt)", 
+   "OGT", "OGT TPR domain", "OGT OTL domain")   
+
+sapply(plot_proteins, plot_UMAP_single_protein, umap_200)
+```
+
+GS tma calculations
+```{r}
+for_dsfworld <- dsfbase |> 
+  filter(protein %in% c("GS (R341C)" ,"GS (324S)", "GS (324C)" , "GS (wt)")) |> 
+  select(Temperature, value_norm, id) |> 
+  pivot_wider(id_cols = Temperature, names_from = id, values_from = value_norm)
+  
+for_dsfworld |> write_csv("../04_UMAP_analysis/GS_tmas/GS_mutant_raw_data.csv")
+
+gs_tma <- read_csv("../04_UMAP_analysis/GS_tmas/2024-04-11-Tma by best fit, no replicate averaging.csv")
+
+gs_tma |> group_by(well) |> filter(BIC == min(BIC)) |> pull ("Best fit") |> table()#filter()
+```
+
+
+Individual example curves for OGT, OTL, TPR
+```{r}
+UMAP_examples <- dsfbase |> filter(protein %in% c("OGT", "OGT TPR domain", "OGT OTL domain"))
+
+UMAP_examples_raw_p <- UMAP_examples |> 
+   ggplot(aes(x = Temperature, 
+             y = value_norm, 
+             group = id,
+             color = subset_f)) +
+  scale_color_manual(values =  c("canon" = "#30123B",
+                              "noncanon" = "#1BE4B7",
+                              "speculative" = "#FABA39",
+                              "errata" = "#7A0403")) +
+  geom_line(linewidth = 0.2, alpha = 0.5) +
+  facet_wrap(~protein,
+             ncol = 3,
+             scales = "fixed") +
+  scale_x_continuous(breaks = seq(25, 95, by = 20)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.2)) +
+  hrbrthemes::theme_ipsum(base_size = 9,
+                          strip_text_size = 9,
+                          strip_text_face = "italic") +
+  theme(aspect.ratio = 1,
+        legend.position = "none",
+        plot.background = element_rect(fill = "transparent", color = "transparent")) +
+  labs(title = "UMAP raw data examples",
+       x = "Temperature (ºC)",
+       y = "Normalized RFU")
+
+ggsave("../05_figures/figure_3/UMAP_raw_data_examples.pdf",
+       UMAP_examples_raw_p, 
+       width = 7,
+       height = 3,
+       device = cairo_pdf,
+       bg = "transparent")
+
+
+
+```
+
+
+
+
+

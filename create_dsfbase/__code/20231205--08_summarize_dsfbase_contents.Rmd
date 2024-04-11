@@ -1,0 +1,281 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+For summary values to print in the paper. Want to be able to (re)generate these values quickly and easily after DSFbase updates. 
+
+```{r}
+library(tidyverse)
+library(glue)
+```
+
+Read in the most recent version of DSFbase
+```{r}
+dsfbase <- read_rds("../03_final_dsfbase/dsfbase_annotated.rds")
+conditions <- read_rds("../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds")
+```
+
+Create the subset and sub-subset assignment file
+```{r}
+# first overwriting the subsbuset names with ones that are simpler and make more sense
+dsfbase_assignments <- dsfbase |> 
+  mutate(subsubset = gsub(pattern = "midcanon",
+                          replacement = "semicanon",
+                          subsubset),
+         subsubset = gsub(pattern = "latenoncanon",
+                          replacement = "speculative",
+                          subsubset)) |> 
+  select(id, subset, subsubset) |> 
+  distinct() |> 
+  arrange(id)
+
+dsfbase_assignments |> write_csv("../03_final_dsfbase/dsfbase_subset_assignments.csv")
+```
+
+
+Step 1 -- For figure 1, manually edit a file to sort the eperiments into types
+```{r}
+# write a file to manually edit with each exerpimental description
+conditions %>% 
+    group_by(exp_summary) %>% 
+  tally() %>% 
+  write_csv("../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions_tallies.csv")
+
+condition_tallies <- read_csv("../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions_tallies.csv")
+
+# add to the original ecperimental conditions
+conditions_typed <- conditions |> 
+  left_join(condition_tallies, by = join_by(exp_summary))
+```
+
+Step 2 -- For Table 2, manually edit a file to sort the ligands into types
+```{r}
+conditions %>% head()
+# write a file to manually edit with each exerpimental description
+dsfbase |> 
+  select(id, additive, additive_description) |> 
+  distinct() |> 
+  group_by(additive, additive_description) |> 
+  tally() |> 
+  write_csv("../03_final_dsfbase/experimental_conditions/dsfbase_ligand_types_to_edit.csv")
+
+ligand_tallies <- read_csv("../03_final_dsfbase/experimental_conditions/dsfbase_ligand_types_manually_edited.csv")
+
+# add to the original ecperimental conditions
+ligands_typed <- conditions |> 
+  left_join(ligand_tallies)
+
+## 
+ligand_tallies |> 
+  filter(type != "None") |> 
+  select(type, `sub-type`, additive) |> 
+  distinct() |> 
+  group_by(type, `sub-type`) |> 
+  #summarise(total_n = sum(n))
+  tally()
+  
+
+
+ligand_tallies
+
+
+dsfbase |> filter(additive_description == "Fragment compounds")
+
+
+```
+
+
+
+
+Function to print tallies either for full DSFbase or by subset
+```{r}
+print_tally <- function(dsfbase, use_col, use_group = NULL, ...) {
+  
+  if(!is.null(use_group)){
+    out <-  dsfbase |> 
+        group_by(across(all_of(use_group)))|> 
+        select(all_of(c(use_group, use_col))) |> 
+        distinct() |> 
+        tally() |> 
+        rename("{use_col}" := n)
+     
+     #print(out) 
+     return(out)
+     } else {
+     tal <- n_distinct(dsfbase[[use_col]])
+     out <- glue::glue("Number of unique {use_col}(s): {tal}")
+     print(out)
+   }
+}
+
+print_all_tallies <- function(dsfbase, use_group, ...){
+  
+id <- print_tally(dsfbase, "id", use_group = use_group)
+  
+protein <- print_tally(dsfbase, "protein", use_group = use_group)
+
+exp_num <- print_tally(dsfbase, "exp_num", use_group = use_group)
+
+if(!is.null(use_group)){
+ out <- left_join(id, protein) |> 
+  left_join(exp_num) 
+ return(out)
+}
+
+  
+}
+```
+
+Print general tallies
+```{r}
+print_all_tallies(dsfbase, use_group = NULL)
+print_all_tallies(dsfbase, use_group = "subset_f")
+print_all_tallies(dsfbase, use_group = "subsubset_f")
+print_all_tallies(conditions_typed, use_group = "type")
+
+print_all_tallies(conditions_typed, use_group = "buffer") # "thermocycling_protocol
+print_all_tallies(conditions_typed, use_group = "thermocycling_protocol") # "thermocycling_protocol
+print_all_tallies(conditions_typed, use_group = "instrument") # "thermocycling_protocol
+
+
+print_all_tallies(ligands_typed, use_group = "type") # "thermocycling_protocol
+
+```
+
+
+
+Step 2 -- calculate the tallies per experiment type for Figure 1
+Figure 1 -- tally 
+(i) the numbers of each type of input experiment
+(ii) number of proteins per type of input experiment
+(iii) the number of proteins per subset
+```{r}
+####### ----- These numbers appear in Figure 1
+## the numbers of each type of experiment
+conditions_typed |> 
+  group_by(type) |> 
+  tally()
+
+## the number of experiments per type
+conditions_typed |> 
+  select(type, exp_num) |> 
+  distinct() |> 
+  group_by(type) |> 
+  tally()
+
+## the number of proteins
+conditions_typed |> 
+  select(type, protein) |> 
+  distinct() |> 
+  group_by(type) |> 
+  tally()
+
+## the number of proteins
+conditions_typed |> 
+  select(subset, protein) |> 
+  distinct() |> 
+  group_by(subset) |> 
+  tally()
+```
+
+
+```{r}
+dsfbase |> filter(protein_original == "SP150_Nsp3") |> 
+  select(id, exp_num, additive, additive_concentration_uM) |> 
+  distinct()
+
+dsfbase |> pull(protein) |> unique()
+dsfbase |> filter(protein == "Nsp3 macrodomain 1" ) |> filter(!is.na(additive)) |> pull(exp_summary) |> unique()
+```
+
+print nice summary of n_distinct() for a given column
+```{r}
+print_distinct <- function(dsfbase, col, print_name){
+  distinct <- n_distinct(dsfbase[[col]])
+  print(glue::glue("DSFbase contains {distinct} unique {print_name}(s)"))
+}
+```
+
+tally subsets
+```{r}
+tally_subset <- function(dsf, .subset) {
+  dsf <- dsf |> filter(subset %in% .subset)
+  
+  ids <- n_distinct(dsf$id)
+  prots <- n_distinct(dsf$protein)
+  
+  print(glue("Subset(s) `{glue_collapse(.subset, sep =' + ')}` contains {ids} unique entries for {prots} different proteins"))
+} 
+
+tally_overlap <- function(dsf, .subsets) {
+  n_overlaps <- dsf |> 
+    filter(subset %in% .subsets) |> 
+    select(protein, subset) |> 
+    distinct() |> 
+    group_by(protein) |> 
+    tally() |> 
+    filter(n>1) |> 
+    nrow()
+  
+    print(glue("Subsets `{glue_collapse(.subsets, sep =' and ')}` have {n_overlaps} proteins in common."))
+}
+```
+
+Summary values
+```{r}
+# tallies
+print_distinct(dsfbase, "id", "entries")
+print_distinct(dsfbase, "protein", "protein")
+print_distinct(dsfbase, "exp_num", "experiments")
+
+# subset tallies
+#tally_subset(dsfbase, c("SYPROcanon", "canon"))
+#tally_subset(dsfbase, "SYPROcanon")
+tally_subset(dsfbase, c("canon"))
+
+#tally_subset(dsfbase, c("SYPROnoncanon", "noncanon"))
+#tally_subset(dsfbase, "SYPROnoncanon")
+tally_subset(dsfbase, c("noncanon"))
+tally_subset(dsfbase, c("speculative"))
+tally_subset(dsfbase, c("errata"))
+
+# tally overlaps -- fragile function, probaly needs to be re-written, or isn't worth writing
+#tally_overlap(dsfbase, c("SYPROcanon", "canon"))
+```
+
+Print file sizes
+```{r}
+fs::dir_ls("/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/csvs") |> 
+  lapply(fs::file_size)
+
+# $`/Users/taiaseanwu/Desktop/programming/dsfbase/20231205_version/03_final_dsfbase/csvs/dsfbase_v001_normalized_6235_entries.csv`
+# 8.07M
+```
+
+Values for Table 1
+```{r}
+print_distinct(conditions, "thermocycling_protocol", "thermocycling protocol")
+
+conditions
+
+```
+
+ID ranges for each subset
+```{r}
+id_range <- function(dsf, .subset) {
+print(.subset)
+print(dsf |>  filter(subset == .subset)  |> head(1) |> pull(id))
+print(dsf |>  filter(subset == .subset)  |> tail(1)|> pull(id))
+}
+
+
+id_range(dsfbase, "SYPRO_canon") 
+id_range(dsfbase, "canon") 
+id_range(dsfbase, "SYPRO_noncanon") 
+id_range(dsfbase, "noncanon") 
+id_range(dsfbase, "errata") 
+```
+
+
+
