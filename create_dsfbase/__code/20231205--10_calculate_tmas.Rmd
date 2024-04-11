@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Calculate all Tmas for DSFbase, for comparison to UMAP
+
+```{r}
+library(tidyverse)
+library(dsfworld)
+```
+
+read in dsfbase
+```{r}
+dsfbase <- read_csv("../../__final_files_for_submission/dsfbase/dsfbase_v001_normalized_6165_entries.csv") |> 
+  pivot_longer(-Temperature, names_to = "id", values_to = "value")
+
+canon <- dsfbase |> 
+  filter(!grepl(pattern = "errata|speculative|noncanon", id)) |> 
+  tidy_for_tmas(unique_col = "id")
+
+# canon$.var |> n_distinct() # [1] 4144
+
+noncanon <- dsfbase |> 
+  filter(grepl(pattern = "noncanon", id)) |> 
+  tidy_for_tmas(unique_col = "id")
+
+# noncanon$.var |> n_distinct() # [1] 1603
+
+```
+
+Calculate Tmas for canon using model 2, and noncanon using models 2 and 4
+```{r}
+canon_model_2 <- canon |> add_model_fits(which_models = c("model_2"))
+noncanon_model_2 <- noncanon |> add_model_fits(which_models = c("model_2"))
+noncanon_model_4 <- noncanon |> add_model_fits(which_models = c("model_4"))
+
+fits <- bind_rows(canon_model_2, noncanon_model_2, noncanon_model_4)
+
+# save the full Tma output
+write_rds(x = fits, "../../git_ignore_data_outputs/06_Tmas/dsfbase_tmas_add_models_output.rds")
+```
+
+Tidy Tmas into
+```{r}
+fits |> head()
+
+```
+
+
+
+
