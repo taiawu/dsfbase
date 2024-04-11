@@ -41,12 +41,36 @@ fits <- bind_rows(canon_model_2, noncanon_model_2, noncanon_model_4)
 write_rds(x = fits, "../../git_ignore_data_outputs/06_Tmas/dsfbase_tmas_add_models_output.rds")
 ```
 
-Tidy Tmas into
+Tidy Tmas for analysis
 ```{r}
-fits |> head()
+# spearate and unnest key outputs
+#resid_pred <- fits |> select(.var, model_name, data) |>  unnest(cols = c("data"))
+#tidied <- fits |> select(.var, model_name, tidied) |>  unnest(cols = c("tidied")) # pars and stats
+BICs <- fits |> select(.var, model_name, glanced) |>  unnest(cols = c("glanced")) |> select(.var, model_name, BIC) # BICs
+all_tmas <- fits |> select(.var, model_name, model_tma) |>  unnest(cols = c("model_tma")) |> mutate(tma_C = scales::rescale(tma, to = c(25,94), from = c(0,1)))# normalized tmas
 
+# take only Tmas from the BIC-selected models 
+tmas <- all_tmas |> 
+          left_join(BICs, by = join_by(.var, model_name)) |> 
+          group_by(.var) |> 
+          filter(BIC == min(BIC))
 ```
 
+Tidy for placement 
+```{r}
+tidy_tmas <- tmas |> 
+  mutate(which_value = case_when(which_value == "sigmoid_1" ~ "Tma1_C",
+                                 which_value == "sigmoid_2" ~ "Tma2_C")) |> 
+  rename("id" = .var,
+         "dsfworld_model" = model_name,
+         "which_tma" = which_value) |> 
+  select(-tma, - BIC) |> 
+  right_join(dsfbase |> select(id) |> distinct(), by = join_by(id)) |> 
+  replace_na(list(dsfworld_model = "not calculated")) |> 
+  pivot_wider(names_from = "which_tma", values_from = "tma_C") |> 
+  select(-"NA") 
 
+tidy_tmas |> write_csv("../../__final_files_for_submission/supplemental_data/Data_S3_Tmas.csv")
+```
 
 
