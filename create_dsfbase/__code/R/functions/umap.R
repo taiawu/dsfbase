@@ -228,6 +228,10 @@ plot_UMAP_by_protein <- function(UMAP_data,
                                  .y = "UMAP2",
                                  .save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/05_analyses/1_UMAP/optimizations/plots/",
                                  .save_name = "dsfbase_umap_",
+                                 .dsfbase_colors = c("SYPRO_canon" = "#FABA39",
+                                                     "canon" = "#E6450C",
+                                                     "SYPRO_noncanon" = "#1BE4B7",
+                                                     "noncanon" = "#4686FA"),
                                  ...) {
   
   ## --- create plot names and annotations
@@ -247,9 +251,11 @@ plot_UMAP_by_protein <- function(UMAP_data,
                alpha = 0.2) +
     
     # color points for each subset
-    geom_point(color = "red",
+    geom_point(aes(color = subset), # color by subset
+               #color = "red", # coldor all protein points re
                alpha = 0.8,
                size = 0.5) +
+    
     # geom_point(aes(color = protein), 
     #            alpha = 0.8, 
     #            size = 0.2) +
@@ -266,8 +272,8 @@ plot_UMAP_by_protein <- function(UMAP_data,
     labs(color = NULL) +
     
     # color by subset, manually
-    scale_color_viridis_d(option = "turbo") +
-    #scale_color_manual(values = .dsfbase_colors) +
+    #scale_color_viridis_d(option = "turbo") +
+    scale_color_manual(values = .dsfbase_colors) +
     
     # add labels
     labs(title = .plot_title,
@@ -277,7 +283,7 @@ plot_UMAP_by_protein <- function(UMAP_data,
     hrbrthemes::theme_ipsum(base_size = 16,
                             strip_text_size = 12) +
     theme(aspect.ratio = 1,
-          legend.position = "none",
+          legend.position = "top",
           legend.text = element_text(size = 6)) +
     
     # increase size and alpha in guides to make them visible
@@ -289,7 +295,7 @@ plot_UMAP_by_protein <- function(UMAP_data,
   
   ggsave(.save_name,
          width = 15, # facet plots get saved larger
-         height = 60, # facet plots get saved larger
+         height = 40, # facet plots get saved larger
          limitsize = FALSE,
          device = cairo_pdf)
   

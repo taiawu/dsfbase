@@ -1,0 +1,445 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+library(tidyverse)
+library(extrafont) #  arial narrow font
+library(hrbrthemes) # plot themes
+
+source("R/functions/umap.R")
+```
+
+========= Compare UMAPs and Tmas ======== (next: analyze and make figures for UMAPs)
+Read in dsfbase, and add derivatives
+```{r}
+umap_200 <- read_csv("../../__final_files_for_submission/supplemental_data/Data_S4_UMAP.csv")
+
+umap_tmas <- read_rds("../../git_ignore_data_outputs/03_final_dsfbase/experimental_conditions/tmas_annotated.rds") |> 
+  left_join(umap_200, by = join_by(id)) |> 
+  left_join(id_annotations)
+
+# tidy for use in pre-written plotting fucntions
+umap_tmas_filt <- 
+  umap_tmas |>   
+  select(-tma) |> 
+  filter(BIC < -250,
+         tma_C < 94,
+         tma_C > 25) |> 
+  mutate(which_value = case_when(which_value == "sigmoid_1" ~ "Tma1_C",
+                                 (which_value == "sigmoid_2" ~ "Tma2_C"))) |> 
+  pivot_wider(names_from = which_value, values_from = tma_C) |> 
+  rename(dsfworld_model = model_name)
+```
+
+Function to plot umaps colored by Tma
+```{r}
+color_umap <- function(umap_data, 
+                       color_by, 
+                       save_name_ext = "",
+                       color_discrete = FALSE,
+                       manual_color_vals = c("model_2" = "blue", "model_4" = "red")){
+  
+  p <- umap_data |> 
+    arrange(!is.na(.data[[color_by]])) |> 
+  ggplot(aes(x = UMAP1,
+             y = UMAP2)) +
+    
+  geom_point(aes(color = .data[[color_by]],
+                 shape = is.na(.data[[color_by]]),
+                 alpha = is.na(.data[[color_by]])),
+             stroke = 0.01,
+             size = 0.5) +
+    
+  # show uncalc Tma as open circle (grey)
+  scale_shape_manual(values  = c(16, 1), guide = 'none') +
+  scale_alpha_manual(values  = c(0.8, 0.2), guide = 'none') +
+  
+  labs(shape = NULL) +
+   # increase size and alpha in guides to make them visible
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don't make legend really transparent
+    # adjust theme
+      
+    hrbrthemes::theme_ipsum(base_size = 12,
+                            axis_title_size = 12,
+                            strip_text_size = 12) +
+  
+    theme(aspect.ratio = 1, 
+          legend.position = "top", 
+          legend.justification = "left") + 
+    
+    labs(title = glue::glue("UMAP, color: {color_by}"),
+         caption = glue::glue("Tmas not calc for speculative or errata. UMAP (nn200, md0.2)")) 
+  
+  if(color_discrete){
+    p <- p + scale_color_manual(values = manual_color_vals)
+  } else {
+      p <-p + scale_color_viridis_c()
+  }
+  
+save_name <- glue::glue("/Users/taiaseanwu/Desktop/programming/dsfbase/git_ignore_data_outputs/04_UMAP_analysis/final_parameters/UMAP_Tma_{color_by}_{save_name_ext}.pdf")
+
+  ggsave(save_name,
+         p,
+         width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+}
+```
+
+========= Compare UMAPs and Tmas ======== (next: analyze and make figures for UMAPs)
+Read in dsfbase, and add derivatives
+```{r}
+
+color_umap(umap_tmas_filt, "Tma1_C")
+color_umap(umap_tmas_filt, "Tma2_C")
+
+color_umap(umap_tmas_filt, "dsfworld_model", color_discrete = TRUE)
+
+color_umap(umap_tmas_filt |> filter(dsfworld_model == "model_2"), "Tma1_C", save_name_ext = "model2_only")
+
+## by tma ranges
+color_umap(umap_tmas_filt |> filter(dsfworld_model == "model_2", 
+                               Tma1_C > 29,
+                               Tma1_C < 41), "Tma1_C", save_name_ext = "model2_only_30to40")
+
+## by tma ranges
+color_umap(umap_tmas_filt |> filter(dsfworld_model == "model_2", 
+                               Tma1_C > 39,
+                               Tma1_C < 46), "Tma1_C", save_name_ext = "model2_only_40to45")
+
+color_umap(umap_tmas_filt |> filter(dsfworld_model == "model_2", 
+                               Tma1_C > 44,
+                               Tma1_C < 51), "Tma1_C", save_name_ext = "model2_only_45to50")
+
+color_umap(umap_tmas_filt |> filter(dsfworld_model == "model_2", 
+                               Tma1_C > 49,
+                               Tma1_C < 56), "Tma1_C", save_name_ext = "model2_only_50to55")
+
+color_umap(umap_tmas_filt |> filter(dsfworld_model == "model_2", 
+                               Tma1_C > 54,
+                               Tma1_C < 61), "Tma1_C", save_name_ext = "model2_only_55to60")
+
+color_umap(umap_tmas_filt |> filter(dsfworld_model == "model_2", 
+                               Tma1_C > 59,
+                               Tma1_C < 91), "Tma1_C", save_name_ext = "model2_only_60to90")
+
+
+####
+
+color_umap(umap_tmas_filt |> filter(dsfworld_model == "model_4"), "Tma1_C", save_name_ext = "model4_only")
+color_umap(umap_tmas_filt |> filter(dsfworld_model == "model_4"), "Tma2_C", save_name_ext = "model4_only")
+```
+
+For GS
+```{r}
+umap_tmas_GS <- umap_tmas |> filter(protein %in% c("GS (wt)", "GS (R341C)" , "GS (324S)","GS (324C)"  ))
+
+umap_tmas_GS |> 
+  ggplot(aes(x = protein)) +
+  geom_point(aes(y =Tma1_C), color = "red") +
+  geom_point(aes(y =Tma2_C), color = "blue") +
+  facet_wrap(~dye)
+
+
+umap_tmas
+```
+
+
+
+
+
+
+```{r}
+umap_tma_p <- umap_tmas |> 
+  ggplot(aes(x = UMAP1,
+             y = UMAP2)) +
+  geom_point(aes(color = Tma1_C),
+             alpha = 0.8, 
+                 size = 0.5) +
+  scale_color_viridis_c() +
+  labs(color = NULL) +
+   # increase size and alpha in guides to make them visible
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don't make legend really transparent
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 12,
+                            axis_title_size = 12,
+                            strip_text_size = 12) +
+  
+    theme(aspect.ratio = 1, legend.position = "top", legend.justification = "left") + 
+    labs(subtitle = "Tmas not calc for speculative or errata") 
+
+
+  ggsave("/Users/taiaseanwu/Desktop/programming/dsfbase/git_ignore_data_outputs/04_UMAP_analysis/final_parameters/UMAP_Tma.pdf",
+         umap_tma_p,
+         width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+```
+
+Which model was best?
+```{r}
+umap_tma_p_model <- umap_tmas |> 
+  filter(dsfworld_model != "not calculated") |> 
+  ggplot(aes(x = UMAP1,
+             y = UMAP2)) +
+  geom_point(aes(color = dsfworld_model),
+             alpha = 0.8, 
+                 size = 0.5) +
+  scale_color_viridis_d() +
+  labs(color = NULL) +
+   # increase size and alpha in guides to make them visible
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don't make legend really transparent
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 12,
+                            axis_title_size = 12,
+                            strip_text_size = 12) +
+  
+    theme(aspect.ratio = 1, legend.position = "top", legend.justification = "left") + 
+    labs(subtitle = "Tmas not calc for speculative or errata") 
+
+  ggsave("/Users/taiaseanwu/Desktop/programming/dsfbase/git_ignore_data_outputs/04_UMAP_analysis/final_parameters/UMAP_Tma_best_model.pdf",
+         umap_tma_p_model,
+         width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+```
+
+Just model 1
+```{r}
+umap_tma1_only_p <- umap_tmas |> 
+  filter(dsfworld_model == "model_2") |> 
+  ggplot(aes(x = UMAP1,
+             y = UMAP2)) +
+  geom_point(aes(color = Tma1_C),
+             alpha = 0.8, 
+                 size = 0.5) +
+  scale_color_viridis_c() +
+  labs(color = NULL) +
+   # increase size and alpha in guides to make them visible
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don't make legend really transparent
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 12,
+                            axis_title_size = 12,
+                            strip_text_size = 12) +
+  
+    theme(aspect.ratio = 1, legend.position = "top", legend.justification = "left") + 
+    labs(subtitle = "Tmas not calc for speculative or errata") 
+
+  ggsave("/Users/taiaseanwu/Desktop/programming/dsfbase/git_ignore_data_outputs/04_UMAP_analysis/final_parameters/UMAP_Tma_model2_only.pdf",
+         umap_tma1_only_p,
+         width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+```
+
+Just nsp3 range?
+```{r}
+nsp3 <- umap_tmas |> filter(protein == "SARS-CoV2 Nsp3 mac1") |> filter(!is.na(Tma1_C))
+nsp3_tma_stats <- boxplot.stats(nsp3$Tma1_C)
+nsp3_tma_stats
+
+umap_tma_nsp3_p <- umap_tmas |> 
+  filter(Tma1_C > nsp3_tma_stats$stats[[1]],
+         Tma1_C < nsp3_tma_stats$stats[[5]]) |> 
+  ggplot(aes(x = UMAP1,
+             y = UMAP2)) +
+  geom_point(aes(color = Tma1_C),
+             alpha = 0.8, 
+                 size = 0.5) +
+  scale_color_viridis_c() +
+  labs(color = NULL) +
+   # increase size and alpha in guides to make them visible
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don't make legend really transparent
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 12,
+                            axis_title_size = 12,
+                            strip_text_size = 12) +
+  
+    theme(aspect.ratio = 1, legend.position = "top", legend.justification = "left") + 
+    labs(subtitle = "Tma 2 calc only for some noncanon") 
+
+
+  ggsave("/Users/taiaseanwu/Desktop/programming/dsfbase/git_ignore_data_outputs/04_UMAP_analysis/final_parameters/UMAP_Tma1_nsp3_range.pdf",
+         umap_tma_nsp3_p,
+         width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+```
+
+
+```{r}
+umap_tma2_p <- umap_tmas |> 
+  ggplot(aes(x = UMAP1,
+             y = UMAP2)) +
+  geom_point(aes(color = Tma2_C),
+             alpha = 0.8, 
+                 size = 0.5) +
+  scale_color_viridis_c() +
+  labs(color = NULL) +
+   # increase size and alpha in guides to make them visible
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don't make legend really transparent
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 12,
+                            axis_title_size = 12,
+                            strip_text_size = 12) +
+  
+    theme(aspect.ratio = 1, legend.position = "top", legend.justification = "left") + 
+    labs(subtitle = "Tma 2 calc only for some noncanon") 
+
+
+  ggsave("/Users/taiaseanwu/Desktop/programming/dsfbase/git_ignore_data_outputs/04_UMAP_analysis/final_parameters/UMAP_Tma2.pdf",
+         umap_tma2_p,
+         width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+  
+```
+
+```{r}
+umap_tma_p <- umap_tmas |> 
+  ggplot(aes(x = UMAP1,
+             y = UMAP2)) +
+  geom_point(aes(color = Tma1_C),
+             alpha = 0.8, 
+                 size = 0.5) +
+  scale_color_viridis_c() +
+  labs(color = NULL) +
+   # increase size and alpha in guides to make them visible
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don't make legend really transparent
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 12,
+                            axis_title_size = 12,
+                            strip_text_size = 12) +
+  
+    theme(aspect.ratio = 1, legend.position = "top", legend.justification = "left") + 
+    labs(subtitle = "Tmas not calc for speculative or errata") 
+
+
+  ggsave("/Users/taiaseanwu/Desktop/programming/dsfbase/git_ignore_data_outputs/04_UMAP_analysis/final_parameters/UMAP_Tma.pdf",
+         umap_tma_p,
+         width = 5.5, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+```
+
+
+
+```{r}
+plot_UMAP <- function(UMAP_data,
+                      .n_neighbors,
+                      .min_dist,
+                      .facet = TRUE,
+                      .other_notes = "Nsp3 mac1 screen excluded from analysis.",
+                      .x = "UMAP1",
+                      .y = "UMAP2",
+                      .save_to = "/Users/taiaseanwu/Desktop/programming/dsfbase/05_analyses/1_UMAP/optimizations/plots/",
+                      .save_name = "dsfbase_umap_",
+                      .dsfbase_colors = c("SYPRO_canon" = "#FABA39",
+                                          "canon" = "#E6450C",
+                                          "SYPRO_noncanon" = "#1BE4B7",
+                                          "noncanon" = "#4686FA"),
+                      .return_plot = FALSE,
+                      ...) {
+  
+  ## --- create plot names and annotations
+  .plot_title <- glue("UMAP of DSFbase. \n {.n_neighbors} neighbors; {.min_dist} min dist.")
+  .plot_subtitle <- glue("Parameters: neighbors = {.n_neighbors}, min_dist = {.min_dist}. \n Gotcha subset not displayed. \n Notes: {.other_notes}")
+  
+  # create the save location, if it isn't already there
+  fs::dir_create(.save_to)
+  
+  
+  ## --- make plot
+  p_UMAP <- 
+    UMAP_data |> 
+    ggplot(aes(.data[[.x]], .data[[.y]])) +
+    
+    labs(color = NULL) +
+    
+    # color by subset, manually
+    scale_color_manual(values = .dsfbase_colors) +
+    
+    # add labels
+    labs(title = .plot_title,
+         subtitle = str_wrap(.plot_subtitle, 50)) +
+    
+    # adjust theme
+    hrbrthemes::theme_ipsum(base_size = 20,
+                            strip_text_size = 20) +
+    theme(aspect.ratio = 1) +
+    
+    # increase size and alpha in guides to make them visible
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) # don't make legend really transparent
+  
+  ### # facet by subset
+  if(.facet) {
+    p_UMAP <- p_UMAP + 
+      # add grey background points for full UMAP result
+      geom_point(data = select(UMAP_data, -subset),
+                 color = "grey", 
+                 size = 0.05, 
+                 alpha = 0.5) +
+      
+      # color points for each subset
+      geom_point(aes(color = subset), 
+                 alpha = 0.8, 
+                 size = 0.5) +
+      
+      facet_wrap(~subset, ncol = 2, scales= "free") 
+    
+    .save_width <- 15
+    .save_height <- 15
+    
+    .save_name <-glue("{.save_to}{.save_name}{.n_neighbors}_min_dist_{.min_dist}_facet.pdf")
+    
+  } else {
+    
+    p_UMAP <- p_UMAP + 
+      # color points for each subset
+      geom_point(aes(color = subset), 
+                 alpha = 0.2, 
+                 size = 0.1) 
+    
+    .save_name <-glue("{.save_to}{.save_name}{.n_neighbors}_min_dist_{.min_dist}.pdf")
+    
+    .save_width <- 10
+    .save_height <- 10
+    
+  }
+  
+  # return the plot without saving, if desired
+  # used this to make the main panel figure
+  if(.return_plot){
+    return(p_UMAP)
+  }
+  
+  # defualt to saving
+  ggsave(.save_name,
+         width = .save_width, # facet plots get saved larger
+         height = .save_height, # facet plots get saved larger
+         device = cairo_pdf)
+  
+}
+```
+
+```{r}
+p_umap <- plot_UMAP(UMAP_data = umap_200,
+          .n_neighbors = 200, # just for making labels
+          .min_dist = 0.2, # just for making labels
+          .facet = FALSE, # don't facet in the main panel
+          .other_notes = "input data: RFU. All 6515 entried included in analysis.", # keep in title for reminder. Crop in the final figure.
+          .save_to = "../04_UMAP_analysis/final_parameters/plots/main_text/",
+          .save_name = "dsfbase_umap_",
+          .return_plot = TRUE,
+          .dsfbase_colors = c("canon" = "#30123B",
+                              "noncanon" = "#1BE4B7",
+                              "speculative" = "#FABA39",
+                              "errata" = "#7A0403"))
+```
+

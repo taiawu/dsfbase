@@ -26,8 +26,10 @@ noncanon <- dsfbase |>
   tidy_for_tmas(unique_col = "id")
 
 # noncanon$.var |> n_distinct() # [1] 1603
-
 ```
+
+
+
 
 Calculate Tmas for canon using model 2, and noncanon using models 2 and 4
 ```{r}
@@ -39,6 +41,7 @@ fits <- bind_rows(canon_model_2, noncanon_model_2, noncanon_model_4)
 
 # save the full Tma output
 write_rds(x = fits, "../../git_ignore_data_outputs/06_Tmas/dsfbase_tmas_add_models_output.rds")
+fits <- read_rds("../../git_ignore_data_outputs/06_Tmas/dsfbase_tmas_add_models_output.rds")
 ```
 
 Tidy Tmas for analysis
@@ -54,7 +57,178 @@ tmas <- all_tmas |>
           left_join(BICs, by = join_by(.var, model_name)) |> 
           group_by(.var) |> 
           filter(BIC == min(BIC))
+
+tmas
 ```
+
+###### ---- Visualize distributions
+Join tmas with conditions annotations
+```{r}
+id_annotations <- read_rds("../../git_ignore_data_outputs/03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds")
+
+annotated <- tmas |> 
+  rename(id = .var) |> 
+  left_join(id_annotations, by = join_by(id))
+
+annotated_tmas <- write_rds(annotated,                            "../../git_ignore_data_outputs/03_final_dsfbase/experimental_conditions/tmas_annotated.rds")
+```
+Figure S5 -- Tmas 
+```{r}
+p_tma_canon <- annotated |> 
+  filter(subset == "canon") |> 
+  filter(BIC < -250,
+         tma_C < 94,
+         tma_C > 25) |> 
+  ggplot(aes(x = id, 
+             y = tma_C)) +
+  # color = protein == "SARS-CoV2 Nsp3 mac1")) +
+  geom_point(alpha = 0.4,
+             size = 0.4) +
+  facet_wrap(~subset, scales = "free_x") +
+  
+  scale_color_viridis_d()+
+  # scale_color_manual(values = c("canon" = "#30123B",
+  #                             "noncanon" = "#1BE4B7")) +
+  hrbrthemes::theme_ipsum(axis_title_size = 16,
+                          base_size = 16) +
+  theme(axis.text.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "none") +
+  labs(x = "Entry", y = "Tma (ºC)") +
+    scale_y_continuous(limits = c(30, 90),
+                     breaks = seq(40, 80, by = 10))
+
+  ggsave("../../git_ignore_data_outputs/06_Tmas/canon_dsfbase_tmas.pdf",
+         p_tma_canon,
+         width = 7, # facet plots get saved larger
+         height = 4, # facet plots get saved larger
+         device = cairo_pdf)
+  
+  ### for noncanon
+
+p_tma_noncanon <- annotated |> 
+  filter(subset == "noncanon") |> 
+  filter(BIC < -250,
+         tma_C < 94,
+         tma_C > 25) |> 
+  ggplot(aes(x = id, 
+             y = tma_C)) +
+  # color = protein == "SARS-CoV2 Nsp3 mac1")) +
+  geom_point(alpha = 0.4,
+             size = 0.4) +
+  facet_wrap(~subset, scales = "free_x") +
+  
+  scale_color_viridis_d()+
+  # scale_color_manual(values = c("canon" = "#30123B",
+  #                             "noncanon" = "#1BE4B7")) +
+  hrbrthemes::theme_ipsum(axis_title_size = 16,
+                          base_size = 16) +
+  theme(axis.text.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "none") +
+  labs(x = "Entry", y = "Tma (ºC)") +
+  scale_y_continuous(limits = c(30, 90),
+                     breaks = seq(40, 80, by = 10))
+
+  ggsave("../../git_ignore_data_outputs/06_Tmas/noncanon_dsfbase_tmas.pdf",
+         p_tma_noncanon,
+         width = 3, # facet plots get saved larger
+         height = 4, # facet plots get saved larger
+         device = cairo_pdf)
+  
+  tmas_used <- annotated |> 
+  filter(BIC < -250,
+         tma_C < 94,
+         tma_C > 25) |> pull(id) |> n_distinct() 
+  tmas_used #[1] 4208
+  
+  annotated$id |> n_distinct() # [1] 5747
+  
+    tmas_not_used <- annotated |> 
+ # filter(subset == "canon") |> 
+  filter(BIC < -200,
+         tma_C < 94,
+         tma_C > 25) |> pull(id) |>
+      n_distinct() 
+    
+    tmas_not_used
+  
+```
+
+Tmas for nsp3 macrodomain 1
+```{r}
+p_tma_nsp3 <- annotated |> 
+  #filter(protein == "SARS-CoV2 Nsp3 mac1") |> 
+  ggplot(aes(x = id, 
+             y = tma_C)) +
+  geom_point(alpha = 0.4,
+             size = 0.4) +
+  facet_wrap(~subset, scales = "free_x") +
+  
+  #scale_color_viridis_d()+
+  scale_color_manual(values = c("canon" = "#30123B",
+                              "noncanon" = "#1BE4B7")) +
+  hrbrthemes::theme_ipsum() +
+  theme(axis.text.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "none") 
+
+  ggsave("../../git_ignore_data_outputs/06_Tmas/dsfbase_tmas.pdf",
+         p_tma_nsp3,
+         width = 7, # facet plots get saved larger
+         height = 5.5, # facet plots get saved larger
+         device = cairo_pdf)
+```
+
+Tma frequency, colored by Nsp3 
+```{r}
+tma_frequencies <- annotated |> 
+    filter(BIC < -200,
+         tma_C < 94,
+         tma_C > 25) |> 
+  group_by(protein == "SARS-CoV2 Nsp3 mac1")  |> 
+  ggplot() +
+  geom_density(aes(tma_C),
+               fill = "grey") +
+  geom_jitter(aes(y = -0.1, 
+                  x = tma_C,
+                  color = protein == "SARS-CoV2 Nsp3 mac1"),
+              height = 0.08,
+              alpha = 0.1,
+              size  = 0.2) +
+
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1))) + # don't make legend    
+  labs(color = "Protein", x = "Tma (ºC)", y = "Density") +
+  
+  hrbrthemes::theme_ipsum(base_size = 16,
+                            axis_text_size = 16,
+                            axis_title_size = 14) +
+  geom_hline(yintercept = 0) +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank())
+
+ ggsave("../../git_ignore_data_outputs/06_Tmas/nsp3_colored_dsfbase_tmas_density.pdf",
+         tma_frequencies,
+         width = 7, # facet plots get saved larger
+         height = 5, # facet plots get saved larger
+         device = cairo_pdf)
+```
+
+
+Can we discern nsp3 using Tma alone?
+```{r}
+nsp3_t_test <- 
+t.test(x = annotated |> filter( protein == "SARS-CoV2 Nsp3 mac1") |> pull(tma_C),
+       y = annotated |> filter( protein != "SARS-CoV2 Nsp3 mac1") |> pull(tma_C))
+
+nsp3_t_test
+```
+
+
+
 
 Tidy for placement 
 ```{r}
@@ -72,5 +246,7 @@ tidy_tmas <- tmas |>
 
 tidy_tmas |> write_csv("../../__final_files_for_submission/supplemental_data/Data_S3_Tmas.csv")
 ```
+
+
 
 

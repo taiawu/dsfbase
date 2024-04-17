@@ -90,20 +90,21 @@ Conclusion: the final results are relatively insensitive to the parameters (see 
 The "clearest" visualization, in my opinion, is the RFU data with 200 neighbors and min_dist = 0.2
 ```{r}
 ## overwrite the old protein name columns
-id_annotations <- read_rds("../../../../03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds")
+id_annotations <- read_rds("../../git_ignore_data_outputs/03_final_dsfbase/experimental_conditions/dsfbase_experimental_conditions.rds")
 
-umap_200 <- read_rds("../../../../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.2.rds") %>%
+umap_200 <- read_rds("../../git_ignore_data_outputs/04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.2.rds") %>%
   select(-c("protein", "subset")) %>% 
   left_join(id_annotations, by = join_by("id"))
 
 write_rds(x = umap_200, 
-          "../../../../04_UMAP_analysis/final_parameters/dsfbase_UMAP_nn200_md0p2.rds")
+          "../../git_ignore_data_outputs/04_UMAP_analysis/final_parameters/dsfbase_UMAP_nn200_md0p2.rds")
+
+umap_200 <- read_rds("../../git_ignore_data_outputs/04_UMAP_analysis/final_parameters/dsfbase_UMAP_nn200_md0p2.rds")
 ```
 
-Make final version of umap 200 to save as supplemnetal file
 ```{r}
+umap_200$protein |> n_distinct()
 ```
-
 
 ######## ---------- Make SI facet figures visualizing the impact of input parameters
 ```{r}
@@ -174,12 +175,14 @@ ggsave("../04_UMAP_analysis/final_parameters/plots/main_text/dsfbase_umap_200_mi
 
 ######## ---------- Make SI facet figures displaying where different proteins are placed in the UMAPs
 ```{r}
-plot_UMAP_by_protein(umap_200, 200, 0.2, 
+plot_UMAP_by_protein(umap_200, 
+                     200, 
+                     0.2, 
                      .plot_width = 15,
                      .plot_height = 40,
                      .ncol = 6,
                      .other_notes = "All 6515 entries included in analysis.",
-                     .save_to = "../04_UMAP_analysis/final_parameters/plots/by_protein/")
+                     .save_to = "../../git_ignore_data_outputs/04_UMAP_analysis/final_parameters/plots/by_protein/")
 
 
 ### show for a couple of other extreme parameter examples
@@ -203,6 +206,7 @@ plot_UMAP_by_protein(umap_400, 400, 0.2,
                      .other_notes = "All 6515 entries included in analysis.",
                      .save_to = "../04_UMAP_analysis/final_parameters/plots/by_protein/")
 
+## 200 and 0.8
 umap_200_p8 <- read_rds("../04_UMAP_analysis/parameter_exploration/rfu/results/dsfbase_umap_juice_neighbors_200_mindist_0.8.rds") %>%
   select(-c("protein", "subset")) %>% 
   left_join(id_annotations, by = join_by("id"))
@@ -215,7 +219,10 @@ plot_UMAP_by_protein(umap_200_p8, 200, 0.8,
 
 ```
 
-
+============ Raw data for different parts of the UMAP
+```{r}
+dsfbase <- read_rds("/Users/taiaseanwu/Desktop/programming/dsfbase/__final_files_for_submission/dsfbase/dsfbase_v001_normalized_6165_entries.csv")
+```
 
 Compare UMAP separation to dsfworld Tma calculations
 ```{r}
